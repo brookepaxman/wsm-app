@@ -1,9 +1,11 @@
+<h1 style="font-size: 40px; text-align:center; color:#3d3d5c; font-weight:600; font-family:calibri">Welcome to the Wireless Sleep Monitor App!</h1>
+<h2 style="font-family:calibri; color:#3d3d5c">Users</h2>
 {% if latest_question_list %}
     <ul>
-    {% for question in latest_question_list %}
-        <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+    {% for user in latest_question_list %}
+        <li><a href="{% url 'polls:detail' user.id %}">{{ user.user_name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
-    <p>No polls are available.</p>
+    <p>No users are available.</p>
 {% endif %}
