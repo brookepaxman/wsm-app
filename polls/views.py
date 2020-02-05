@@ -12,7 +12,7 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """Return the last five published users."""
-        return User.objects.order_by('-pub_date')[:5]
+        return User.objects.order_by('-pub_date')[:10]
 
 
 class DetailView(generic.DetailView):
