@@ -20,3 +20,8 @@ class Stat(models.Model):
     time = models.DateTimeField('date published')
     hr = models.IntegerField(default=0)
     rr = models.IntegerField(default=0)
+
+class Dummy(models.Model):
+    time = models.IntegerField(default=0)
+    hr = models.IntegerField(default=0)
+    rr = models.IntegerField(default=0)

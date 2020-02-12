@@ -2,6 +2,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/style.css' %}">
 <h1>Welcome to the Wireless Sleep Monitor App!</h1>
 <h2>Users</h2>
+<a href="{% url 'polls:dummy' %}">Link to CSV Page</a>
 {% if latest_question_list %}
     <ul>
     {% for user in latest_question_list %}

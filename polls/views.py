@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 
-from .models import User, Stat
+from .models import User, Stat, Dummy
 
 
 class IndexView(generic.ListView):
@@ -18,6 +18,14 @@ class IndexView(generic.ListView):
 class DetailView(generic.DetailView):
     model = User
     template_name = 'polls/detail.html'
+
+class DummyView(generic.ListView):
+    model = Dummy
+    template_name = 'polls/dummy.html'
+    context_object_name = 'latest_stats'
+
+    def get_queryset(self):
+        return Dummy.objects.order_by('time')
 
 
 # class ResultsView(generic.DetailView):

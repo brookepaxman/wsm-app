@@ -1,0 +1,24 @@
+<h2 style="font-family:calibri; color:#3d3d5c">CSV statistics</h2>
+<div class="stats" style="display: flex">
+      <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Time (s)</h3></li>
+        {% for stat in latest_stats %}
+          <li>{{ stat.time }}</li>
+        {% endfor %}
+      </ul>
+      <ul id="hrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Heart Rate</h3></li>
+        {% for stat in latest_stats %}
+          <li>{{ stat.hr }}</li>
+        {% endfor %}
+      </ul>
+
+      <ul id="rrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Respiration Rate</h3></li>
+        {% for stat in latest_stats %}
+          <li>{{ stat.rr }}</li>
+        {% endfor %}
+      </ul>
+  </div>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
