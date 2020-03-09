@@ -17,7 +17,7 @@ class User(models.Model):
 
 class Stat(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    time = models.DateTimeField('date published')
+    time = models.IntegerField(default=0)
     hr = models.IntegerField(default=0)
     rr = models.IntegerField(default=0)
 
