@@ -1,14 +1,42 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/style.css' %}">
 <h1>Welcome to the Wireless Sleep Monitor App!</h1>
-<h2>Users</h2>
-<a href="{% url 'polls:dummy' %}">Link to CSV Page</a>
-{% if latest_question_list %}
-    <ul>
-    {% for user in latest_question_list %}
-        <li><a href="{% url 'polls:detail' user.id %}">{{ user.user_name }}</a></li>
-    {% endfor %}
-    </ul>
+{% block content %}
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+  <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}
-    <p>No users are available.</p>
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
 {% endif %}
+{% endblock %}
+
+  {% if latest_stats %}
+  <div class="stats" style="display: flex">
+      <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Time (s)</h3></li>
+        {% for stat in latest_stats %}
+          <li>{{ stat.time }}</li>
+        {% endfor %}
+      </ul>
+      <ul id="hrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Heart Rate</h3></li>
+
+        {% for stat in latest_stats %}
+          <li>{{ stat.hr }}</li>
+        {% endfor %}
+      </ul>
+
+      <ul id="rrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Respiration Rate</h3></li>
+
+        {% for stat in latest_stats %}
+          <li>{{ stat.rr }}</li>
+        {% endfor %}
+      </ul>
+      <canvas id="myChart" width="400" height="400"></canvas>
+    {% else %}
+      <p>No stats are available.</p>
+    {% endif %}
+  </div>
+

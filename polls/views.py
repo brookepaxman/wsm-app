@@ -2,17 +2,24 @@ from django.http import HttpResponse, HttpResponseRedirect # noqa: 401
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
+from django.contrib.auth.models import Permission, User 
+from django.contrib.contenttypes.models import ContentType
 
 from .models import User, Stat, Dummy
 
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
-    context_object_name = 'latest_question_list'
+    context_object_name = 'latest_stats'
 
     def get_queryset(self):
-        """Return the last five published users."""
-        return User.objects.order_by('-pub_date')[:10]
+        name = None
+        if self.request.user.is_authenticated:
+            name = self.request.user.username
+            accessor = User.objects.get(user_name=name)
+            return Stat.objects.filter(user=accessor.id).order_by('time')
+        else:
+            return False   
 
 
 class DetailView(generic.DetailView):
