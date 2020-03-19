@@ -5,7 +5,21 @@ from django.views import generic
 from django.contrib.auth.models import Permission, User 
 from django.contrib.contenttypes.models import ContentType
 
-from .models import User, Stat, Dummy
+from .models import User, Stat, Dummy, Analysis
+
+class AnalysisView(generic.ListView):
+    model = Analysis
+    template_name = 'polls/analysis.html'
+    context_object_name = 'latest_stats'
+
+    def get_queryset(self):
+        name = None
+        if self.request.user.is_authenticated:
+            name = self.request.user.username
+            accessor = User.objects.get(user_name=name)
+            return Stat.objects.filter(user=accessor.id).order_by('date')
+        else:
+            return False  
 
 
 class IndexView(generic.ListView):
