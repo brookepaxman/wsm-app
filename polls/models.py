@@ -28,7 +28,7 @@ class Dummy(models.Model):
 
 class Analysis(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    
     date = models.DateTimeField('date published')
     tst = models.TimeField()
     avgHR = models.IntegerField(default=0)

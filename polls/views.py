@@ -17,7 +17,7 @@ class AnalysisView(generic.ListView):
         if self.request.user.is_authenticated:
             name = self.request.user.username
             accessor = User.objects.get(user_name=name)
-            return Stat.objects.filter(user=accessor.id).order_by('date')
+            return Analysis.objects.filter(user=accessor.id).order_by('date')
         else:
             return False  
 

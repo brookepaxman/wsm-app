@@ -10,13 +10,43 @@
   <a href="{% url 'login' %}">login</a>
 {% endif %}
 {% endblock %}
+  
+<div class="forms">
+    <h3>Rate your quality of sleep from a scale from 1-5: </h3>
 
-  {% if latest_stats %}
+    <form action="/analysis.html" method="POST"></form>
+        <label for="quantity">Quantity (between 1 and 5):</label>
+        <input type="number" id="quantity" name="quantity" min="1" max="5">
+        <!-- <input type="radio" id="1" name="rating" value="1">
+        <label for="1">1</label>
+        <input type="radio" id="2" name="rating" value="2">
+        <label for="2">2</label>
+        <input type="radio" id="3" name="rating" value="3">
+        <label for="3">3</label>
+        <input type="radio" id="4" name="rating" value="4">
+        <label for="4">4</label>
+        <input type="radio" id="5" name="rating" value="5">
+        <label for="5">5</label><br><br> -->
+        <input type="submit" value="Submit">
+    </form>
+
+    <h3>Log any notes you had about your sleep:</h3>
+
+    <form action="/analysis.html" method="POST">
+        <label for="fname">Sleep Disruptions</label><br>
+        <input type="text" id="fname" name="fname"><br>
+        <label for="fname">Additional Notes</label><br>
+        <input type="text" id="fname" name="fname"><br>
+        <input type="submit" value="Submit">
+      </form>
+</div>
+
   <div class="stats" style="display: flex">
       <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
         <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Statistics</h3></li>
         {% for stat in latest_stats %}
-          <li>Total time: {{stat.tst}}</li>
+          <h5>{{stat.date}}</h5>
+          <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes</li>
           <li>Average HR: {{ stat.avgHR }}</li>
           <li>Average RR: {{ stat.avgRR }}</li>
           <li>Average HR Dip: {{ stat.avgHRdip }}</li>
@@ -30,6 +60,7 @@
         <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Sleep Summary</h3></li>
 
         {% for stat in latest_stats %}
+          <h5>{{stat.date}}</h5>
           <li>Sleep Quality: {{ stat.sleepQuality }}</li>
           <li>Number of Sleep Disruptions: {{ stat.numSleepDisruptions }}</li>
           <li>Sleep Disruptions: {{ stat.sleepDisruptions }}</li>
@@ -38,8 +69,6 @@
       </ul>
 
       <canvas id="myChart" width="400" height="400"></canvas>
-    {% else %}
-      <p>No stats are available.</p>
-    {% endif %}
+    
   </div>
 
