@@ -5,32 +5,9 @@ from django.views import generic
 from django.contrib.auth.models import Permission, User 
 from django.contrib.contenttypes.models import ContentType
 
+from datetime import date
 from .models import User, Stat, Dummy, Analysis
-
-def get_sleepQuality(request):
-    if request.method == 'POST':
-        if request.POST.get('sleepQuality'):
-            post = Analysis()
-            post.sleepQuality=request.POST.get('sleepQuality')
-            post.save()
-
-            return render(request,'/analysis/')
-    else:
-        return render(request, 'analysis.html')
-
-class SleepForm(generic.ListView):
-    template_name = 'polls/saveForm.html'
-    model = Analysis
-def get_sleepQuality(request):
-    if request.method == 'POST':
-        if request.POST.get('sleepQuality'):
-            post = Post()
-            post.sleepQuality=request.POST.get('sleepQuality')
-            post.save()
-
-            return render(request,'/analysis/')
-    else:
-        return render(request, 'analysis.html')
+from .forms import sleepQualityForm
 
 class AnalysisView(generic.ListView):
     model = Analysis
@@ -44,8 +21,51 @@ class AnalysisView(generic.ListView):
             accessor = User.objects.get(user_name=name)
             return Analysis.objects.filter(user=accessor.id).order_by('date')
         else:
-            return False  
+            return False 
 
+    def get(self,request):
+        form = sleepQualityForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self,request):
+        form = sleepQualityForm(request.POST)
+        if form.is_valid():
+            name = self.request.user.username
+            accessor = User.objects.get(user_name=name)
+
+            tst = form.cleaned_data['tst']
+            avgHR = form.cleaned_data['avgHR']
+            avgRR = form.cleaned_data['avgRR']
+            avgHRdip = form.cleaned_data['avgHRdip']
+            minHR = form.cleaned_data['minHR']
+            maxHR = form.cleaned_data['maxHR']
+            minRR = form.cleaned_data['minRR']
+            maxRR = form.cleaned_data['maxRR']
+            sleepQuality = form.cleaned_data['sleepQuality']
+            numSleepDisruptions = form.cleaned_data['numSleepDisruptions']
+            sleepDisruptions = form.cleaned_data['sleepDisruptions']
+            sleepNotes = form.cleaned_data['sleepNotes']
+            args = {'form':form, 'tst':tst, 'avgHR':avgHR, 'avgRR':avgRR, 'avgHRdip':avgHRdip,
+            'minHR':minHR, 'maxHR':maxHR, 'minRR':minRR,'maxRR':maxRR,'sleepQuality':sleepQuality,
+            'numSleepDisruptions':numSleepDisruptions, 'sleepDisruptions':sleepDisruptions,'sleepNotes':sleepNotes}
+            form = sleepQualityForm()
+            data = Analysis()
+            data.tst = tst
+            data.avgHR = avgHR
+            data.avgrR = avgRR
+            data.avgHRdip = avgHRdip
+            data.minHR = minHR
+            data.maxHR = maxHR
+            data.minRR = minRR
+            data.maxRR = maxRR
+            data.sleepQuality = sleepQuality
+            data.numSleepDisruptions = numSleepDisruptions
+            data.sleepDisruptions = sleepDisruptions
+            data.sleepNotes = sleepNotes
+            data.user_id = accessor.id
+            data.date = date.today()
+            data.save()
+        return render(request, self.template_name, args)
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'

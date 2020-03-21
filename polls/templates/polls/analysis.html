@@ -14,30 +14,20 @@
 <div class="forms">
     <h3>Rate your quality of sleep from a scale from 1-5: </h3>
 
-    <form action="" method="POST">
+    <form method="post">
       {% csrf_token %}
-      <label for="sleepQuality">Quantity (between 1 and 5):</label>
-      <input type="number" id="sleepQuality" name="sleepQuality" min="1" max="5">
-      <!-- <input type="radio" id="1" name="rating" value="1">
-      <label for="1">1</label>
-      <input type="radio" id="2" name="rating" value="2">
-      <label for="2">2</label>
-      <input type="radio" id="3" name="rating" value="3">
-      <label for="3">3</label>
-      <input type="radio" id="4" name="rating" value="4">
-      <label for="4">4</label>
-      <input type="radio" id="5" name="rating" value="5">
-      <label for="5">5</label><br><br> -->
+      {{form.as_p}}
       <input type="submit" value="Submit">
     </form>
-
     <h3>Log any notes you had about your sleep:</h3>
 
     <form action="" method="POST">
       <label for="fname">Sleep Disruptions</label><br>
-      <input type="text" id="fname" name="fname"><br>
+      <textarea cols="35" rows="8" name="content">
+      </textarea><br>
       <label for="fname">Additional Notes</label><br>
-      <input type="text" id="fname" name="fname"><br>
+      <textarea cols="35" rows="8" name="content">
+      </textarea><br>
       <input type="submit" value="Submit">
     </form>
 </div>
