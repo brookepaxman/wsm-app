@@ -7,6 +7,31 @@ from django.contrib.contenttypes.models import ContentType
 
 from .models import User, Stat, Dummy, Analysis
 
+def get_sleepQuality(request):
+    if request.method == 'POST':
+        if request.POST.get('sleepQuality'):
+            post = Analysis()
+            post.sleepQuality=request.POST.get('sleepQuality')
+            post.save()
+
+            return render(request,'/analysis/')
+    else:
+        return render(request, 'analysis.html')
+
+class SleepForm(generic.ListView):
+    template_name = 'polls/saveForm.html'
+    model = Analysis
+def get_sleepQuality(request):
+    if request.method == 'POST':
+        if request.POST.get('sleepQuality'):
+            post = Post()
+            post.sleepQuality=request.POST.get('sleepQuality')
+            post.save()
+
+            return render(request,'/analysis/')
+    else:
+        return render(request, 'analysis.html')
+
 class AnalysisView(generic.ListView):
     model = Analysis
     template_name = 'polls/analysis.html'

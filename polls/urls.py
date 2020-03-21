@@ -10,6 +10,7 @@ urlpatterns = [
     path('<int:pk>/', views.DetailView.as_view(), name='detail'),
     path('dummy/', views.DummyView.as_view(), name='dummy'),
     path('analysis/', views.AnalysisView.as_view(), name='analysis'),
+    path('saveForm/', views.SleepForm.as_view(), name='form'),
     #path('<int:pk>/results/', views.ResultsView.as_view(), name='results'),
     #path('<int:user_id>/vote/', views.vote, name='vote'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
