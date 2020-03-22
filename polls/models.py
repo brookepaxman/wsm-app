@@ -25,11 +25,19 @@ class Dummy(models.Model):
     hr = models.IntegerField(default=0)
     rr = models.IntegerField(default=0)
 
+class UserInput(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField('date published')
+    sleepQuality = models.IntegerField(default=0)
+    sleepDisruptions = models.TextField()
+    sleepNotes = models.TextField()
+
 class Analysis(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     date = models.DateTimeField('date published')
     tst = models.TimeField()
+    # tst = models.DurationField()
     avgHR = models.IntegerField(default=0)
     avgRR = models.IntegerField(default=0)
     avgHRdip = models.IntegerField(default=0)
@@ -37,8 +45,6 @@ class Analysis(models.Model):
     maxHR = models.IntegerField(default=0)
     minRR = models.IntegerField(default=0)
     maxRR = models.IntegerField(default=0)
-    sleepQuality = models.IntegerField(default=0)
     numSleepDisruptions = models.IntegerField(default=0)
-    sleepDisruptions = models.TextField()
-    sleepNotes = models.TextField()
+    
 

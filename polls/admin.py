@@ -1,8 +1,9 @@
 from django.contrib import admin
 
-from .models import User, Stat, Dummy, Analysis
+from .models import User, Stat, Dummy, Analysis, UserInput
 
 admin.site.register(User)
 admin.site.register(Stat)
 admin.site.register(Dummy)
 admin.site.register(Analysis)
+admin.site.register(UserInput)

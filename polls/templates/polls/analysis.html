@@ -10,32 +10,13 @@
   <a href="{% url 'login' %}">login</a>
 {% endif %}
 {% endblock %}
-  
-<div class="forms">
-    <h3>Rate your quality of sleep from a scale from 1-5: </h3>
 
-    <form method="post">
-      {% csrf_token %}
-      {{form.as_p}}
-      <input type="submit" value="Submit">
-    </form>
-    <h3>Log any notes you had about your sleep:</h3>
-
-    <form action="" method="POST">
-      <label for="fname">Sleep Disruptions</label><br>
-      <textarea cols="35" rows="8" name="content">
-      </textarea><br>
-      <label for="fname">Additional Notes</label><br>
-      <textarea cols="35" rows="8" name="content">
-      </textarea><br>
-      <input type="submit" value="Submit">
-    </form>
-</div>
+<p><a href="user_input/">Add Sleep Notes</a> </p>
 
   <div class="stats" style="display: flex">
       <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
         <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Statistics</h3></li>
-        {% for stat in latest_stats %}
+        {% for stat in analysis %}
           <h5>{{stat.date}}</h5>
           <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes</li>
           <li>Average HR: {{ stat.avgHR }}</li>
@@ -45,15 +26,15 @@
           <li>Max HR: {{ stat.maxHR }}</li>
           <li>Min RR: {{ stat.minRR }}</li>
           <li>Max RR: {{ stat.avgRR }}</li>
+          <li>Number of Sleep Disruptions: {{ stat.numSleepDisruptions }}</li>
         {% endfor %}
       </ul>
       <ul id="hrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
         <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Sleep Summary</h3></li>
 
-        {% for stat in latest_stats %}
+        {% for stat in userinput %}
           <h5>{{stat.date}}</h5>
           <li>Sleep Quality: {{ stat.sleepQuality }}</li>
-          <li>Number of Sleep Disruptions: {{ stat.numSleepDisruptions }}</li>
           <li>Sleep Disruptions: {{ stat.sleepDisruptions }}</li>
           <li>Sleep Notes: {{ stat.sleepNotes }}</li>
         {% endfor %}

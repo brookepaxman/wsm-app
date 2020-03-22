@@ -4,68 +4,74 @@ from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.models import Permission, User 
 from django.contrib.contenttypes.models import ContentType
+from django.views.generic import TemplateView
 
-from datetime import date
-from .models import User, Stat, Dummy, Analysis
+from datetime import datetime
+from .models import User, Stat, Dummy, Analysis, UserInput
 from .forms import sleepQualityForm
 
-class AnalysisView(generic.ListView):
-    model = Analysis
-    template_name = 'polls/analysis.html'
-    context_object_name = 'latest_stats'
-
-    def get_queryset(self):
-        name = None
-        if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
-            return Analysis.objects.filter(user=accessor.id).order_by('date')
-        else:
-            return False 
+class UserInputView(generic.ListView):
+    model = UserInput
+    template_name = 'polls/user_input.html'
 
     def get(self,request):
         form = sleepQualityForm()
         return render(request, self.template_name, {'form': form})
 
+    
     def post(self,request):
         form = sleepQualityForm(request.POST)
         if form.is_valid():
             name = self.request.user.username
             accessor = User.objects.get(user_name=name)
 
-            tst = form.cleaned_data['tst']
-            avgHR = form.cleaned_data['avgHR']
-            avgRR = form.cleaned_data['avgRR']
-            avgHRdip = form.cleaned_data['avgHRdip']
-            minHR = form.cleaned_data['minHR']
-            maxHR = form.cleaned_data['maxHR']
-            minRR = form.cleaned_data['minRR']
-            maxRR = form.cleaned_data['maxRR']
             sleepQuality = form.cleaned_data['sleepQuality']
-            numSleepDisruptions = form.cleaned_data['numSleepDisruptions']
             sleepDisruptions = form.cleaned_data['sleepDisruptions']
             sleepNotes = form.cleaned_data['sleepNotes']
-            args = {'form':form, 'tst':tst, 'avgHR':avgHR, 'avgRR':avgRR, 'avgHRdip':avgHRdip,
-            'minHR':minHR, 'maxHR':maxHR, 'minRR':minRR,'maxRR':maxRR,'sleepQuality':sleepQuality,
-            'numSleepDisruptions':numSleepDisruptions, 'sleepDisruptions':sleepDisruptions,'sleepNotes':sleepNotes}
+            
             form = sleepQualityForm()
-            data = Analysis()
-            data.tst = tst
-            data.avgHR = avgHR
-            data.avgrR = avgRR
-            data.avgHRdip = avgHRdip
-            data.minHR = minHR
-            data.maxHR = maxHR
-            data.minRR = minRR
-            data.maxRR = maxRR
+            data = UserInput()
+
             data.sleepQuality = sleepQuality
-            data.numSleepDisruptions = numSleepDisruptions
             data.sleepDisruptions = sleepDisruptions
             data.sleepNotes = sleepNotes
             data.user_id = accessor.id
-            data.date = date.today()
+            data.date = datetime.now()
             data.save()
+            args = {'form':form,'sleepQuality':sleepQuality,'sleepDisruptions':sleepDisruptions,'sleepNotes':sleepNotes}
+            # args = {'form':form, 'tst':tst, 'avgHR':avgHR, 'avgRR':avgRR, 'avgHRdip':avgHRdip,
+            # 'minHR':minHR, 'maxHR':maxHR, 'minRR':minRR,'maxRR':maxRR,'sleepQuality':sleepQuality,
+            # 'numSleepDisruptions':numSleepDisruptions, 'sleepDisruptions':sleepDisruptions,'sleepNotes':sleepNotes}
         return render(request, self.template_name, args)
+    
+class MultiView(TemplateView):
+    template_name = 'polls/analysis.html'
+    
+    def get_context_data(self, **kwargs):
+        name = self.request.user.username
+        accessor = User.objects.get(user_name=name)
+        context = super(MultiView, self).get_context_data(**kwargs)
+        context['analysis'] = Analysis.objects.filter(user=accessor.id).order_by('date')
+        context['userinput'] = UserInput.objects.filter(user=accessor.id).order_by('date')
+        return context
+
+
+# class AnalysisView(generic.ListView):
+#     model = Analysis
+#     template_name = 'polls/analysis.html'
+#     context_object_name = 'latest_stats'
+
+#     def get_queryset(self):
+#         name = None
+#         form = sleepQualityForm()
+#         if self.request.user.is_authenticated:
+#             name = self.request.user.username
+#             accessor = User.objects.get(user_name=name)
+#             return Analysis.objects.filter(user=accessor.id).order_by('date')
+#         else:
+#             return False 
+
+
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
