@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect # noqa: 401
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
-from django.contrib.auth.models import Permission, User 
+from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 
 from .models import User, Stat, Dummy
@@ -19,7 +19,7 @@ class IndexView(generic.ListView):
             accessor = User.objects.get(user_name=name)
             return Stat.objects.filter(user=accessor.id).order_by('time')
         else:
-            return False   
+            return False
 
 
 class DetailView(generic.DetailView):
