@@ -1,36 +1,16 @@
 {% load static %}
 
 <link rel="stylesheet" type="text/css" href="{% static '/chartjs/dist/Chart.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static '/admin/css/bootstrap.css' %}">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-<h2 style="font-family:calibri; color:#3d3d5c">CSV statistics loaded in Ajax!</h2>
-<!-- <div class="stats" style="display: flex">
-      <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Time (s)</h3></li>
-        {% for stat in latest_stats %}
-          <li>{{ stat.time }}</li>
-        {% endfor %}
-      </ul>
-      <ul id="hrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Heart Rate</h3></li>
-        {% for stat in latest_stats %}
-          <li>{{ stat.hr }}</li>
-        {% endfor %}
-      </ul>
 
-      <ul id="rrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Respiration Rate</h3></li>
-        {% for stat in latest_stats %}
-          <li>{{ stat.rr }}</li>
-        {% endfor %}
-      </ul>
-  </div> -->
-
-  <div style="width:75%">
-    <div class="chartjs-size-monitor">
-      <div class="chartjs-size-monitor-expand"></div>
-      <div class="chartjs-size-monitor-shrink"></div>
+  <div class="container">
+    <div class="row"><h2 style="font-family:calibri; color:#3d3d5c; margin:20px auto">CSV statistics loaded in Ajax!</h2></div>
+    <div class="row">
+      <div class="col-6 offset-3">
+        <canvas class="chartjs-render-monitor" style="display:block;" id="myChart" width="400" height="400"></canvas>
+      </div>
     </div>
-    <canvas class="chartjs-render-monitor" style="display:block;" id="myChart" width="400" height="400"></canvas>
   </div>
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
   <script src="{% static '/chartjs/dist/Chart.js' %}"></script>
@@ -55,11 +35,21 @@
             labels: labels,
             datasets: [{
               label: 'Heart Rate',
-              data: hrData
+              data: hrData,
+              borderColor: '#3e95cd',
+              fill: false
             }, {
               label: 'Respiration Rate',
-              data: rrData
+              data: rrData,
+              borderColor: '#3cba9f',
+              fill: false
             }]
+          },
+          options: {
+            title: {
+              display: true,
+              text: 'HR and RR over time (s)'
+            }
           }
         });
       },
