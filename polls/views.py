@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
+from chartjs.views.lines import BaseLineChartView
 
 from .models import User, Stat, Dummy
 
@@ -26,14 +27,25 @@ class DetailView(generic.DetailView):
     model = User
     template_name = 'polls/detail.html'
 
+class LineChartJSONView(BaseLineChartView):
+    template_name = 'polls/chart-json.html'
+    def get_labels(self):
+        # return Dummy.objects.order_by('time')
+        return ["January", "February", "March", "April", "May", "June", "July"]
+
+    def get_providers(self):
+        """Return names of datasets."""
+        return ["Central", "Eastside", "Westside"]
+
+    def get_data(self):
+        """Return 3 datasets to plot."""
+        return [[75, 44, 92, 11, 44, 95, 35],
+                [41, 92, 18, 3, 73, 87, 92],
+                [87, 21, 94, 3, 90, 13, 65]]
+
 class DummyView(generic.ListView):
     model = Dummy
     template_name = 'polls/dummy.html'
-    context_object_name = 'latest_stats'
-
-    def get_queryset(self):
-        return Dummy.objects.order_by('time')
-
 
 # class ResultsView(generic.DetailView):
 #     model = User
