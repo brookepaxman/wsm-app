@@ -40,26 +40,32 @@
       method: "GET",
       url: endpoint,
       success: function(data){
-        console.log(data)
+        var labels = [];
+        var hrData = [];
+        var rrData = [];
+        data.forEach(function(stat) {
+          labels.push(stat.time);
+          hrData.push(stat.hr);
+          rrData.push(stat.rr);
+        });
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart (ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Heart Rate',
+              data: hrData
+            }, {
+              label: 'Respiration Rate',
+              data: rrData
+            }]
+          }
+        });
       },
       error: function(error_data) {
         console.log("error")
         console.log(error_data)
       }
     })
-    Chart.platform.disableCSSInjection = true;
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart (ctx, {
-      type: 'line',
-      data: {
-        labels: [{% for d in data %} "{{ d.time }}", {% endfor %}],
-        datasets: [{
-          label: 'Heart Rate',
-          data: [{% for d in data %} "{{ d.hr }}", {% endfor %}]
-        }, {
-          label: 'Respiration Rate',
-          data: [{% for d in data %} "{{ d.rr }}", {% endfor %}]
-        }]
-      }
-    });
 </script>
