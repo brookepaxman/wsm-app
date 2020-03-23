@@ -1,9 +1,7 @@
 {% load static %}
 
 <link rel="stylesheet" type="text/css" href="{% static '/chartjs/dist/Chart.min.css' %}">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js">
-
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 <h2 style="font-family:calibri; color:#3d3d5c">CSV statistics loaded in Ajax!</h2>
 <!-- <div class="stats" style="display: flex">
       <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
@@ -37,11 +35,31 @@
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
   <script src="{% static '/chartjs/dist/Chart.js' %}"></script>
   <script type="text/javascript">
+    var endpoint = '/dummys/?format=json'
+    $.ajax({
+      method: "GET",
+      url: endpoint,
+      success: function(data){
+        console.log(data)
+      },
+      error: function(error_data) {
+        console.log("error")
+        console.log(error_data)
+      }
+    })
     Chart.platform.disableCSSInjection = true;
-    $.get("{% url 'polls:line_chart_json' %}", function(data) {
-      var ctx = $("#myChart").get(0).getContext('2d');
-      new Chart (ctx, {
-        type: 'line', data: data
-      });
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart (ctx, {
+      type: 'line',
+      data: {
+        labels: [{% for d in data %} "{{ d.time }}", {% endfor %}],
+        datasets: [{
+          label: 'Heart Rate',
+          data: [{% for d in data %} "{{ d.hr }}", {% endfor %}]
+        }, {
+          label: 'Respiration Rate',
+          data: [{% for d in data %} "{{ d.rr }}", {% endfor %}]
+        }]
+      }
     });
 </script>
