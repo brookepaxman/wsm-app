@@ -4,10 +4,12 @@ from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
-from chartjs.views.lines import BaseLineChartView
+from django.views.generic.base import TemplateView
+
+#from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
 
-from .models import User, Stat, Dummy
+from .models import User, Stat, Dummy, UserInput, Analysis 
 
 from .serializers import DummySerializer
 
