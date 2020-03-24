@@ -1,2 +1,4 @@
-/env
-/polls/__pycache__
+/env/
+/polls/__pycache__/
+/.vscode/
+/polls/migrations/
