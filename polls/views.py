@@ -8,7 +8,7 @@ from datetime import datetime
 # from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
 
-from .models import User, Stat, Dummy, UserInput, Analysis
+from .models import User, Stat, Dummy, UserInput, Analysis, Session
 from .forms import sleepQualityForm, calendarForm
 
 from .serializers import DummySerializer
@@ -88,9 +88,11 @@ class MultiView(generic.TemplateView):
         accessor = User.objects.get(user_name=name)
         if form.is_valid():
             txt = form.cleaned_data['inputDate']
-            args = {'form':form,'txt':txt,'analysis':Analysis.objects.filter(user=accessor.id),
-        'userinput':UserInput.objects.filter(user=accessor.id).order_by('date')}
+            s = Session.objects.get(startDate = txt)
+            args = {'form':form,'txt':txt,'analysis':Analysis.objects.filter(user=accessor.id, sessionID = s),
+            'userinput':UserInput.objects.filter(user=accessor.id,sessionID = s)}
         return render(request, self.template_name, args)
+
 
     def get_context_data(self, **kwargs):
         name = self.request.user.username
