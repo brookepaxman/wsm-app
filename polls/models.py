@@ -29,7 +29,6 @@ class Dummy(models.Model):
     time = models.IntegerField(default=0)
     hr = models.IntegerField(default=0)
     rr = models.IntegerField(default=0)
-    sessionID = models.ForeignKey(Session, on_delete=models.CASCADE)
     
 class UserInput(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
