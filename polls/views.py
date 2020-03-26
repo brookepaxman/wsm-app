@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
 
-from .models import User, Stat, Dummy, UserInput
+from .models import User, Stat, Dummy
 
 from .serializers import DummySerializer
 
@@ -71,7 +71,7 @@ class UserInputView(generic.ListView):
             # 'numSleepDisruptions':numSleepDisruptions, 'sleepDisruptions':sleepDisruptions,'sleepNotes':sleepNotes}
         return render(request, self.template_name, args)
     
-class MultiView(generic.TemplateView):
+class MultiView(TemplateView):
     template_name = 'polls/analysis.html'
     
     def get_context_data(self, **kwargs):
