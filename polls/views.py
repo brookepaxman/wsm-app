@@ -8,7 +8,7 @@ from django.views.generic import TemplateView
 
 from datetime import datetime
 from .models import User, Stat, Dummy, Analysis, UserInput
-from .forms import sleepQualityForm
+from .forms import sleepQualityForm, calendarForm
 
 class UserInputView(generic.ListView):
     model = UserInput
@@ -39,21 +39,37 @@ class UserInputView(generic.ListView):
             data.date = datetime.now()
             data.save()
             args = {'form':form,'sleepQuality':sleepQuality,'sleepDisruptions':sleepDisruptions,'sleepNotes':sleepNotes}
-            # args = {'form':form, 'tst':tst, 'avgHR':avgHR, 'avgRR':avgRR, 'avgHRdip':avgHRdip,
-            # 'minHR':minHR, 'maxHR':maxHR, 'minRR':minRR,'maxRR':maxRR,'sleepQuality':sleepQuality,
-            # 'numSleepDisruptions':numSleepDisruptions, 'sleepDisruptions':sleepDisruptions,'sleepNotes':sleepNotes}
         return render(request, self.template_name, args)
     
 class MultiView(TemplateView):
     template_name = 'polls/analysis.html'
     
-    def get_context_data(self, **kwargs):
+    def get(self,request):
+        form = calendarForm()
         name = self.request.user.username
         accessor = User.objects.get(user_name=name)
-        context = super(MultiView, self).get_context_data(**kwargs)
-        context['analysis'] = Analysis.objects.filter(user=accessor.id).order_by('date')
-        context['userinput'] = UserInput.objects.filter(user=accessor.id).order_by('date')
-        return context
+
+        return render(request, self.template_name, {'form': form,'analysis':Analysis.objects.filter(user=accessor.id).order_by('date'),
+        'userinput':UserInput.objects.filter(user=accessor.id).order_by('date')})
+
+    
+    def post(self,request):
+        form = calendarForm(request.POST)
+        name = self.request.user.username
+        accessor = User.objects.get(user_name=name)
+        if form.is_valid():
+            txt = form.cleaned_data['inputDate']
+            args = {'form':form,'txt':txt,'analysis':Analysis.objects.filter(user=accessor.id),
+        'userinput':UserInput.objects.filter(user=accessor.id).order_by('date')}
+        return render(request, self.template_name, args)
+
+    # def get_context_data(self, **kwargs):
+    #     name = self.request.user.username
+    #     accessor = User.objects.get(user_name=name)
+    #     context = super(MultiView, self).get_context_data(**kwargs)
+    #     context['analysis'] = Analysis.objects.filter(user=accessor.id).order_by('date')
+    #     context['userinput'] = UserInput.objects.filter(user=accessor.id).order_by('date')
+    #     return context
 
 
 # class AnalysisView(generic.ListView):

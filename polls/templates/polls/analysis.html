@@ -13,6 +13,14 @@
 
 <p><a href="user_input/">Add Sleep Notes</a> </p>
 
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Submit">
+</form>
+
+<p>{{txt}}</p>
+
   <div class="stats" style="display: flex">
       <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
         <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Statistics</h3></li>
