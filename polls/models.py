@@ -32,6 +32,7 @@ class Dummy(models.Model):
     
 class UserInput(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    sessionID = models.ForeignKey(Session, on_delete=models.CASCADE)
     date = models.DateTimeField('date published')
     sleepQuality = models.IntegerField(default=0)
     sleepDisruptions = models.TextField()
@@ -39,7 +40,7 @@ class UserInput(models.Model):
 
 class Analysis(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    
+    sessionID = models.ForeignKey(Session, on_delete=models.CASCADE)
     date = models.DateTimeField('date published')
     tst = models.TimeField()
     # tst = models.DurationField()

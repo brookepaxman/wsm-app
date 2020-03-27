@@ -4,10 +4,12 @@ from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
-from chartjs.views.lines import BaseLineChartView
+from datetime import datetime
+# from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
 
-from .models import User, Stat, Dummy
+from .models import User, Stat, Dummy, UserInput, Analysis, Session
+from .forms import sleepQualityForm, calendarForm
 
 from .serializers import DummySerializer
 
@@ -66,14 +68,32 @@ class UserInputView(generic.ListView):
             data.date = datetime.now()
             data.save()
             args = {'form':form,'sleepQuality':sleepQuality,'sleepDisruptions':sleepDisruptions,'sleepNotes':sleepNotes}
-            # args = {'form':form, 'tst':tst, 'avgHR':avgHR, 'avgRR':avgRR, 'avgHRdip':avgHRdip,
-            # 'minHR':minHR, 'maxHR':maxHR, 'minRR':minRR,'maxRR':maxRR,'sleepQuality':sleepQuality,
-            # 'numSleepDisruptions':numSleepDisruptions, 'sleepDisruptions':sleepDisruptions,'sleepNotes':sleepNotes}
         return render(request, self.template_name, args)
     
-class MultiView(TemplateView):
+class MultiView(generic.TemplateView):
     template_name = 'polls/analysis.html'
     
+    def get(self,request):
+        form = calendarForm()
+        name = self.request.user.username
+        accessor = User.objects.get(user_name=name)
+
+        return render(request, self.template_name, {'form': form,'analysis':Analysis.objects.filter(user=accessor.id).order_by('date'),
+        'userinput':UserInput.objects.filter(user=accessor.id).order_by('date')})
+
+    
+    def post(self,request):
+        form = calendarForm(request.POST)
+        name = self.request.user.username
+        accessor = User.objects.get(user_name=name)
+        if form.is_valid():
+            txt = form.cleaned_data['inputDate']
+            s = Session.objects.get(startDate = txt)
+            args = {'form':form,'txt':txt,'analysis':Analysis.objects.filter(user=accessor.id, sessionID = s),
+            'userinput':UserInput.objects.filter(user=accessor.id,sessionID = s)}
+        return render(request, self.template_name, args)
+
+
     def get_context_data(self, **kwargs):
         name = self.request.user.username
         accessor = User.objects.get(user_name=name)
