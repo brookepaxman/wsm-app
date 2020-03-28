@@ -1,7 +1,7 @@
-from .models import Dummy
+from .models import Stat
 from rest_framework import serializers
 
-class DummySerializer(serializers.HyperlinkedModelSerializer):
+class StatSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Dummy
-        fields = ['time', 'hr', 'rr']
+        model = Stat
+        fields = ['user','sessionID','time', 'hr', 'rr']

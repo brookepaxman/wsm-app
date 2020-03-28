@@ -11,7 +11,7 @@ from rest_framework import viewsets
 from .models import User, Stat, Dummy, UserInput, Analysis, Session
 from .forms import sleepQualityForm, calendarForm
 
-from .serializers import DummySerializer
+from .serializers import StatSerializer
 
 
 class IndexView(generic.ListView):
@@ -31,9 +31,9 @@ class IndexView(generic.ListView):
 class DetailView(generic.DetailView):
     template_name = 'polls/detail.html'
 
-class DummyView(viewsets.ModelViewSet):
-    queryset = Dummy.objects.order_by('time')
-    serializer_class = DummySerializer
+class StatView(viewsets.ModelViewSet):
+    queryset = Stat.objects.order_by('time')
+    serializer_class = StatSerializer
 
 class ChartView(generic.ListView):
     model = User
