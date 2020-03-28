@@ -3,10 +3,6 @@ import datetime
 from django.db import models
 from django.utils import timezone
 
-class Session(models.Model):
-    startDate = models.DateField('date published')
-    startTime = models.TimeField()
-
 class User(models.Model):
     user_name = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
@@ -17,6 +13,11 @@ class User(models.Model):
     def was_published_recently(self):
         return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
 
+
+class Session(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    startDate = models.DateField('date published')
+    startTime = models.TimeField()
 
 class Stat(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

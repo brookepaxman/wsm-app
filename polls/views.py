@@ -43,31 +43,42 @@ class UserInputView(generic.ListView):
     model = UserInput
     template_name = 'polls/user_input.html'
 
-    def get(self,request):
+    def get(self,request,session_id):
         form = sleepQualityForm()
-        return render(request, self.template_name, {'form': form})
+        if self.request.user.is_authenticated:
+            name = self.request.user.username
+            accessor = User.objects.get(user_name=name)
+            s = Session.objects.get(id=session_id)
+            args = {'form': form,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s).order_by('date'),
+            'userinput':UserInput.objects.filter(user=accessor.id,sessionID=s).order_by('date')}
+        else:
+            args = {'form': form}
+        return render(request, self.template_name,args)
 
     
-    def post(self,request):
+    def post(self,request,session_id):
         form = sleepQualityForm(request.POST)
         if form.is_valid():
             name = self.request.user.username
             accessor = User.objects.get(user_name=name)
 
-            sleepQuality = form.cleaned_data['sleepQuality']
-            sleepDisruptions = form.cleaned_data['sleepDisruptions']
-            sleepNotes = form.cleaned_data['sleepNotes']
-            
             form = sleepQualityForm()
-            data = UserInput()
+            s = Session.objects.get(id = session_id)
 
-            data.sleepQuality = sleepQuality
-            data.sleepDisruptions = sleepDisruptions
-            data.sleepNotes = sleepNotes
+            try:
+                data = UserInput.objects.get(sessionID = s)
+            except UserInput.DoesNotExist:
+                data = UserInput()
+                data.sessionID = s
+
+            data.sleepQuality = form.cleaned_data['sleepQuality']
+            data.sleepDisruptions = form.cleaned_data['sleepDisruptions']
+            data.sleepNotes = form.cleaned_data['sleepNotes']
             data.user_id = accessor.id
             data.date = datetime.now()
             data.save()
-            args = {'form':form,'sleepQuality':sleepQuality,'sleepDisruptions':sleepDisruptions,'sleepNotes':sleepNotes}
+            args = {'form':form,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s).order_by('date'),
+            'userinput':UserInput.objects.filter(user=accessor.id,sessionID=s).order_by('date')}
         return render(request, self.template_name, args)
     
 class MultiView(generic.TemplateView):
@@ -75,29 +86,46 @@ class MultiView(generic.TemplateView):
     
     def get(self,request):
         form = calendarForm()
-        name = self.request.user.username
-        accessor = User.objects.get(user_name=name)
-
-        return render(request, self.template_name, {'form': form,'analysis':Analysis.objects.filter(user=accessor.id).order_by('date'),
-        'userinput':UserInput.objects.filter(user=accessor.id).order_by('date')})
+        if self.request.user.is_authenticated:
+            name = self.request.user.username
+            accessor = User.objects.get(user_name=name)
+            args = {'form': form,'analysis':Analysis.objects.filter(user=accessor.id).order_by('date'),
+            'userinput':UserInput.objects.filter(user=accessor.id).order_by('date')}
+            
+        else:
+            args = {'form': form}
+        return render(request, self.template_name,args)
 
     
     def post(self,request):
         form = calendarForm(request.POST)
-        name = self.request.user.username
-        accessor = User.objects.get(user_name=name)
-        if form.is_valid():
-            txt = form.cleaned_data['inputDate']
-            s = Session.objects.get(startDate = txt)
-            args = {'form':form,'txt':txt,'analysis':Analysis.objects.filter(user=accessor.id, sessionID = s),
-            'userinput':UserInput.objects.filter(user=accessor.id,sessionID = s)}
+        if self.request.user.is_authenticated:
+            name = self.request.user.username
+            accessor = User.objects.get(user_name=name)
+            if form.is_valid():
+                txt = form.cleaned_data['inputDate']
+                if(not Session.objects.filter(startDate = txt).exists()):
+                    args = {'form':form}
+                else: 
+                    q = Analysis.objects.none()
+                    a = UserInput.objects.none()
+                    sess = Session.objects.filter(user=accessor.id,startDate = txt)
+                    for s in sess:
+                        obj = Analysis.objects.filter(user=accessor.id,sessionID=s).order_by('date')
+                        objs = UserInput.objects.filter(user=accessor.id,sessionID=s).order_by('date')
+                        q = obj | q
+                        a = objs | a
+                    args = {'form':form,'txt':txt,'analysis':q,'userinput':a}
+        else:
+            form = calendarForm()
+            args = {'form':form}
         return render(request, self.template_name, args)
 
-
-    def get_context_data(self, **kwargs):
-        name = self.request.user.username
-        accessor = User.objects.get(user_name=name)
-        context = super(MultiView, self).get_context_data(**kwargs)
-        context['analysis'] = Analysis.objects.filter(user=accessor.id).order_by('date')
-        context['userinput'] = UserInput.objects.filter(user=accessor.id).order_by('date')
-        return context 
+        
+    # def get_context_data(self, **kwargs):
+    #     name = self.request.user.username
+    #     accessor = User.objects.get(user_name=name)
+    #     context = super(MultiView, self).get_context_data(**kwargs)
+    #     context['analysis'] = Analysis.objects.filter(user=accessor.id).order_by('date')
+    #     context['userinput'] = UserInput.objects.filter(user=accessor.id).order_by('date')
+    #     return context 

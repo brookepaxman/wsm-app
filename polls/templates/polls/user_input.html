@@ -2,16 +2,51 @@
 <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
 <h1>Welcome to the Wireless Sleep Monitor App!</h1>
 {% block content %}
-{% if user.is_authenticated %}
+
+{% if not user.is_authenticated %}
+  <p>You are not logged in. Please log in to see this page.</p>
+  <a href="{% url 'login' %}">login</a>
+{% else %}
   Hi {{ user.username }}!
   <p><a href="{% url 'logout' %}">logout</a></p>
-{% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
-{% endif %}
-{% endblock %}
 
 <p><a href="/analysis/">Back to analysis</a> </p>
+
+  <div class="stats" >
+    {%if analysis%}
+      <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Statistics</h3></li>
+        {% for stat in analysis %}
+          <h5>{{stat.date}}</h5>
+          <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes</li>
+          <li>Average HR: {{ stat.avgHR }}</li>
+          <li>Average RR: {{ stat.avgRR }}</li>
+          <li>Average HR Dip: {{ stat.avgHRdip }}</li>
+          <li>Min HR: {{ stat.minHR }}</li>
+          <li>Max HR: {{ stat.maxHR }}</li>
+          <li>Min RR: {{ stat.minRR }}</li>
+          <li>Max RR: {{ stat.avgRR }}</li>
+          <li>Number of Sleep Disruptions: {{ stat.numSleepDisruptions }}</li>
+        {% endfor %}
+      </ul>
+      {%else%}
+      <p>no statistics for this day</p>
+      {%endif%}
+
+      {%if userinput%}
+      <ul id="hrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Sleep Summary</h3></li>
+        {% for stat in userinput %}
+          <h5>{{stat.date}}</h5>
+          <li>Sleep Quality: {{ stat.sleepQuality }}</li>
+          <li>Sleep Disruptions: {{ stat.sleepDisruptions }}</li>
+          <li>Sleep Notes: {{ stat.sleepNotes }}</li>
+        {% endfor %}
+      </ul>
+      {%else%}
+      <p>no sleep notes for this day</p>
+      {%endif%}
+  </div>
 
 <div class="forms">
     <h3>Add some notes about your sleep: </h3>
@@ -23,3 +58,5 @@
     </form>
 
 </div>
+{% endif %}
+{% endblock %}
