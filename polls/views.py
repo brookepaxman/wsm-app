@@ -5,7 +5,6 @@ from django.views import generic
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 from datetime import datetime
-# from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
 
 from .models import User, Stat, Dummy, UserInput, Analysis, Session

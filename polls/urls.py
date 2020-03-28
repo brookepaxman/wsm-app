@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 from . import views
 
 router = routers.DefaultRouter()
-router.register(r'stats', views.StatView)
+router.register(r'stat-api', views.StatView)
 
 app_name = 'polls'
 urlpatterns = [
