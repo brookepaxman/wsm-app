@@ -9,6 +9,9 @@
     <div class="row">
       <canvas style="display:block; margin: auto; max-width: 600px; max-height:600px" id="myChart" width="400" height="400"></canvas>
     </div>
+    <div class="row">
+      <canvas style="display:block; margin: auto; max-width: 600px; max-height:600px" id="myChart2" width="400" height="400"></canvas>
+    </div>
   </div>
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
   <script src="{% static '/chartjs/dist/Chart.js' %}"></script>
@@ -56,4 +59,57 @@
         console.log(error_data)
       }
     })
-</script>
+  </script>
+  <script type="text/javascript">
+    var endpoint2 = '/analysis-api/?format=json'
+    $.ajax({
+      method: "GET",
+      url: endpoint2,
+      success: function(data){
+        var sessionDate = [];
+        var avgHRdata = [];
+        var avgRRdata = [];
+        data.forEach(function(stat) {
+          sessionDate.push(stat.sessionID.startDate);
+          avgHRdata.push(stat.avgHR);
+          avgRRdata.push(stat.avgRR);
+        });
+        var ctx2 = document.getElementById('myChart2').getContext('2d');
+        var myChart2 = new Chart (ctx2, {
+          type: 'line',
+          data: {
+            labels: sessionDate,
+            datasets: [{
+              label: 'Average Heart Rate',
+              data: avgHRdata,
+              borderColor: '#3e95cd',
+              fill: false
+            }, {
+              label: 'Average Respiration Rate',
+              data: avgRRdata,
+              borderColor: '#3cba9f',
+              fill: false
+            }]
+          },
+          options: {
+            title: {
+              display: true,
+              text: 'Average HR and RR over a week'
+            }
+          }
+        });
+      },
+      error: function(error_data) {
+        console.log("error")
+        console.log(error_data)
+      }
+    })
+  </script>
+  
+{% if queryset %}
+  {% for statistic in queryset %}
+    <p>{{statistic.sessionID.id}}</p>
+  {% endfor %}
+{% else %}
+  <p>No stats are available.</p>
+{% endif %}

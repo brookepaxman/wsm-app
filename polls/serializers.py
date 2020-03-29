@@ -1,4 +1,4 @@
-from .models import Stat, User, Session
+from .models import Stat, User, Session, Analysis
 from rest_framework import serializers
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -19,3 +19,9 @@ class StatSerializer(serializers.HyperlinkedModelSerializer):
         model = Stat
         fields = ['user','sessionID','time', 'hr', 'rr']
 
+class AnalysisSerializer(serializers.HyperlinkedModelSerializer):
+    user = UserSerializer()
+    sessionID = SessionSerializer()
+    class Meta:
+        model = Analysis
+        fields = ['user','sessionID','date','tst','avgHR','avgRR','avgHRdip','minHR','maxHR','minRR','maxRR','numSleepDisruptions']
