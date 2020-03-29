@@ -11,7 +11,6 @@ from rest_framework import viewsets
 
 from .models import User, Stat, Dummy, UserInput, Analysis, Session
 from .forms import sleepQualityForm, calendarForm
-from .analyze import Analyze
 
 from .serializers import DummySerializer
 
