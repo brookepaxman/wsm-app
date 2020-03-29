@@ -11,21 +11,25 @@
 
 <p><a href="user_input/">Add Sleep Notes</a> </p>
 
+<p><a href="">See all</a> </p>
+
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
   <input type="submit" value="Submit">
 </form>
 
-<p>{{txt}}</p>
-{%if analysis%}
+<h2>{{date}}</h2>
+
   <div class="stats" style="display: flex">
+    
+    {%if analysis%}
       <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
         <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Statistics</h3></li>
         {% for stat in analysis %}
           <h5><a href={{stat.sessionID.id}}>{{stat.date}}</a></h5>
 
-          <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes</li>
+          <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes and {{stat.tst.second}} seconds</li>
           <li>Average HR: {{ stat.avgHR }}</li>
           <li>Average RR: {{ stat.avgRR }}</li>
           <li>Average HR Dip: {{ stat.avgHRdip }}</li>

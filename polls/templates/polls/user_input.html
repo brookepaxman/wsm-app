@@ -13,11 +13,11 @@
 <p><a href="/analysis/">Back to analysis</a> </p>
 
   <div class="stats" >
+    <h2>{{s.startDate}}, {{s.startTime}}</h2>
     {%if analysis%}
       <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
         <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Statistics</h3></li>
         {% for stat in analysis %}
-          <h5>{{stat.date}}</h5>
           <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes</li>
           <li>Average HR: {{ stat.avgHR }}</li>
           <li>Average RR: {{ stat.avgRR }}</li>
@@ -35,9 +35,9 @@
 
       {%if userinput%}
       <ul id="hrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Sleep Summary</h3></li>
+        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Sleep Notes</h3></li>
         {% for stat in userinput %}
-          <h5>{{stat.date}}</h5>
+          
           <li>Sleep Quality: {{ stat.sleepQuality }}</li>
           <li>Sleep Disruptions: {{ stat.sleepDisruptions }}</li>
           <li>Sleep Notes: {{ stat.sleepNotes }}</li>
@@ -49,7 +49,7 @@
   </div>
 
 <div class="forms">
-    <h3>Add some notes about your sleep: </h3>
+    <h3>Add or edit some notes about your sleep: </h3>
 
     <form method="post">
       {% csrf_token %}

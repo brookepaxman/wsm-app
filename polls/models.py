@@ -53,3 +53,4 @@ class Analysis(models.Model):
     minRR = models.IntegerField(default=0)
     maxRR = models.IntegerField(default=0)
     numSleepDisruptions = models.IntegerField(default=0)
+
