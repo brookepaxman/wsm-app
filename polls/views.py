@@ -9,7 +9,7 @@ from datetime import timedelta
 # from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
 
-from .models import User, Stat, Dummy, UserInput, Analysis, Session
+from .models import User, Stat, Dummy, Analysis, Session
 from .forms import sleepQualityForm, calendarForm
 
 from .serializers import StatSerializer
@@ -41,7 +41,7 @@ class ChartView(generic.ListView):
     template_name = 'polls/line-chart.html'
     
 class UserInputView(generic.ListView):
-    model = UserInput
+    model = Analysis
     template_name = 'polls/user_input.html'
 
     def get(self,request,session_id):
@@ -50,8 +50,7 @@ class UserInputView(generic.ListView):
             name = self.request.user.username
             accessor = User.objects.get(user_name=name)
             s = Session.objects.get(id=session_id)
-            args = {'form': form,'s':s,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s).order_by('date'),
-            'userinput':UserInput.objects.filter(user=accessor.id,sessionID=s).order_by('date')}
+            args = {'form': form,'s':s,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s)}
         else:
             args = {'form': form}
         return render(request, self.template_name,args)
@@ -66,20 +65,18 @@ class UserInputView(generic.ListView):
             s = Session.objects.get(id = session_id)
 
             try:
-                data = UserInput.objects.get(sessionID = s)
-            except UserInput.DoesNotExist:
-                data = UserInput()
-                data.sessionID = s
+                data = Analysis.objects.get(sessionID = s)
 
-            data.sleepQuality = form.cleaned_data['sleepQuality']
-            data.sleepDisruptions = form.cleaned_data['sleepDisruptions']
-            data.sleepNotes = form.cleaned_data['sleepNotes']
-            data.user_id = accessor.id
-            data.date = datetime.now()
-            data.save()
-            form = sleepQualityForm()
-            args = {'form':form,'s':s,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s).order_by('date'),
-            'userinput':UserInput.objects.filter(user=accessor.id,sessionID=s).order_by('date')}
+                data.sleepQuality = form.cleaned_data['sleepQuality']
+                data.sleepDisruptions = form.cleaned_data['sleepDisruptions']
+                data.sleepNotes = form.cleaned_data['sleepNotes']
+                data.numSleepDisruptions = form.cleaned_data['numDisruptions']
+                
+                data.save()
+                form = sleepQualityForm()
+                args = {'form':form,'s':s,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s)}
+            except Analysis.DoesNotExist: 
+                args = {'form':form}
         return render(request, self.template_name, args)
     
 class MultiView(generic.TemplateView):
@@ -90,9 +87,8 @@ class MultiView(generic.TemplateView):
         if self.request.user.is_authenticated:
             name = self.request.user.username
             accessor = User.objects.get(user_name=name)
-            sess = Session.objects.filter(user=accessor.id)
-            args = {'form': form,'sess':sess,'analysis':Analysis.objects.filter(user=accessor.id).order_by('date'),
-            'userinput':UserInput.objects.filter(user=accessor.id).order_by('date')}
+            # sess = Session.objects.filter(user=accessor.id)
+            args = {'form': form,'analysis':Analysis.objects.filter(user=accessor.id).order_by('id')}
         else:
             args = {'form': form}
         return render(request, self.template_name,args)
@@ -109,17 +105,14 @@ class MultiView(generic.TemplateView):
                     args = {'form':form}
                 else: 
                     analysisList = Analysis.objects.none()
-                    userInputList = UserInput.objects.none()
-                    sess = Session.objects.filter(user=accessor.id,startDate = date)
+                    # sess = Session.objects.filter(user=accessor.id,startDate = date)
+                    sess = Session.objects.filter(startDate = date)
                     for s in sess:
                         a = Analysis.objects.filter(user=accessor.id,sessionID=s)
-                        u = UserInput.objects.filter(user=accessor.id,sessionID=s)
                         analysisList = a | analysisList
-                        userInputList = u | userInputList
                     analysisList.order_by('sessionID')
-                    userInputList.order_by('sessionID')
                     form = calendarForm()
-                    args = {'form':form,'date':date,'analysis':analysisList,'userinput':userInputList}
+                    args = {'form':form,'date':date,'analysis':analysisList}
         else:
             form = calendarForm()
             args = {'form':form}
@@ -171,18 +164,18 @@ class AnalysisView(generic.ListView):
             try:
                 session = Session.objects.get(id = session_id)
                 stats = Stat.objects.filter(sessionID = session)
+                # stats = Stat.objects.filter(sessionID = session_id)
                 try:
                     calc = Analysis.objects.get(sessionID_id = session_id)
-                except UserInput.DoesNotExist:
+                    # calc = Analysis.objects.get(sessionID = session_id)
+                except Analysis.DoesNotExist:
                     calc = Analysis()
-                    calc.sessionID_id = session_id
-                    calc.user = session.user
+                    calc.sessionID = session
+                    calc.user = accessor
 
                 calc.avgHR, calc.avgRR, calc.maxHR, calc.minHR, calc.maxRR, calc.minRR, calc.tst = AnalysisView.avg(self,stats)
 
-                calc.date = datetime.now()
-                calc.numSleepDisruptions = 1
-                calc.avgHRdip = 2
+                # todo: calc.avgHRdip
                 calc.save()
                 args = {'stat':calc}
             except Session.DoesNotExist:
