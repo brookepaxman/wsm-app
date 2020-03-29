@@ -5,6 +5,8 @@ from django.views import generic
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 from datetime import datetime
+from datetime import timedelta
+# from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
 
 from .models import User, Stat, Dummy, UserInput, Analysis, Session
@@ -77,7 +79,7 @@ class UserInputView(generic.ListView):
             name = self.request.user.username
             accessor = User.objects.get(user_name=name)
             s = Session.objects.get(id=session_id)
-            args = {'form': form,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s).order_by('date'),
+            args = {'form': form,'s':s,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s).order_by('date'),
             'userinput':UserInput.objects.filter(user=accessor.id,sessionID=s).order_by('date')}
         else:
             args = {'form': form}
@@ -90,7 +92,6 @@ class UserInputView(generic.ListView):
             name = self.request.user.username
             accessor = User.objects.get(user_name=name)
 
-            form = sleepQualityForm()
             s = Session.objects.get(id = session_id)
 
             try:
@@ -105,7 +106,8 @@ class UserInputView(generic.ListView):
             data.user_id = accessor.id
             data.date = datetime.now()
             data.save()
-            args = {'form':form,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s).order_by('date'),
+            form = sleepQualityForm()
+            args = {'form':form,'s':s,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s).order_by('date'),
             'userinput':UserInput.objects.filter(user=accessor.id,sessionID=s).order_by('date')}
         return render(request, self.template_name, args)
     
@@ -117,9 +119,9 @@ class MultiView(generic.TemplateView):
         if self.request.user.is_authenticated:
             name = self.request.user.username
             accessor = User.objects.get(user_name=name)
-            args = {'form': form,'analysis':Analysis.objects.filter(user=accessor.id).order_by('date'),
+            sess = Session.objects.filter(user=accessor.id)
+            args = {'form': form,'sess':sess,'analysis':Analysis.objects.filter(user=accessor.id).order_by('date'),
             'userinput':UserInput.objects.filter(user=accessor.id).order_by('date')}
-            
         else:
             args = {'form': form}
         return render(request, self.template_name,args)
@@ -131,19 +133,22 @@ class MultiView(generic.TemplateView):
             name = self.request.user.username
             accessor = User.objects.get(user_name=name)
             if form.is_valid():
-                txt = form.cleaned_data['inputDate']
-                if(not Session.objects.filter(startDate = txt).exists()):
+                date = form.cleaned_data['inputDate']
+                if(not Session.objects.filter(startDate = date).exists()):
                     args = {'form':form}
                 else: 
-                    q = Analysis.objects.none()
-                    a = UserInput.objects.none()
-                    sess = Session.objects.filter(user=accessor.id,startDate = txt)
+                    analysisList = Analysis.objects.none()
+                    userInputList = UserInput.objects.none()
+                    sess = Session.objects.filter(user=accessor.id,startDate = date)
                     for s in sess:
-                        obj = Analysis.objects.filter(user=accessor.id,sessionID=s).order_by('date')
-                        objs = UserInput.objects.filter(user=accessor.id,sessionID=s).order_by('date')
-                        q = obj | q
-                        a = objs | a
-                    args = {'form':form,'txt':txt,'analysis':q,'userinput':a}
+                        a = Analysis.objects.filter(user=accessor.id,sessionID=s)
+                        u = UserInput.objects.filter(user=accessor.id,sessionID=s)
+                        analysisList = a | analysisList
+                        userInputList = u | userInputList
+                    analysisList.order_by('sessionID')
+                    userInputList.order_by('sessionID')
+                    form = calendarForm()
+                    args = {'form':form,'date':date,'analysis':analysisList,'userinput':userInputList}
         else:
             form = calendarForm()
             args = {'form':form}
@@ -157,3 +162,59 @@ class MultiView(generic.TemplateView):
     #     context['analysis'] = Analysis.objects.filter(user=accessor.id).order_by('date')
     #     context['userinput'] = UserInput.objects.filter(user=accessor.id).order_by('date')
     #     return context 
+
+
+class AnalysisView(generic.ListView):
+    model = Analysis
+    template_name = 'polls/calculate.html'
+
+    def avg(self,data):
+        HRsum = 0
+        RRsum = 0
+        maxHR = 0
+        maxRR = 0
+        minHR = 1000
+        minRR = 1000
+        datasize = len(data)
+        for d in data:
+            HRsum += d.hr
+            RRsum += d.rr
+            if(maxHR < d.hr):
+                maxHR = d.hr
+            if(maxRR < d.rr):
+                maxRR = d.rr
+            if(minHR > d.hr):
+                minHR = d.hr
+            if(minRR > d.rr): 
+                minRR = d.rr
+        HRavg = HRsum/datasize
+        RRavg = RRsum/datasize
+        sec = data[datasize-1].time
+        tst = str(timedelta(seconds=sec))
+        return HRavg,RRavg, maxHR, minHR, maxRR, minRR, tst
+
+    def get(self,request,session_id):
+        if self.request.user.is_authenticated:
+            name = self.request.user.username
+            accessor = User.objects.get(user_name=name)
+            try:
+                session = Session.objects.get(id = session_id)
+                stats = Stat.objects.filter(sessionID = session)
+                try:
+                    calc = Analysis.objects.get(sessionID_id = session_id)
+                except UserInput.DoesNotExist:
+                    calc = Analysis()
+                    calc.sessionID_id = session_id
+                    calc.user = session.user
+
+                calc.avgHR, calc.avgRR, calc.maxHR, calc.minHR, calc.maxRR, calc.minRR, calc.tst = AnalysisView.avg(self,stats)
+
+                calc.date = datetime.now()
+                calc.numSleepDisruptions = 1
+                calc.avgHRdip = 2
+                calc.save()
+                args = {'stat':calc}
+            except Session.DoesNotExist:
+                args = {}
+
+        return render(request,self.template_name, args)
