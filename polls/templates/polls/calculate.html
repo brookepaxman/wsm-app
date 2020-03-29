@@ -1,16 +1,20 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
-<ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-    <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes and {{stat.tst.second}} seconds</li>
-    <li>Average HR: {{ stat.avgHR }}</li>
-    <li>Average RR: {{ stat.avgRR }}</li>
-    <li>Average HR Dip: {{ stat.avgHRdip }}</li>
-    <li>Min HR: {{ stat.minHR }}</li>
-    <li>Max HR: {{ stat.maxHR }}</li>
-    <li>Min RR: {{ stat.minRR }}</li>
-    <li>Max RR: {{ stat.avgRR }}</li>
-    <li>{{stat.sessionID}}</li>
-    <li>{{stat.user}}</li>
-    <li>Number of Sleep Disruptions: {{ stat.numSleepDisruptions }}</li>
-</ul>
 
+{%if stat%}
+    <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+        <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes and {{stat.tst.second}} seconds</li>
+        <li>Average HR: {{ stat.avgHR }}</li>
+        <li>Average RR: {{ stat.avgRR }}</li>
+        <li>Average HR Dip: {{ stat.avgHRdip }}</li>
+        <li>Min HR: {{ stat.minHR }}</li>
+        <li>Max HR: {{ stat.maxHR }}</li>
+        <li>Min RR: {{ stat.minRR }}</li>
+        <li>Max RR: {{ stat.avgRR }}</li>
+        <li>{{stat.sessionID}}</li>
+        <li>{{stat.user}}</li>
+        <li>Number of Sleep Disruptions: {{ stat.numSleepDisruptions }}</li>
+    </ul>
+{%else%}
+    <p>This session doesn't exist</p>
+{%endif%}

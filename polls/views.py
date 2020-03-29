@@ -168,21 +168,24 @@ class AnalysisView(generic.ListView):
         if self.request.user.is_authenticated:
             name = self.request.user.username
             accessor = User.objects.get(user_name=name)
-            session = Session.objects.get(id = session_id)
-            stats = Stat.objects.filter(sessionID = session)
-
             try:
-                calc = Analysis.objects.get(sessionID_id = session_id)
-            except UserInput.DoesNotExist:
-                calc = Analysis()
-                calc.sessionID_id = session_id
+                session = Session.objects.get(id = session_id)
+                stats = Stat.objects.filter(sessionID = session)
+                try:
+                    calc = Analysis.objects.get(sessionID_id = session_id)
+                except UserInput.DoesNotExist:
+                    calc = Analysis()
+                    calc.sessionID_id = session_id
+                    calc.user = session.user
 
-            calc.avgHR, calc.avgRR, calc.maxHR, calc.minHR, calc.maxRR, calc.minRR, calc.tst = AnalysisView.avg(self,stats)
+                calc.avgHR, calc.avgRR, calc.maxHR, calc.minHR, calc.maxRR, calc.minRR, calc.tst = AnalysisView.avg(self,stats)
 
-            calc.user_id = accessor.id
-            calc.date = datetime.now()
-            calc.numSleepDisruptions = 1
-            calc.avgHRdip = 2
-            calc.save()
-            
-        return render(request,self.template_name, {'stat':calc})
+                calc.date = datetime.now()
+                calc.numSleepDisruptions = 1
+                calc.avgHRdip = 2
+                calc.save()
+                args = {'stat':calc}
+            except Session.DoesNotExist:
+                args = {}
+
+        return render(request,self.template_name, args)
