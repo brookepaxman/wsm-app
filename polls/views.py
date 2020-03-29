@@ -31,13 +31,42 @@ class DetailView(generic.DetailView):
     template_name = 'polls/detail.html'
 
 class StatView(viewsets.ModelViewSet):
-    queryset = Stat.objects.order_by('time')
+
+    def get_queryset(self):         # this returns most recent session of the user that is logged in
+        name = None
+        if self.request.user.is_authenticated:  # if user is logged in
+            name = self.request.user.username
+            accessor = User.objects.get(user_name=name) # grab all of user's stat objects
+            user_allstats = Stat.objects.filter(user=accessor.id).order_by('sessionID__id') # and filter by sessionID 
+            recent = user_allstats.last()       # grab the most recent sessionID
+            recent_Sid = recent.sessionID
+            queryset = user_allstats.filter(sessionID=recent_Sid.id).order_by('time')       # filter to only have that sessionID
+            return queryset
+        else:
+            queryset = Stat.objects.order_by('time')
+            return queryset
+
+    # queryset = get_queryset()
+    # access = User.objects.get(user_name='David')
+    # queryset = Stat.objects.filter(user=access.id).order_by('time')
     serializer_class = StatSerializer
 
 class ChartView(generic.ListView):
     model = User
     template_name = 'polls/line-chart.html'
-    
+    context_object_name = 'queryset'
+
+    def get_queryset(self):     # this is here mostly for debugging purposes
+        name = None
+        if self.request.user.is_authenticated:
+            name = self.request.user.username
+            accessor = User.objects.get(user_name=name)
+            queryset = Stat.objects.filter(user=accessor.id).order_by('time')
+            return queryset
+        else:
+            queryset = Stat.objects.order_by('time')
+            return queryset
+
 class UserInputView(generic.ListView):
     model = UserInput
     template_name = 'polls/user_input.html'

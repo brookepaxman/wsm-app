@@ -9,6 +9,9 @@
     <div class="row">
       <canvas style="display:block; margin: auto; max-width: 600px; max-height:600px" id="myChart" width="400" height="400"></canvas>
     </div>
+    <div class="row">
+      <canvas style="display:block; margin: auto; max-width: 600px; max-height:600px" id="myChart2" width="400" height="400"></canvas>
+    </div>
   </div>
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
   <script src="{% static '/chartjs/dist/Chart.js' %}"></script>
@@ -50,6 +53,30 @@
             }
           }
         });
+        var ctx2 = document.getElementById('myChart2').getContext('2d');
+        var myChart = new Chart (ctx2, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Heart Rate22',
+              data: hrData,
+              borderColor: '#3e95cd',
+              fill: false
+            }, {
+              label: 'Respiration Rate',
+              data: rrData,
+              borderColor: '#3cba9f',
+              fill: false
+            }]
+          },
+          options: {
+            title: {
+              display: true,
+              text: 'HR and RR over time (s)'
+            }
+          }
+        });
       },
       error: function(error_data) {
         console.log("error")
@@ -57,3 +84,10 @@
       }
     })
 </script>
+{% if queryset %}
+  {% for statistic in queryset %}
+    <p>{{statistic.sessionID.id}}</p>
+  {% endfor %}
+{% else %}
+  <p>No stats are available.</p>
+{% endif %}
