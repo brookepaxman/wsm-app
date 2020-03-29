@@ -53,19 +53,40 @@
             }
           }
         });
+      },
+      error: function(error_data) {
+        console.log("error")
+        console.log(error_data)
+      }
+    })
+  </script>
+  <script type="text/javascript">
+    var endpoint2 = '/analysis-api/?format=json'
+    $.ajax({
+      method: "GET",
+      url: endpoint2,
+      success: function(data){
+        var sessionDate = [];
+        var avgHRdata = [];
+        var avgRRdata = [];
+        data.forEach(function(stat) {
+          sessionDate.push(stat.sessionID.startDate);
+          avgHRdata.push(stat.avgHR);
+          avgRRdata.push(stat.avgRR);
+        });
         var ctx2 = document.getElementById('myChart2').getContext('2d');
-        var myChart = new Chart (ctx2, {
+        var myChart2 = new Chart (ctx2, {
           type: 'line',
           data: {
-            labels: labels,
+            labels: sessionDate,
             datasets: [{
-              label: 'Heart Rate22',
-              data: hrData,
+              label: 'Average Heart Rate',
+              data: avgHRdata,
               borderColor: '#3e95cd',
               fill: false
             }, {
-              label: 'Respiration Rate',
-              data: rrData,
+              label: 'Average Respiration Rate',
+              data: avgRRdata,
               borderColor: '#3cba9f',
               fill: false
             }]
@@ -73,7 +94,7 @@
           options: {
             title: {
               display: true,
-              text: 'HR and RR over time (s)'
+              text: 'Average HR and RR over a week'
             }
           }
         });
@@ -83,7 +104,8 @@
         console.log(error_data)
       }
     })
-</script>
+  </script>
+  
 {% if queryset %}
   {% for statistic in queryset %}
     <p>{{statistic.sessionID.id}}</p>

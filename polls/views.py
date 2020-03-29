@@ -12,7 +12,7 @@ from rest_framework import viewsets
 from .models import User, Stat, Dummy, UserInput, Analysis, Session
 from .forms import sleepQualityForm, calendarForm
 
-from .serializers import StatSerializer
+from .serializers import StatSerializer, AnalysisSerializer
 
 
 class IndexView(generic.ListView):
@@ -52,6 +52,12 @@ class StatView(viewsets.ModelViewSet):
     # access = User.objects.get(user_name='David')
     # queryset = Stat.objects.filter(user=access.id).order_by('time')
     serializer_class = StatSerializer
+
+class AnalysisSetView(viewsets.ModelViewSet):
+    def get_queryset(self):
+        accessor = User.objects.get(user_name="David")
+        return Analysis.objects.filter(user=accessor.id).order_by('sessionID')
+    serializer_class = AnalysisSerializer
 
 class ChartView(generic.ListView):
     model = User
@@ -203,6 +209,7 @@ class AnalysisView(generic.ListView):
                 stats = stats.filter(user = accessor.id)
                 try:
                     calc = Analysis.objects.get(sessionID = session_id)
+                    calc.user = accessor
                 except Analysis.DoesNotExist:
                     calc = Analysis()
                     calc.sessionID = session
@@ -219,3 +226,4 @@ class AnalysisView(generic.ListView):
                 args = {}
 
         return render(request,self.template_name, args)
+
