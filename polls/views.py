@@ -5,14 +5,17 @@ from django.views import generic
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 from datetime import datetime
+<<<<<<< HEAD
 from datetime import timedelta
 # from chartjs.views.lines import BaseLineChartView
+=======
+>>>>>>> 2807e4ff342a1fe92f8d8cd6a19aa62788aa2559
 from rest_framework import viewsets
 
 from .models import User, Stat, Dummy, UserInput, Analysis, Session
 from .forms import sleepQualityForm, calendarForm
 
-from .serializers import DummySerializer
+from .serializers import StatSerializer
 
 
 class IndexView(generic.ListView):
@@ -32,9 +35,9 @@ class IndexView(generic.ListView):
 class DetailView(generic.DetailView):
     template_name = 'polls/detail.html'
 
-class DummyView(viewsets.ModelViewSet):
-    queryset = Dummy.objects.order_by('time')
-    serializer_class = DummySerializer
+class StatView(viewsets.ModelViewSet):
+    queryset = Stat.objects.order_by('time')
+    serializer_class = StatSerializer
 
 class ChartView(generic.ListView):
     model = User
