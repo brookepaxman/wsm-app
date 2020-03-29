@@ -199,13 +199,14 @@ class AnalysisView(generic.ListView):
             accessor = User.objects.get(user_name=name)
             try:
                 session = Session.objects.get(id = session_id)
-                stats = Stat.objects.filter(sessionID = session)
+                stats = Stat.objects.filter(sessionID = session_id)
+                stats = stats.filter(user = accessor.id)
                 try:
-                    calc = Analysis.objects.get(sessionID_id = session_id)
-                except UserInput.DoesNotExist:
+                    calc = Analysis.objects.get(sessionID = session_id)
+                except Analysis.DoesNotExist:
                     calc = Analysis()
-                    calc.sessionID_id = session_id
-                    calc.user = session.user
+                    calc.sessionID = session
+                    calc.user = accessor
 
                 calc.avgHR, calc.avgRR, calc.maxHR, calc.minHR, calc.maxRR, calc.minRR, calc.tst = AnalysisView.avg(self,stats)
 
