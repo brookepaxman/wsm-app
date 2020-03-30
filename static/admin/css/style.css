@@ -4,9 +4,61 @@ h1 {
   color:#3d3d5c;
   font-weight:600;
   font-family: calibri;
-  }
+}
 
-  h2 {
-    style=font-family: calibri; 
-    color:#3d3d5c;
-  }
+h2 {
+  font-family: calibri;
+  color:#3d3d5c;
+}
+
+.chart-style {
+  background-color: #ffffff;
+  display:block;
+  max-width: 600px;
+  box-shadow: 0 0 7px #ffffff;
+  max-height:600px;
+  margin-bottom: 20px;
+}
+
+.nav {
+  height: 60px;
+  width: 100%;
+  background-color: #1c3334;
+}
+
+.fill-btn {
+  color: #ffffff;
+  padding: 3px 17px;
+  background-color: #da7b93;
+  border-radius: 5px;
+  border: 1px solid white;
+  display: block;
+  width: fit-content;
+  margin: 10px auto;
+  font-weight: bold;
+}
+
+.fill-btn.chosen {
+  color: #da7b93;
+  background-color: #ffffff;
+  border: 1px solid #da7b93;
+}
+
+a.fill-btn:hover {
+  text-decoration: none;
+  color: #ffffff;
+  background-color: #d15c7a;
+  border: solid 1px #ffffff;
+  font-weight: bold;
+}
+
+a.fill-btn.chosen:hover {
+  text-decoration: none;
+  color: #da7b93;
+  border: 1px solid #da7b93;
+  background-color: #e5e5e5;
+}
+
+.hidden {
+  display: none !important;
+}

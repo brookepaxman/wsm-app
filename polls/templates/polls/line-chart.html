@@ -2,21 +2,40 @@
 
 <link rel="stylesheet" type="text/css" href="{% static '/chartjs/dist/Chart.min.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static '/admin/css/bootstrap.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 
+<style>
+  h2 {
+    color: #ffffff;
+  }
+  body {
+    background-color: #2F4454;
+  }
+</style>
+
+  <div class="nav">
+    <h2 style="margin-left: 50px; margin-top: auto; margin-bottom: auto;">Your Statistics</h2>
+    <a style="margin-top: 13px; margin-bottom: 13px; margin-right: 50px;" href="/" class="fill-btn">Home</a>
+  </div>
   <div class="container">
-    <div class="row"><h2 style="font-family:calibri; color:#3d3d5c; margin:20px auto">CSV statistics loaded in Ajax!</h2></div>
     <div class="row">
-      <canvas style="display:block; margin: auto; max-width: 600px; max-height:600px" id="myChart" width="400" height="400"></canvas>
-    </div>
-    <div class="row">
-      <canvas style="display:block; margin: auto; max-width: 600px; max-height:600px" id="myChart2" width="400" height="400"></canvas>
+      <div class="col-md-3 text-center" style="color: white; margin-top: 80px;">
+        <a id="today" href="#" class="fill-btn chosen">today</a>
+        <a id="week" href="#" class="fill-btn">week</a>
+        <a id="month" href="#" class="fill-btn">month</a>
+      </div>
+      <div class="col-md-9" style = "margin-top: 60px">
+        <canvas class="chart-style" id="myChart" width="400" height="400"></canvas>
+        <canvas class="chart-style hidden" id="myChart2" width="400" height="400"></canvas>
+        <canvas class="chart-style hidden" id="myChart3" width="400" height="400"></canvas>
+      </div>
     </div>
   </div>
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
   <script src="{% static '/chartjs/dist/Chart.js' %}"></script>
   <script type="text/javascript">
-    var endpoint = '/stat-api/?format=json'
+    var endpoint = '/api/stats/?format=json'
     $.ajax({
       method: "GET",
       url: endpoint,
@@ -37,19 +56,37 @@
             datasets: [{
               label: 'Heart Rate',
               data: hrData,
-              borderColor: '#3e95cd',
+              borderColor: '#376e6f',
               fill: false
             }, {
               label: 'Respiration Rate',
               data: rrData,
-              borderColor: '#3cba9f',
+              borderColor: '#da7b93',
               fill: false
             }]
           },
           options: {
+            scales:{
+              yAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Beats/Breaths Per Second',
+                  fontFamily: 'calibri',
+                  fontSize: 16
+                }
+              }],
+              xAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Time',
+                  fontFamily: 'calibri',
+                  fontSize: 16
+                }
+              }]
+            },
             title: {
               display: true,
-              text: 'HR and RR over time (s)'
+              text: "Today's HR and RR over time"
             }
           }
         });
@@ -58,10 +95,9 @@
         console.log("error")
         console.log(error_data)
       }
-    })
-  </script>
-  <script type="text/javascript">
-    var endpoint2 = '/analysis-api/?format=json'
+    });
+
+    var endpoint2 = '/api/analysis/?format=json'
     $.ajax({
       method: "GET",
       url: endpoint2,
@@ -82,13 +118,13 @@
             datasets: [{
               label: 'Average Heart Rate',
               data: avgHRdata,
-              borderColor: '#3e95cd',
-              fill: false
+              borderColor: '#376e6f',
+              fill: false,
             }, {
               label: 'Average Respiration Rate',
               data: avgRRdata,
-              borderColor: '#3cba9f',
-              fill: false
+              borderColor: '#da7b93',
+              fill: false,
             }]
           },
           options: {
@@ -103,9 +139,132 @@
         console.log("error")
         console.log(error_data)
       }
-    })
+    });
+
+    var endpoint3 = '/api/month?format=json'
+    $.ajax({
+      method: "GET",
+      url: endpoint3,
+      success: function(data){
+        var labels = [];
+        var hrData = [];
+        var rrData = [];
+        data.forEach(function(stat) {
+          labels.push(stat.sessionID.startDate);
+          hrData.push(stat.avgHR);
+          rrData.push(stat.avgRR);
+        });
+        var ctx3 = document.getElementById('myChart3').getContext('2d');
+        var myChart3 = new Chart (ctx3, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Heart Rate',
+              data: hrData,
+              backgroundColor: 'rgba(55,110,111,0.4)',
+              fill: false
+            }, {
+              data: hrData,
+              label: 'HR Line',
+              borderColor: '#376e6f',
+              fill: false,
+              type: 'line'
+            }, {
+              label: 'Respiration Rate',
+              data: rrData,
+              backgroundColor: 'rgba(218,123,147,0.4)',
+              fill: false
+            }, {
+              label: 'RR Line',
+              data: rrData,
+              borderColor: '#da7b93',
+              fill: false,
+              type: 'line'
+            }]
+          },
+          options: {
+            scales:{
+              yAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Average Beats/Breaths Per Second',
+                  fontFamily: 'calibri',
+                  fontSize: 16
+                }
+              }],
+              xAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Day',
+                  fontFamily: 'calibri',
+                  fontSize: 16
+                }
+              }]
+            },
+            title: {
+              display: true,
+              text: "This month's HR and RR over time"
+            }
+          }
+        });
+      },
+      error: function(error_data) {
+        console.log("error")
+        console.log(error_data)
+      }
+    });
+
+    $("#today").click(function() {
+      if($("#myChart").hasClass("hidden")) {
+        $("#myChart").removeClass("hidden");
+      }
+      $("#myChart2").addClass("hidden");
+      $("#myChart3").addClass("hidden");
+      if(! $(this).hasClass("chosen") ) {
+        $(this).addClass("chosen");
+      }
+      if( $("#month").hasClass("chosen")) {
+        $("#month").removeClass("chosen");
+      }
+      if($("#week").hasClass("chosen")) {
+        $("#week").removeClass("chosen");
+      }
+    });
+    $("#week").click(function() {
+      if($("#myChart2").hasClass("hidden")) {
+        $("#myChart2").removeClass("hidden");
+      }
+      $("#myChart").addClass("hidden");
+      $("#myChart3").addClass("hidden");
+      if(! $(this).hasClass("chosen") ) {
+        $(this).addClass("chosen");
+      }
+      if( $("#month").hasClass("chosen")) {
+        $("#month").removeClass("chosen");
+      }
+      if($("#today").hasClass("chosen")) {
+        $("#today").removeClass("chosen");
+      }
+    });
+    $("#month").click(function() {
+      if($("#myChart3").hasClass("hidden")) {
+        $($("#myChart3").removeClass("hidden"));
+      }
+      $("#myChart2").addClass("hidden");
+      $("#myChart").addClass("hidden");
+      if(! $(this).hasClass("chosen") ) {
+        $(this).addClass("chosen");
+      }
+      if( $("#week").hasClass("chosen")) {
+        $("#week").removeClass("chosen");
+      }
+      if($("#today").hasClass("chosen")) {
+        $("#today").removeClass("chosen");
+      }
+    });
   </script>
-  
+
 {% if queryset %}
   {% for statistic in queryset %}
     <p>{{statistic.sessionID.id}}</p>
