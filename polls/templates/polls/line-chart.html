@@ -2,15 +2,29 @@
 
 <link rel="stylesheet" type="text/css" href="{% static '/chartjs/dist/Chart.min.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static '/admin/css/bootstrap.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 
+<style>
+  h2 {
+    color: #ffffff;
+  }
+</style>
+
+  <div class="nav">
+    <h2 style="margin: auto">View your stats here</h2>
+  </div>
   <div class="container">
-    <div class="row"><h2 style="font-family:calibri; color:#3d3d5c; margin:20px auto">CSV statistics loaded in Ajax!</h2></div>
     <div class="row">
-      <canvas style="display:block; margin: auto; max-width: 600px; max-height:600px" id="myChart" width="400" height="400"></canvas>
-    </div>
-    <div class="row">
-      <canvas style="display:block; margin: auto; max-width: 600px; max-height:600px" id="myChart2" width="400" height="400"></canvas>
+      <div class="col-md-3 text-center" style="color: white; margin-top: 20px;">
+        <a id="today" href="#" class="fill-btn chosen">today</a>
+        <a id="week" href="#" class="fill-btn">week</a>
+        <a id="month" href="#" class="fill-btn">month</a>
+      </div>
+      <div class="col-md-9" style = "margin-top: 20px">
+        <canvas class="chart-style" id="myChart" width="400" height="400"></canvas>
+        <canvas class="chart-style hidden" id="myChart2" width="400" height="400"></canvas>
+      </div>
     </div>
   </div>
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
@@ -37,19 +51,19 @@
             datasets: [{
               label: 'Heart Rate',
               data: hrData,
-              borderColor: '#3e95cd',
+              borderColor: '#376e6f',
               fill: false
             }, {
               label: 'Respiration Rate',
               data: rrData,
-              borderColor: '#3cba9f',
+              borderColor: '#da7b93',
               fill: false
             }]
           },
           options: {
             title: {
               display: true,
-              text: 'HR and RR over time (s)'
+              text: "Today's HR and RR over time (s)"
             }
           }
         });
@@ -58,9 +72,7 @@
         console.log("error")
         console.log(error_data)
       }
-    })
-  </script>
-  <script type="text/javascript">
+    });
     var endpoint2 = '/analysis-api/?format=json'
     $.ajax({
       method: "GET",
@@ -82,12 +94,12 @@
             datasets: [{
               label: 'Average Heart Rate',
               data: avgHRdata,
-              borderColor: '#3e95cd',
+              borderColor: '#376e6f',
               fill: false
             }, {
               label: 'Average Respiration Rate',
               data: avgRRdata,
-              borderColor: '#3cba9f',
+              borderColor: '#da7b93',
               fill: false
             }]
           },
@@ -103,9 +115,53 @@
         console.log("error")
         console.log(error_data)
       }
-    })
+    });
+
+    $("#today").click(function() {
+      if($("#myChart").hasClass("hidden")) {
+        $("#myChart").removeClass("hidden");
+      }
+      $("#myChart2").addClass("hidden");
+      if(! $(this).hasClass("chosen") ) {
+        $(this).addClass("chosen");
+      }
+      if( $("#month").hasClass("chosen")) {
+        $("#month").removeClass("chosen");
+      }
+      if($("#week").hasClass("chosen")) {
+        $("#week").removeClass("chosen");
+      }
+    });
+    $("#week").click(function() {
+      if($("#myChart2").hasClass("hidden")) {
+        $("#myChart2").removeClass("hidden");
+      }
+      $("#myChart").addClass("hidden");
+      if(! $(this).hasClass("chosen") ) {
+        $(this).addClass("chosen");
+      }
+      if( $("#month").hasClass("chosen")) {
+        $("#month").removeClass("chosen");
+      }
+      if($("#today").hasClass("chosen")) {
+        $("#today").removeClass("chosen");
+      }
+    });
+    $("#month").click(function() {
+      $("#myChart2").addClass("hidden");
+      $("#myChart").addClass("hidden");
+      if(! $(this).hasClass("chosen") ) {
+        $(this).addClass("chosen");
+      }
+      if( $("#week").hasClass("chosen")) {
+        $("#week").removeClass("chosen");
+      }
+      if($("#today").hasClass("chosen")) {
+        $("#today").removeClass("chosen");
+      }
+    });
   </script>
-  
+
 {% if queryset %}
   {% for statistic in queryset %}
     <p>{{statistic.sessionID.id}}</p>
