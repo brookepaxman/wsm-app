@@ -18,6 +18,7 @@ class Session(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     startDate = models.DateField('date published')
     startTime = models.TimeField()
+    status = models.TextField(default="")
 
 class Stat(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -30,12 +31,7 @@ class Dummy(models.Model):
     time = models.IntegerField(default=0)
     hr = models.IntegerField(default=0)
     rr = models.IntegerField(default=0)
-    
-# class UserInput(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     sessionID = models.ForeignKey(Session, on_delete=models.CASCADE)
-#     date = models.DateTimeField('date published')
-    
+ 
 
 class Analysis(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
