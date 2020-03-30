@@ -9,14 +9,18 @@
   h2 {
     color: #ffffff;
   }
+  body {
+    background-color: #2F4454;
+  }
 </style>
 
   <div class="nav">
-    <h2 style="margin: auto">View your stats here</h2>
+    <h2 style="margin-left: 50px; margin-top: auto; margin-bottom: auto;">Your Statistics</h2>
+    <a style="margin-top: 13px; margin-bottom: 13px; margin-right: 50px;" href="/" class="fill-btn">Home</a>
   </div>
   <div class="container">
     <div class="row">
-      <div class="col-md-3 text-center" style="color: white; margin-top: 20px;">
+      <div class="col-md-3 text-center" style="color: white; margin-top: 40px;">
         <a id="today" href="#" class="fill-btn chosen">today</a>
         <a id="week" href="#" class="fill-btn">week</a>
         <a id="month" href="#" class="fill-btn">month</a>
@@ -30,7 +34,7 @@
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
   <script src="{% static '/chartjs/dist/Chart.js' %}"></script>
   <script type="text/javascript">
-    var endpoint = '/stat-api/?format=json'
+    var endpoint = '/api/stats/?format=json'
     $.ajax({
       method: "GET",
       url: endpoint,
@@ -61,6 +65,24 @@
             }]
           },
           options: {
+            scales:{
+              yAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Beats/Breaths Per Second',
+                  fontFamily: 'calibri',
+                  fontSize: 16
+                }
+              }],
+              xAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Time (s)',
+                  fontFamily: 'calibri',
+                  fontSize: 16
+                }
+              }]
+            },
             title: {
               display: true,
               text: "Today's HR and RR over time (s)"
@@ -73,7 +95,7 @@
         console.log(error_data)
       }
     });
-    var endpoint2 = '/analysis-api/?format=json'
+    var endpoint2 = '/api/analysis/?format=json'
     $.ajax({
       method: "GET",
       url: endpoint2,
