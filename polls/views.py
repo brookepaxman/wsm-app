@@ -140,8 +140,8 @@ class MultiView(generic.TemplateView):
                     args = {'form':form}
                 else: 
                     analysisList = Analysis.objects.none()
-                    # sess = Session.objects.filter(user=accessor.id,startDate = date)
-                    sess = Session.objects.filter(startDate = date)
+                    sess = Session.objects.filter(user=accessor.id,startDate = date)
+                    # sess = Session.objects.filter(startDate = date)
                     for s in sess:
                         a = Analysis.objects.filter(user=accessor.id,sessionID=s)
                         analysisList = a | analysisList
