@@ -12,7 +12,7 @@ from rest_framework import viewsets
 from .models import User, Stat, Dummy, Analysis, Session
 from .forms import sleepQualityForm, calendarForm
 
-from .serializers import StatSerializer, AnalysisSerializer
+from .serializers import StatSerializer, AnalysisSerializer, StrippedAnalysisSerializer
 
 
 class IndexView(generic.ListView):
@@ -47,6 +47,7 @@ class StatView(viewsets.ModelViewSet):
         else:
             queryset = Stat.objects.order_by('time')
             return queryset
+
     # queryset = get_queryset()
     # access = User.objects.get(user_name='David')
     # queryset = Stat.objects.filter(user=access.id).order_by('time')
@@ -57,6 +58,14 @@ class AnalysisSetView(viewsets.ModelViewSet):
         accessor = User.objects.get(user_name="David")
         return Analysis.objects.filter(user=accessor.id).order_by('sessionID')
     serializer_class = AnalysisSerializer
+
+class MonthAnalysisViewSet(viewsets.ModelViewSet):
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            name = self.request.user.username
+            accessor = User.objects.get(user_name=name)
+        return Analysis.objects.filter(user=accessor.id).order_by('sessionID')[:30]
+    serializer_class = StrippedAnalysisSerializer
 
 class ChartView(generic.ListView):
     model = User

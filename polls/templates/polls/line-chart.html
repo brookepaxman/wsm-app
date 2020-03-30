@@ -20,14 +20,15 @@
   </div>
   <div class="container">
     <div class="row">
-      <div class="col-md-3 text-center" style="color: white; margin-top: 40px;">
+      <div class="col-md-3 text-center" style="color: white; margin-top: 80px;">
         <a id="today" href="#" class="fill-btn chosen">today</a>
         <a id="week" href="#" class="fill-btn">week</a>
         <a id="month" href="#" class="fill-btn">month</a>
       </div>
-      <div class="col-md-9" style = "margin-top: 20px">
+      <div class="col-md-9" style = "margin-top: 60px">
         <canvas class="chart-style" id="myChart" width="400" height="400"></canvas>
         <canvas class="chart-style hidden" id="myChart2" width="400" height="400"></canvas>
+        <canvas class="chart-style hidden" id="myChart3" width="400" height="400"></canvas>
       </div>
     </div>
   </div>
@@ -77,7 +78,7 @@
               xAxes: [{
                 scaleLabel: {
                   display: true,
-                  labelString: 'Time (s)',
+                  labelString: 'Time',
                   fontFamily: 'calibri',
                   fontSize: 16
                 }
@@ -85,7 +86,7 @@
             },
             title: {
               display: true,
-              text: "Today's HR and RR over time (s)"
+              text: "Today's HR and RR over time"
             }
           }
         });
@@ -95,6 +96,7 @@
         console.log(error_data)
       }
     });
+
     var endpoint2 = '/api/analysis/?format=json'
     $.ajax({
       method: "GET",
@@ -117,12 +119,12 @@
               label: 'Average Heart Rate',
               data: avgHRdata,
               borderColor: '#376e6f',
-              fill: false
+              fill: false,
             }, {
               label: 'Average Respiration Rate',
               data: avgRRdata,
               borderColor: '#da7b93',
-              fill: false
+              fill: false,
             }]
           },
           options: {
@@ -139,11 +141,86 @@
       }
     });
 
+    var endpoint3 = '/api/month?format=json'
+    $.ajax({
+      method: "GET",
+      url: endpoint3,
+      success: function(data){
+        var labels = [];
+        var hrData = [];
+        var rrData = [];
+        data.forEach(function(stat) {
+          labels.push(stat.sessionID.startDate);
+          hrData.push(stat.avgHR);
+          rrData.push(stat.avgRR);
+        });
+        var ctx3 = document.getElementById('myChart3').getContext('2d');
+        var myChart3 = new Chart (ctx3, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Heart Rate',
+              data: hrData,
+              backgroundColor: 'rgba(55,110,111,0.4)',
+              fill: false
+            }, {
+              data: hrData,
+              label: 'HR Line',
+              borderColor: '#376e6f',
+              fill: false,
+              type: 'line'
+            }, {
+              label: 'Respiration Rate',
+              data: rrData,
+              backgroundColor: 'rgba(218,123,147,0.4)',
+              fill: false
+            }, {
+              label: 'RR Line',
+              data: rrData,
+              borderColor: '#da7b93',
+              fill: false,
+              type: 'line'
+            }]
+          },
+          options: {
+            scales:{
+              yAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Average Beats/Breaths Per Second',
+                  fontFamily: 'calibri',
+                  fontSize: 16
+                }
+              }],
+              xAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Day',
+                  fontFamily: 'calibri',
+                  fontSize: 16
+                }
+              }]
+            },
+            title: {
+              display: true,
+              text: "This month's HR and RR over time"
+            }
+          }
+        });
+      },
+      error: function(error_data) {
+        console.log("error")
+        console.log(error_data)
+      }
+    });
+
     $("#today").click(function() {
       if($("#myChart").hasClass("hidden")) {
         $("#myChart").removeClass("hidden");
       }
       $("#myChart2").addClass("hidden");
+      $("#myChart3").addClass("hidden");
       if(! $(this).hasClass("chosen") ) {
         $(this).addClass("chosen");
       }
@@ -159,6 +236,7 @@
         $("#myChart2").removeClass("hidden");
       }
       $("#myChart").addClass("hidden");
+      $("#myChart3").addClass("hidden");
       if(! $(this).hasClass("chosen") ) {
         $(this).addClass("chosen");
       }
@@ -170,6 +248,9 @@
       }
     });
     $("#month").click(function() {
+      if($("#myChart3").hasClass("hidden")) {
+        $($("#myChart3").removeClass("hidden"));
+      }
       $("#myChart2").addClass("hidden");
       $("#myChart").addClass("hidden");
       if(! $(this).hasClass("chosen") ) {
