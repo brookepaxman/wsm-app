@@ -8,7 +8,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 class SessionSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer()
-    class Meta:        
+    class Meta:
         model = Session
         fields = ['user', 'startDate', 'startTime']
 
@@ -24,4 +24,4 @@ class AnalysisSerializer(serializers.HyperlinkedModelSerializer):
     sessionID = SessionSerializer()
     class Meta:
         model = Analysis
-        fields = ['user','sessionID','date','tst','avgHR','avgRR','avgHRdip','minHR','maxHR','minRR','maxRR','numSleepDisruptions']
+        fields = ['user','sessionID','tst','avgHR','avgRR','avgHRdip','minHR','maxHR','minRR','maxRR','numSleepDisruptions']
