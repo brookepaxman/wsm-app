@@ -1,10 +1,12 @@
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse # noqa: 401
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 from django.views.generic.base import TemplateView
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
 
 #from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
@@ -14,6 +16,17 @@ from .models import User, Stat, Dummy, UserInput, Analysis
 from .serializers import DummySerializer
 
 
+def signup_view(request):
+    form = UserCreationForm(request.POST)
+    if form.is_valid():
+        form.save()
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password1')
+        user = authenticate(username=username, password=password)
+        login(request, user)
+        return redirect('logout')
+    return render(request, 'signup.html', {'form': form})
+    
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_stats'
