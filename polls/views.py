@@ -181,36 +181,37 @@ class AnalysisView(generic.ListView):
         minHR, minRR = 1000, 1000
         datasize = len(data)
         sec = data[datasize-1].time
-        if sec > 600:
-            sleepindex = 300//4  # approx 5 minute delay
-            while sleepindex < datasize:
-                HRsum += data[sleepindex].hr
-                RRsum += data[sleepindex].rr
-                if maxHR < data[sleepindex].hr:
-                    maxHR = data[sleepindex].hr
-                if maxRR < data[sleepindex].rr:
-                    maxRR = data[sleepindex].rr
-                if minHR > data[sleepindex].hr:
-                    minHR = data[sleepindex].hr
-                if minRR > data[sleepindex].rr:
-                    minRR = data[sleepindex].rr
-                sleepindex += 1
-            HRavg = HRsum/(datasize - sleepindex)
-            RRavg = RRsum/(datasize - sleepindex)
-        else:
-            for d in data:
-                HRsum += d.hr
-                RRsum += d.rr
-                if maxHR < d.hr:
-                    maxHR = d.hr
-                if maxRR < d.rr:
-                    maxRR = d.rr
-                if minHR > d.hr:
-                    minHR = d.hr
-                if minRR > d.rr:
-                    minRR = d.rr
-            HRavg = HRsum/datasize
-            RRavg = RRsum/datasize
+        for d in data:
+            if sec > 600:
+                sleepindex = 300//4  # approx 5 minute delay
+                while sleepindex < datasize:
+                    HRsum += data[sleepindex].hr
+                    RRsum += data[sleepindex].rr
+                    if maxHR < data[sleepindex].hr:
+                        maxHR = data[sleepindex].hr
+                    if maxRR < data[sleepindex].rr:
+                        maxRR = data[sleepindex].rr
+                    if minHR > data[sleepindex].hr:
+                        minHR = data[sleepindex].hr
+                    if minRR > data[sleepindex].rr:
+                        minRR = data[sleepindex].rr
+                    sleepindex += 1
+                HRavg = HRsum/(datasize - sleepindex)
+                RRavg = RRsum/(datasize - sleepindex)
+            else:
+                for d in data:
+                    HRsum += d.hr
+                    RRsum += d.rr
+                    if maxHR < d.hr:
+                        maxHR = d.hr
+                    if maxRR < d.rr:
+                        maxRR = d.rr
+                    if minHR > d.hr:
+                        minHR = d.hr
+                    if minRR > d.rr:
+                        minRR = d.rr
+                HRavg = HRsum/datasize
+                RRavg = RRsum/datasize
         tst = str(timedelta(seconds=sec))
         return HRavg, RRavg, maxHR, minHR, maxRR, minRR, tst
 
