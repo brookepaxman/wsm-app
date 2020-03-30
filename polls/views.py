@@ -8,12 +8,12 @@ from datetime import datetime
 from datetime import timedelta
 # from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
-
 from .models import User, Stat, Dummy, Analysis, Session
 from .forms import sleepQualityForm, calendarForm
-
 from .serializers import StatSerializer, AnalysisSerializer
 from numpy import abs
+from .serializers import StatSerializer, AnalysisSerializer, StrippedAnalysisSerializer
+
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
@@ -39,7 +39,7 @@ class StatView(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:  # if user is logged in
             name = self.request.user.username
             accessor = User.objects.get(user_name=name) # grab all of user's stat objects
-            user_allstats = Stat.objects.filter(user=accessor.id).order_by('sessionID__id') # and filter by sessionID 
+            user_allstats = Stat.objects.filter(user=accessor.id).order_by('sessionID__id') # and filter by sessionID
             recent = user_allstats.last()       # grab the most recent sessionID
             recent_Sid = recent.sessionID
             queryset = user_allstats.filter(sessionID=recent_Sid.id).order_by('time')       # filter to only have that sessionID
@@ -58,6 +58,14 @@ class AnalysisSetView(viewsets.ModelViewSet):
         accessor = User.objects.get(user_name="David")
         return Analysis.objects.filter(user=accessor.id).order_by('sessionID')
     serializer_class = AnalysisSerializer
+
+class MonthAnalysisViewSet(viewsets.ModelViewSet):
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            name = self.request.user.username
+            accessor = User.objects.get(user_name=name)
+        return Analysis.objects.filter(user=accessor.id).order_by('sessionID')[:30]
+    serializer_class = StrippedAnalysisSerializer
 
 class ChartView(generic.ListView):
     model = User
@@ -90,7 +98,7 @@ class UserInputView(generic.ListView):
             args = {'form': form}
         return render(request, self.template_name,args)
 
-    
+
     def post(self,request,session_id):
         form = sleepQualityForm(request.POST)
         if form.is_valid():
@@ -106,17 +114,17 @@ class UserInputView(generic.ListView):
                 data.sleepDisruptions = form.cleaned_data['sleepDisruptions']
                 data.sleepNotes = form.cleaned_data['sleepNotes']
                 data.numSleepDisruptions = form.cleaned_data['numDisruptions']
-                
+
                 data.save()
                 form = sleepQualityForm()
                 args = {'form':form,'s':s,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s)}
-            except Analysis.DoesNotExist: 
+            except Analysis.DoesNotExist:
                 args = {'form':form}
         return render(request, self.template_name, args)
-    
+
 class MultiView(generic.TemplateView):
     template_name = 'polls/analysis.html'
-    
+
     def get(self,request):
         form = calendarForm()
         if self.request.user.is_authenticated:
@@ -128,7 +136,7 @@ class MultiView(generic.TemplateView):
             args = {'form': form}
         return render(request, self.template_name,args)
 
-    
+
     def post(self,request):
         form = calendarForm(request.POST)
         if self.request.user.is_authenticated:
@@ -138,10 +146,11 @@ class MultiView(generic.TemplateView):
                 date = form.cleaned_data['inputDate']
                 if not Session.objects.filter(startDate = date).exists():
                     args = {'form':form}
-                else: 
+                else:
                     analysisList = Analysis.objects.none()
+                    # anal = Analysis.objects.filter(user=accessor.id)
+                    # sess = Session.objects.filter(anal__user=accessor.id,startDate = date).distinct()
                     sess = Session.objects.filter(user=accessor.id,startDate = date)
-                    # sess = Session.objects.filter(startDate = date)
                     for s in sess:
                         a = Analysis.objects.filter(user=accessor.id,sessionID=s)
                         analysisList = a | analysisList
@@ -153,14 +162,14 @@ class MultiView(generic.TemplateView):
             args = {'form':form}
         return render(request, self.template_name, args)
 
-        
+
     # def get_context_data(self, **kwargs):
     #     name = self.request.user.username
     #     accessor = User.objects.get(user_name=name)
     #     context = super(MultiView, self).get_context_data(**kwargs)
     #     context['analysis'] = Analysis.objects.filter(user=accessor.id).order_by('date')
     #     context['userinput'] = UserInput.objects.filter(user=accessor.id).order_by('date')
-    #     return context 
+    #     return context
 
 
 class AnalysisView(generic.ListView):
@@ -171,6 +180,19 @@ class AnalysisView(generic.ListView):
         HRsum, RRsum, maxHR, maxRR = 0, 0, 0, 0
         minHR, minRR = 1000, 1000
         datasize = len(data)
+        for d in data:
+            HRsum += d.hr
+            RRsum += d.rr
+            if(maxHR < d.hr):
+                maxHR = d.hr
+            if(maxRR < d.rr):
+                maxRR = d.rr
+            if(minHR > d.hr):
+                minHR = d.hr
+            if(minRR > d.rr):
+                minRR = d.rr
+        HRavg = HRsum/datasize
+        RRavg = RRsum/datasize
         sec = data[datasize-1].time
         if sec > 600:
             sleepindex = 300//4  # approx 5 minute delay
@@ -239,7 +261,7 @@ class AnalysisView(generic.ListView):
                     calc.sessionID = session
                     calc.user = accessor
 
-                calc.avgHR, calc.avgRR, calc.maxHR, calc.minHR, calc.maxRR, calc.minRR, calc.tst = AnalysisView.avgmaxtime(self,stats)
+                calc.avgHR, calc.avgRR, calc.maxHR, calc.minHR, calc.maxRR, calc.minRR, calc.tst = AnalysisView.avgmaxtime(self, stats)
                 calc.avgHRdip = AnalysisView.dipHR(self, stats)
                 calc.save()
                 args = {'stat':calc}
@@ -247,4 +269,3 @@ class AnalysisView(generic.ListView):
                 args = {}
 
         return render(request,self.template_name, args)
-

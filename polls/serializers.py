@@ -25,3 +25,10 @@ class AnalysisSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Analysis
         fields = ['user','sessionID','tst','avgHR','avgRR','avgHRdip','minHR','maxHR','minRR','maxRR','numSleepDisruptions']
+
+class StrippedAnalysisSerializer(serializers.HyperlinkedModelSerializer):
+    user = UserSerializer()
+    sessionID = SessionSerializer()
+    class Meta:
+        model = Analysis
+        fields = ['user','sessionID','tst','avgHR','avgRR']
