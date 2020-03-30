@@ -8,10 +8,10 @@ from datetime import datetime
 from datetime import timedelta
 # from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
-
 from .models import User, Stat, Dummy, Analysis, Session
 from .forms import sleepQualityForm, calendarForm
-
+from .serializers import StatSerializer, AnalysisSerializer
+from numpy import abs
 from .serializers import StatSerializer, AnalysisSerializer, StrippedAnalysisSerializer
 
 
@@ -144,7 +144,7 @@ class MultiView(generic.TemplateView):
             accessor = User.objects.get(user_name=name)
             if form.is_valid():
                 date = form.cleaned_data['inputDate']
-                if(not Session.objects.filter(startDate = date).exists()):
+                if not Session.objects.filter(startDate = date).exists():
                     args = {'form':form}
                 else:
                     analysisList = Analysis.objects.none()
@@ -176,13 +176,9 @@ class AnalysisView(generic.ListView):
     model = Analysis
     template_name = 'polls/calculate.html'
 
-    def avg(self,data):
-        HRsum = 0
-        RRsum = 0
-        maxHR = 0
-        maxRR = 0
-        minHR = 1000
-        minRR = 1000
+    def avgmaxtime(self,data):
+        HRsum, RRsum, maxHR, maxRR = 0, 0, 0, 0
+        minHR, minRR = 1000, 1000
         datasize = len(data)
         for d in data:
             HRsum += d.hr
@@ -198,10 +194,58 @@ class AnalysisView(generic.ListView):
         HRavg = HRsum/datasize
         RRavg = RRsum/datasize
         sec = data[datasize-1].time
+        if sec > 600:
+            sleepindex = 300//4  # approx 5 minute delay
+            while sleepindex < datasize:
+                HRsum += data[sleepindex].hr
+                RRsum += data[sleepindex].rr
+                if maxHR < data[sleepindex].hr:
+                    maxHR = data[sleepindex].hr
+                if maxRR < data[sleepindex].rr:
+                    maxRR = data[sleepindex].rr
+                if minHR > data[sleepindex].hr:
+                    minHR = data[sleepindex].hr
+                if minRR > data[sleepindex].rr:
+                    minRR = data[sleepindex].rr
+                sleepindex += 1
+            HRavg = HRsum/(datasize - sleepindex)
+            RRavg = RRsum/(datasize - sleepindex)
+        else:
+            for d in data:
+                HRsum += d.hr
+                RRsum += d.rr
+                if maxHR < d.hr:
+                    maxHR = d.hr
+                if maxRR < d.rr:
+                    maxRR = d.rr
+                if minHR > d.hr:
+                    minHR = d.hr
+                if minRR > d.rr:
+                    minRR = d.rr
+            HRavg = HRsum/datasize
+            RRavg = RRsum/datasize
         tst = str(timedelta(seconds=sec))
-        return HRavg,RRavg, maxHR, minHR, maxRR, minRR, tst
+        return HRavg, RRavg, maxHR, minHR, maxRR, minRR, tst
 
-    def get(self,request,session_id):
+    def dipHR(self, data):
+        dipsum = 0
+        datasize = len(data)
+        sec = data[datasize - 1].time
+        if sec > 600:
+            sleepindex = 300//4  # approx 5 minute delay
+            awake_ref = data[sleepindex].hr
+            while sleepindex < datasize:
+                dipsum += abs(awake_ref - data[sleepindex].hr)
+                sleepindex += 1
+            HRdip = dipsum/(datasize - sleepindex)
+        else:
+            awake_ref = data[10].hr  #close to 75% of 1 minute delay
+            for d in data:
+                dipsum += abs(awake_ref - d.hr)
+            HRdip = dipsum/datasize
+        return HRdip
+
+    def get(self, request, session_id):
         if self.request.user.is_authenticated:
             name = self.request.user.username
             accessor = User.objects.get(user_name=name)
@@ -217,9 +261,8 @@ class AnalysisView(generic.ListView):
                     calc.sessionID = session
                     calc.user = accessor
 
-                calc.avgHR, calc.avgRR, calc.maxHR, calc.minHR, calc.maxRR, calc.minRR, calc.tst = AnalysisView.avg(self,stats)
-
-                # todo: calc.avgHRdip
+                calc.avgHR, calc.avgRR, calc.maxHR, calc.minHR, calc.maxRR, calc.minRR, calc.tst = AnalysisView.avgmaxtime(self, stats)
+                calc.avgHRdip = AnalysisView.dipHR(self, stats)
                 calc.save()
                 args = {'stat':calc}
             except Session.DoesNotExist:
