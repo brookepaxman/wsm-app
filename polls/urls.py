@@ -6,7 +6,10 @@ from django.conf.urls.static import static
 from . import views
 
 router = routers.DefaultRouter()
-router.register(r'dummys', views.DummyView)
+router.register(r'api/stats', views.StatView, basename='StatView')
+router.register(r'api/analysis', views.AnalysisSetView, basename='AnalysisSetView')
+router.register(r'api/month', views.MonthAnalysisViewSet, basename='MonthAnalysisViewSet')
+
 
 app_name = 'polls'
 urlpatterns = [
@@ -15,7 +18,8 @@ urlpatterns = [
     path('<int:pk>/', views.DetailView.as_view(), name='detail'),
     path('line-chart/', views.ChartView.as_view(), name='line-chart'),
     path('analysis/', views.MultiView.as_view(), name='analysis'),
-    path('analysis/user_input/', views.UserInputView.as_view(),name='user_input'),
+    path('analysis/<int:session_id>/', views.UserInputView.as_view(),name='user_input'),
+    path('analysis/calculate/<int:session_id>/', views.AnalysisView.as_view(), name='calculate')
     #path('<int:pk>/results/', views.ResultsView.as_view(), name='results'),
     #path('<int:user_id>/vote/', views.vote, name='vote'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

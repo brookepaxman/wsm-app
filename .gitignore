@@ -1,3 +1,4 @@
-/env
-/polls/__pycache__
-/mysite/__pycache__
+/env/
+/polls/__pycache__/
+/mysite/__pycache__/
+/.vscode/
