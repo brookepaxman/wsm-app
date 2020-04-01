@@ -60,5 +60,5 @@ a.fill-btn.chosen:hover {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
