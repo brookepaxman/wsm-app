@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 
 class User(models.Model):
     user_name = models.CharField(max_length=200)
@@ -15,13 +16,13 @@ class User(models.Model):
 
 
 class Session(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     startDate = models.DateField('date published')
     startTime = models.TimeField()
     status = models.TextField(default="")
 
 class Stat(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     sessionID = models.ForeignKey(Session, on_delete=models.CASCADE)
     time = models.IntegerField(default=0)
     hr = models.IntegerField(default=0)
@@ -34,7 +35,7 @@ class Dummy(models.Model):
  
 
 class Analysis(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     sessionID = models.ForeignKey(Session, on_delete=models.CASCADE)
     tst = models.TimeField()
     # tst = models.DurationField()
