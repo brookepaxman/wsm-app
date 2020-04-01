@@ -16,7 +16,6 @@ from .forms import sleepQualityForm, calendarForm
 from .serializers import StatSerializer, AnalysisSerializer
 from numpy import abs
 from .serializers import StatSerializer, AnalysisSerializer, StrippedAnalysisSerializer
->>>>>>> origin/master
 
 
 def signup_view(request):
@@ -37,9 +36,10 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         name = None
         if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
-            return Stat.objects.filter(user=accessor.id).order_by('time')
+            #name = self.request.user.username
+            userid = self.request.user.id 
+            #accessor = User.objects.get(user_name=name)
+            return Stat.objects.filter(user=userid).order_by('time')
         else:
             return False
 
@@ -52,9 +52,10 @@ class StatView(viewsets.ModelViewSet):
     def get_queryset(self):         # this returns most recent session of the user that is logged in
         name = None
         if self.request.user.is_authenticated:  # if user is logged in
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name) # grab all of user's stat objects
-            user_allstats = Stat.objects.filter(user=accessor.id).order_by('sessionID__id') # and filter by sessionID
+            userid = self.request.user.id
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name) # grab all of user's stat objects
+            user_allstats = Stat.objects.filter(user=userid).order_by('sessionID__id') # and filter by sessionID
             recent = user_allstats.last()       # grab the most recent sessionID
             recent_Sid = recent.sessionID
             queryset = user_allstats.filter(sessionID=recent_Sid.id).order_by('time')       # filter to only have that sessionID
@@ -70,16 +71,18 @@ class StatView(viewsets.ModelViewSet):
 
 class AnalysisSetView(viewsets.ModelViewSet):
     def get_queryset(self):
-        accessor = User.objects.get(user_name="David")
-        return Analysis.objects.filter(user=accessor.id).order_by('sessionID')
+        #accessor = User.objects.get(user_name="David")
+        userid = self.request.user.id
+        return Analysis.objects.filter(user=userid).order_by('sessionID')
     serializer_class = AnalysisSerializer
 
 class MonthAnalysisViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
-        return Analysis.objects.filter(user=accessor.id).order_by('sessionID')[:30]
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
+        return Analysis.objects.filter(user=userid).order_by('sessionID')[:30]
     serializer_class = StrippedAnalysisSerializer
 
 class ChartView(generic.ListView):
@@ -90,9 +93,10 @@ class ChartView(generic.ListView):
     def get_queryset(self):     # this is here mostly for debugging purposes
         name = None
         if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
-            queryset = Stat.objects.filter(user=accessor.id).order_by('time')
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
+            queryset = Stat.objects.filter(user=userid).order_by('time')
             return queryset
         else:
             queryset = Stat.objects.order_by('time')
@@ -105,10 +109,11 @@ class UserInputView(generic.ListView):
     def get(self,request,session_id):
         form = sleepQualityForm()
         if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
             s = Session.objects.get(id=session_id)
-            args = {'form': form,'s':s,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s)}
+            args = {'form': form,'s':s,'analysis':Analysis.objects.filter(user=userid,sessionID=s)}
         else:
             args = {'form': form}
         return render(request, self.template_name,args)
@@ -117,8 +122,9 @@ class UserInputView(generic.ListView):
     def post(self,request,session_id):
         form = sleepQualityForm(request.POST)
         if form.is_valid():
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
 
             s = Session.objects.get(id = session_id)
 
@@ -132,7 +138,7 @@ class UserInputView(generic.ListView):
 
                 data.save()
                 form = sleepQualityForm()
-                args = {'form':form,'s':s,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s)}
+                args = {'form':form,'s':s,'analysis':Analysis.objects.filter(user=userid,sessionID=s)}
             except Analysis.DoesNotExist:
                 args = {'form':form}
         return render(request, self.template_name, args)
@@ -143,10 +149,11 @@ class MultiView(generic.TemplateView):
     def get(self,request):
         form = calendarForm()
         if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
             # sess = Session.objects.filter(user=accessor.id)
-            args = {'form': form,'analysis':Analysis.objects.filter(user=accessor.id).order_by('id')}
+            args = {'form': form,'analysis':Analysis.objects.filter(user=userid).order_by('id')}
         else:
             args = {'form': form}
         return render(request, self.template_name,args)
@@ -155,8 +162,9 @@ class MultiView(generic.TemplateView):
     def post(self,request):
         form = calendarForm(request.POST)
         if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
             if form.is_valid():
                 date = form.cleaned_data['inputDate']
                 if not Session.objects.filter(startDate = date).exists():
@@ -165,9 +173,9 @@ class MultiView(generic.TemplateView):
                     analysisList = Analysis.objects.none()
                     # anal = Analysis.objects.filter(user=accessor.id)
                     # sess = Session.objects.filter(anal__user=accessor.id,startDate = date).distinct()
-                    sess = Session.objects.filter(user=accessor.id,startDate = date)
+                    sess = Session.objects.filter(user=userid,startDate = date)
                     for s in sess:
-                        a = Analysis.objects.filter(user=accessor.id,sessionID=s)
+                        a = Analysis.objects.filter(user=userid,sessionID=s)
                         analysisList = a | analysisList
                     analysisList.order_by('sessionID')
                     form = calendarForm()
@@ -254,8 +262,9 @@ class AnalysisView(generic.ListView):
 
     def get(self, request, session_id):
         if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
             try:
                 session = Session.objects.get(id = session_id)
                 stats = Stat.objects.filter(sessionID = session)
@@ -266,7 +275,8 @@ class AnalysisView(generic.ListView):
                 except Analysis.DoesNotExist:
                     calc = Analysis()
                     calc.sessionID = session
-                    calc.user = accessor
+                    #calc.user = accessor
+                    calc.user = userid
 
                 calc.avgHR, calc.avgRR, calc.maxHR, calc.minHR, calc.maxRR, calc.minRR, calc.tst = AnalysisView.avgmaxtime(self, stats)
                 calc.avgHRdip = AnalysisView.dipHR(self, stats)
