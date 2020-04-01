@@ -227,7 +227,11 @@ class AnalysisView(generic.ListView):
                 sleepindex += 1
             HRdip = dipsum/(datasize - sleepindex)
         else:
-            awake_ref = data[10].hr  #close to 75% of 1 minute delay
+            try:
+                awake_ref = data[10].hr  #close to 75% of 1 minute delay
+            except IndexError:
+                print("less than 40 seconds of stats data, not enough to accurately calculate heart rate dip")
+                return -1
             for d in data:
                 dipsum += abs(awake_ref - d.hr)
             HRdip = dipsum/datasize
@@ -256,4 +260,4 @@ class AnalysisView(generic.ListView):
             except Session.DoesNotExist:
                 args = {}
 
-        return render(request,self.template_name, args)
+        return render(request, self.template_name, args)
