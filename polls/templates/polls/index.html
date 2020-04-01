@@ -8,6 +8,7 @@
   Hi {{ user.username }}!
   <p><a href="{% url 'logout' %}">logout</a></p>
   <a href="/line-chart" class="fill-btn" style="margin: 0; text-decoration: none;">View Charts</a>
+  <a href="/analysis" class="fill-btn" style="margin: 0; text-decoration: none;">View Analytics</a>
 {% else %}
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">login</a>
