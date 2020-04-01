@@ -1,9 +1,12 @@
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse # noqa: 401
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+
 from datetime import datetime
 from datetime import timedelta
 # from chartjs.views.lines import BaseLineChartView
@@ -15,6 +18,17 @@ from numpy import abs
 from .serializers import StatSerializer, AnalysisSerializer, StrippedAnalysisSerializer
 
 
+def signup_view(request):
+    form = UserCreationForm(request.POST)
+    if form.is_valid():
+        form.save()
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password1')
+        user = authenticate(username=username, password=password)
+        login(request, user)
+        return redirect('logout')
+    return render(request, 'signup.html', {'form': form})
+    
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_stats'
@@ -22,9 +36,10 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         name = None
         if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
-            return Stat.objects.filter(user=accessor.id).order_by('time')
+            #name = self.request.user.username
+            userid = self.request.user.id 
+            #accessor = User.objects.get(user_name=name)
+            return Stat.objects.filter(user=userid).order_by('time')
         else:
             return False
 
@@ -37,9 +52,10 @@ class StatView(viewsets.ModelViewSet):
     def get_queryset(self):         # this returns most recent session of the user that is logged in
         name = None
         if self.request.user.is_authenticated:  # if user is logged in
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name) # grab all of user's stat objects
-            user_allstats = Stat.objects.filter(user=accessor.id).order_by('sessionID__id') # and filter by sessionID
+            userid = self.request.user.id
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name) # grab all of user's stat objects
+            user_allstats = Stat.objects.filter(user=userid).order_by('sessionID__id') # and filter by sessionID
             recent = user_allstats.last()       # grab the most recent sessionID
             recent_Sid = recent.sessionID
             queryset = user_allstats.filter(sessionID=recent_Sid.id).order_by('time')       # filter to only have that sessionID
@@ -55,16 +71,18 @@ class StatView(viewsets.ModelViewSet):
 
 class AnalysisSetView(viewsets.ModelViewSet):
     def get_queryset(self):
-        accessor = User.objects.get(user_name="David")
-        return Analysis.objects.filter(user=accessor.id).order_by('sessionID')
+        #accessor = User.objects.get(user_name="David")
+        userid = self.request.user.id
+        return Analysis.objects.filter(user=userid).order_by('sessionID')
     serializer_class = AnalysisSerializer
 
 class MonthAnalysisViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
-        return Analysis.objects.filter(user=accessor.id).order_by('sessionID')[:30]
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
+        return Analysis.objects.filter(user=userid).order_by('sessionID')[:30]
     serializer_class = StrippedAnalysisSerializer
 
 class ChartView(generic.ListView):
@@ -75,9 +93,10 @@ class ChartView(generic.ListView):
     def get_queryset(self):     # this is here mostly for debugging purposes
         name = None
         if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
-            queryset = Stat.objects.filter(user=accessor.id).order_by('time')
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
+            queryset = Stat.objects.filter(user=userid).order_by('time')
             return queryset
         else:
             queryset = Stat.objects.order_by('time')
@@ -90,10 +109,11 @@ class UserInputView(generic.ListView):
     def get(self,request,session_id):
         form = sleepQualityForm()
         if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
             s = Session.objects.get(id=session_id)
-            args = {'form': form,'s':s,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s)}
+            args = {'form': form,'s':s,'analysis':Analysis.objects.filter(user=userid,sessionID=s)}
         else:
             args = {'form': form}
         return render(request, self.template_name,args)
@@ -102,8 +122,9 @@ class UserInputView(generic.ListView):
     def post(self,request,session_id):
         form = sleepQualityForm(request.POST)
         if form.is_valid():
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
 
             s = Session.objects.get(id = session_id)
 
@@ -117,7 +138,7 @@ class UserInputView(generic.ListView):
 
                 data.save()
                 form = sleepQualityForm()
-                args = {'form':form,'s':s,'analysis':Analysis.objects.filter(user=accessor.id,sessionID=s)}
+                args = {'form':form,'s':s,'analysis':Analysis.objects.filter(user=userid,sessionID=s)}
             except Analysis.DoesNotExist:
                 args = {'form':form}
         return render(request, self.template_name, args)
@@ -128,10 +149,11 @@ class MultiView(generic.TemplateView):
     def get(self,request):
         form = calendarForm()
         if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
             # sess = Session.objects.filter(user=accessor.id)
-            args = {'form': form,'analysis':Analysis.objects.filter(user=accessor.id).order_by('id')}
+            args = {'form': form,'analysis':Analysis.objects.filter(user=userid).order_by('id')}
         else:
             args = {'form': form}
         return render(request, self.template_name,args)
@@ -140,8 +162,9 @@ class MultiView(generic.TemplateView):
     def post(self,request):
         form = calendarForm(request.POST)
         if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
             if form.is_valid():
                 date = form.cleaned_data['inputDate']
                 if not Session.objects.filter(startDate = date).exists():
@@ -150,9 +173,9 @@ class MultiView(generic.TemplateView):
                     analysisList = Analysis.objects.none()
                     # anal = Analysis.objects.filter(user=accessor.id)
                     # sess = Session.objects.filter(anal__user=accessor.id,startDate = date).distinct()
-                    sess = Session.objects.filter(user=accessor.id,startDate = date)
+                    sess = Session.objects.filter(user=userid,startDate = date)
                     for s in sess:
-                        a = Analysis.objects.filter(user=accessor.id,sessionID=s)
+                        a = Analysis.objects.filter(user=userid,sessionID=s)
                         analysisList = a | analysisList
                     analysisList.order_by('sessionID')
                     form = calendarForm()
@@ -180,50 +203,38 @@ class AnalysisView(generic.ListView):
         HRsum, RRsum, maxHR, maxRR = 0, 0, 0, 0
         minHR, minRR = 1000, 1000
         datasize = len(data)
-        for d in data:
-            HRsum += d.hr
-            RRsum += d.rr
-            if(maxHR < d.hr):
-                maxHR = d.hr
-            if(maxRR < d.rr):
-                maxRR = d.rr
-            if(minHR > d.hr):
-                minHR = d.hr
-            if(minRR > d.rr):
-                minRR = d.rr
-        HRavg = HRsum/datasize
-        RRavg = RRsum/datasize
         sec = data[datasize-1].time
-        if sec > 600:
-            sleepindex = 300//4  # approx 5 minute delay
-            while sleepindex < datasize:
-                HRsum += data[sleepindex].hr
-                RRsum += data[sleepindex].rr
-                if maxHR < data[sleepindex].hr:
-                    maxHR = data[sleepindex].hr
-                if maxRR < data[sleepindex].rr:
-                    maxRR = data[sleepindex].rr
-                if minHR > data[sleepindex].hr:
-                    minHR = data[sleepindex].hr
-                if minRR > data[sleepindex].rr:
-                    minRR = data[sleepindex].rr
-                sleepindex += 1
-            HRavg = HRsum/(datasize - sleepindex)
-            RRavg = RRsum/(datasize - sleepindex)
-        else:
-            for d in data:
-                HRsum += d.hr
-                RRsum += d.rr
-                if maxHR < d.hr:
-                    maxHR = d.hr
-                if maxRR < d.rr:
-                    maxRR = d.rr
-                if minHR > d.hr:
-                    minHR = d.hr
-                if minRR > d.rr:
-                    minRR = d.rr
-            HRavg = HRsum/datasize
-            RRavg = RRsum/datasize
+        for d in data:
+            if sec > 600:
+                sleepindex = 300//4  # approx 5 minute delay
+                while sleepindex < datasize:
+                    HRsum += data[sleepindex].hr
+                    RRsum += data[sleepindex].rr
+                    if maxHR < data[sleepindex].hr:
+                        maxHR = data[sleepindex].hr
+                    if maxRR < data[sleepindex].rr:
+                        maxRR = data[sleepindex].rr
+                    if minHR > data[sleepindex].hr:
+                        minHR = data[sleepindex].hr
+                    if minRR > data[sleepindex].rr:
+                        minRR = data[sleepindex].rr
+                    sleepindex += 1
+                HRavg = HRsum/(datasize - sleepindex)
+                RRavg = RRsum/(datasize - sleepindex)
+            else:
+                for d in data:
+                    HRsum += d.hr
+                    RRsum += d.rr
+                    if maxHR < d.hr:
+                        maxHR = d.hr
+                    if maxRR < d.rr:
+                        maxRR = d.rr
+                    if minHR > d.hr:
+                        minHR = d.hr
+                    if minRR > d.rr:
+                        minRR = d.rr
+                HRavg = HRsum/datasize
+                RRavg = RRsum/datasize
         tst = str(timedelta(seconds=sec))
         return HRavg, RRavg, maxHR, minHR, maxRR, minRR, tst
 
@@ -239,7 +250,11 @@ class AnalysisView(generic.ListView):
                 sleepindex += 1
             HRdip = dipsum/(datasize - sleepindex)
         else:
-            awake_ref = data[10].hr  #close to 75% of 1 minute delay
+            try:
+                awake_ref = data[10].hr  #close to 75% of 1 minute delay
+            except IndexError:
+                print("less than 40 seconds of stats data, not enough to accurately calculate heart rate dip")
+                return -1
             for d in data:
                 dipsum += abs(awake_ref - d.hr)
             HRdip = dipsum/datasize
@@ -247,8 +262,9 @@ class AnalysisView(generic.ListView):
 
     def get(self, request, session_id):
         if self.request.user.is_authenticated:
-            name = self.request.user.username
-            accessor = User.objects.get(user_name=name)
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
             try:
                 session = Session.objects.get(id = session_id)
                 stats = Stat.objects.filter(sessionID = session)
@@ -259,7 +275,8 @@ class AnalysisView(generic.ListView):
                 except Analysis.DoesNotExist:
                     calc = Analysis()
                     calc.sessionID = session
-                    calc.user = accessor
+                    #calc.user = accessor
+                    calc.user = userid
 
                 calc.avgHR, calc.avgRR, calc.maxHR, calc.minHR, calc.maxRR, calc.minRR, calc.tst = AnalysisView.avgmaxtime(self, stats)
                 calc.avgHRdip = AnalysisView.dipHR(self, stats)
@@ -268,4 +285,4 @@ class AnalysisView(generic.ListView):
             except Session.DoesNotExist:
                 args = {}
 
-        return render(request,self.template_name, args)
+        return render(request, self.template_name, args)

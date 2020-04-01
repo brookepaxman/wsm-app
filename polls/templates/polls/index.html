@@ -9,23 +9,24 @@
   <link rel="apple-touch-icon" sizes="180x180" href="{% static '/admin/favicon_io/apple-touch-icon.png' %}">
   <link rel="icon" type="image/png" sizes="32x32" href="{% static '/admin/favicon_io/favicon-32x32.png' %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static '/admin/favicon_io/favicon-16x16.png' %}">
-  <link rel="manifest" href="{% static '/admin/favicon_io/site.webmanifest' %}">  
+  <link rel="manifest" href="{% static '/admin/favicon_io/site.webmanifest' %}">
 </head>
 <body>
   <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
   <h1>Welcome to the Wireless Sleep Monitor App!</h1>
   <meta http-equiv="refresh" content="30" />
 
-  {% block content %}
-  {% if user.is_authenticated %}
-    Hi {{ user.username }}!
-    <p><a href="{% url 'logout' %}">logout</a></p>
-    <a href="/line-chart" class="fill-btn" style="margin: 0; text-decoration: none;">View Charts</a>
-  {% else %}
-    <p>You are not logged in</p>
-    <a href="{% url 'login' %}">login</a>
-  {% endif %}
-  {% endblock %}
+{% block content %}
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+  <p><a href="{% url 'logout' %}">logout</a></p>
+  <a href="/line-chart" class="fill-btn" style="margin: 0; text-decoration: none;">View Charts</a>
+  <a href="/analysis" class="fill-btn" style="margin: 0; text-decoration: none;">View Analytics</a>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+{% endblock %}
 
     {% if latest_stats %}
     <div class="stats" style="display: flex">
