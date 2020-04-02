@@ -262,27 +262,40 @@ class AnalysisView(generic.ListView):
 
     def get(self, request, session_id):
         if self.request.user.is_authenticated:
-            #name = self.request.user.username
-            #accessor = User.objects.get(user_name=name)
-            userid = self.request.user.id
+            userid = self.request.user
             try:
                 session = Session.objects.get(id = session_id)
-                stats = Stat.objects.filter(sessionID = session)
-                # stats = Stat.objects.filter(sessionID = session_id)
-                try:
-                    calc = Analysis.objects.get(sessionID_id = session_id)
-                    # calc = Analysis.objects.get(sessionID = session_id)
-                except Analysis.DoesNotExist:
-                    calc = Analysis()
-                    calc.sessionID = session
-                    #calc.user = accessor
-                    calc.user = userid
-
-                calc.avgHR, calc.avgRR, calc.maxHR, calc.minHR, calc.maxRR, calc.minRR, calc.tst = AnalysisView.avgmaxtime(self, stats)
-                calc.avgHRdip = AnalysisView.dipHR(self, stats)
-                calc.save()
-                args = {'stat':calc}
+                if(session.user == userid):
+                    if(session.status == "calculate"):
+                        try:
+                            stat = Analysis.objects.get(sessionID = session)
+                            args = {'error':"analysis object already exists"}
+                        except Analysis.DoesNotExist:
+                            stat = Analysis()
+                            stat.sessionID = session
+                            stat.user = userid
+                            if Stat.objects.filter(sessionID = session).exists():
+                                stats = Stat.objects.filter(sessionID = session)
+                                stat.avgHR, stat.avgRR, stat.maxHR, stat.minHR, stat.maxRR, stat.minRR, stat.tst = AnalysisView.avgmaxtime(self, stats)
+                                stat.avgHRdip = AnalysisView.dipHR(self, stats)
+                                stat.save()
+                                args = {'stat':stat}
+                            else:
+                                args = {'error':"no stats for this session"}
+                    elif(session.status == "done"):
+                        try:
+                            stat = Analysis.objects.get(sessionID = session)
+                            args = {'stat':stat}
+                        except Analysis.DoesNotExist:
+                            args = {'error':"sessions status indicated done, but analysis object doesn't exist, so calc not done"}
+                    elif(session.status == "running"):
+                        args = {"error": "session is running, please stop device before calculating"}
+                    else:
+                        args = {'error':"invalid session status"}
+                else: 
+                    args = {'error':"session doesn't belong to this user"}
             except Session.DoesNotExist:
-                args = {}
-
+                args = {'error':"session doesn't exist"}
+        else:
+            args = {'error':"user not authorized"}
         return render(request, self.template_name, args)
