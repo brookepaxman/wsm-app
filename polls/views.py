@@ -286,3 +286,24 @@ class AnalysisView(generic.ListView):
                 args = {}
 
         return render(request, self.template_name, args)
+
+class RealtimeView(generic.ListView):
+    template_name = 'polls/realtime.html'
+    context_object_name = 'latest_stat'
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            userid = self.request.user.id 
+            latestSession = Session.objects.filter(user=userid).latest('id')
+            print(latestSession.id)
+            print(latestSession.status)
+            latestStat = Stat.objects.filter(user=userid, sessionID=latestSession).latest('time')
+            print(latestStat.hr)
+            print(latestStat.rr)
+            print(latestStat.sessionID)
+            if latestSession.status == "running":
+                return Stat.objects.filter(user=userid, sessionID=latestSession).latest('time')
+            else:
+                return False
+        else:
+            return False
