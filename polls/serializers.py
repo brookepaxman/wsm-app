@@ -1,10 +1,12 @@
-from .models import Stat, User, Session, Analysis
+from .models import Stat, Session, Analysis
+from  django.contrib.auth.models import User
+
 from rest_framework import serializers
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['user_name', 'pub_date']
+        fields = ['username']
 
 class SessionSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer()

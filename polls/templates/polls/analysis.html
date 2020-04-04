@@ -7,6 +7,8 @@
   <a href="{% url 'login' %}">login</a>
 {% else %}
   Hi {{ user.username }}!
+  <p><a href="/">Home</a></p>
+
   <p><a href="{% url 'logout' %}">logout</a></p>
 
   <p><a href="">See all</a> </p>
@@ -28,7 +30,11 @@
             <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes and {{stat.tst.second}} seconds</li>
             <li>Average HR: {{ stat.avgHR }}</li>
             <li>Average RR: {{ stat.avgRR }}</li>
-            <li>Average HR Dip: {{ stat.avgHRdip }}</li>
+            {%if stat.avgHRdip == -1%}
+              <li>Average HR Dip: Not enough data to calculate HR Dip. Please record a sleep session for longer than 1 minute</li>
+            {%else%}
+              <li>Average HR Dip: {{ stat.avgHRdip }}</li>
+            {%endif%}
             <li>Min HR: {{ stat.minHR }}</li>
             <li>Max HR: {{ stat.maxHR }}</li>
             <li>Min RR: {{ stat.minRR }}</li>
