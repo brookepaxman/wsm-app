@@ -61,5 +61,15 @@ a.fill-btn.chosen:hover {
 
 .hidden {
   display: none !important;
-  
+
+}
+
+.nav-container {
+  height: 70px;
+  background-color: #0E0B2B;
+  color: #ffffff;
+}
+
+.text-center {
+  text-align: center;
 }
