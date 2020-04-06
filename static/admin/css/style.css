@@ -1,3 +1,6 @@
+body {
+  margin: 0;
+}
 h1 {
   font-size: 40px;
   text-align:center;
@@ -61,5 +64,31 @@ a.fill-btn.chosen:hover {
 
 .hidden {
   display: none !important;
-  
+
+}
+
+.nav-container {
+  height: 70px;
+  background-color: #0E0B2B;
+  width: 100%;
+}
+
+.nav-container h1 {
+  color: #ffffff;
+  margin: 0;
+  padding-top: 7px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.nav-home {
+  position: absolute;
+  left: 30px;
+  top: 9px;
 }

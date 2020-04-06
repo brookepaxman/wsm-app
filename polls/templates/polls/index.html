@@ -10,52 +10,66 @@
   <link rel="icon" type="image/png" sizes="32x32" href="{% static '/admin/favicon_io/favicon-32x32.png' %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static '/admin/favicon_io/favicon-16x16.png' %}">
   <link rel="manifest" href="{% static '/admin/favicon_io/site.webmanifest' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/bootstrap.css' %}">
+  <meta http-equiv="refresh" content="30" />
+  <script
+      src="https://code.jquery.com/jquery-3.3.1.js"
+      integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+      crossorigin="anonymous">
+    </script>
+  <script>
+    $(function(){
+      $("#nav").load("{% static '/admin/embeds/nav.html' %}");
+    });
+  </script>
+  <div id="nav"></div>
 </head>
 <body>
-  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
-  <h1>Welcome to the Wireless Sleep Monitor App!</h1>
-  <meta http-equiv="refresh" content="30" />
+<div class="container mt-20">
+  {% block content %}
+  {% if user.is_authenticated %}
+    Hi {{ user.username }}!
+    <p><a href="{% url 'logout' %}">logout</a></p>
+    <a href="/line-chart" class="fill-btn" style="margin: 0; text-decoration: none;">View Charts</a>
+    <a href="/analysis" class="fill-btn" style="margin: 0; text-decoration: none;">View Analytics</a>
+  {% else %}
+    <p>You are not logged in</p>
+    <a href="{% url 'login' %}">login</a>
+  {% endif %}
+  {% endblock %}
 
-{% block content %}
-{% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">logout</a></p>
-  <a href="/line-chart" class="fill-btn" style="margin: 0; text-decoration: none;">View Charts</a>
-  <a href="/analysis" class="fill-btn" style="margin: 0; text-decoration: none;">View Analytics</a>
-{% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
-{% endif %}
-{% endblock %}
+      {% if latest_stats %}
+      <div class="stats" style="display: flex">
+          <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+            <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Time (s)</h3></li>
+            {% for stat in latest_stats %}
+              <li>{{ stat.time }}</li>
+            {% endfor %}
+          </ul>
+          <ul id="hrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+            <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Heart Rate</h3></li>
 
-    {% if latest_stats %}
-    <div class="stats" style="display: flex">
-        <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-          <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Time (s)</h3></li>
-          {% for stat in latest_stats %}
-            <li>{{ stat.time }}</li>
-          {% endfor %}
-        </ul>
-        <ul id="hrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-          <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Heart Rate</h3></li>
+            {% for stat in latest_stats %}
+              <li>{{ stat.hr }}</li>
+            {% endfor %}
+          </ul>
 
-          {% for stat in latest_stats %}
-            <li>{{ stat.hr }}</li>
-          {% endfor %}
-        </ul>
+          <ul id="rrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+            <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Respiration Rate</h3></li>
 
-        <ul id="rrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-          <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Respiration Rate</h3></li>
+            {% for stat in latest_stats %}
+              <li>{{ stat.rr }}</li>
+            {% endfor %}
+          </ul>
+          <canvas id="myChart" width="400" height="400"></canvas>
+        {% else %}
+          <p>No stats are available.</p>
+        {% endif %}
+      </div>
 
-          {% for stat in latest_stats %}
-            <li>{{ stat.rr }}</li>
-          {% endfor %}
-        </ul>
-        <canvas id="myChart" width="400" height="400"></canvas>
-      {% else %}
-        <p>No stats are available.</p>
-      {% endif %}
-    </div>
+</div>
+
 
 </body>
 </html>
