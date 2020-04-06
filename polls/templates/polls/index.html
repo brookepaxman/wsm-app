@@ -10,11 +10,21 @@
   <link rel="icon" type="image/png" sizes="32x32" href="{% static '/admin/favicon_io/favicon-32x32.png' %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static '/admin/favicon_io/favicon-16x16.png' %}">
   <link rel="manifest" href="{% static '/admin/favicon_io/site.webmanifest' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
+  <meta http-equiv="refresh" content="30" />
+  <script
+      src="https://code.jquery.com/jquery-3.3.1.js"
+      integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+      crossorigin="anonymous">
+    </script>
+  <script>
+    $(function(){
+      $("#nav").load("{% static '/admin/embeds/nav.html' %}");
+    });
+  </script>
 </head>
 <body>
-  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
-  <h1>Welcome to the Wireless Sleep Monitor App!</h1>
-  <meta http-equiv="refresh" content="30" />
+  <div id="nav"></div>
 
 {% block content %}
 {% if user.is_authenticated %}
