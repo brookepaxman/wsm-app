@@ -10,6 +10,17 @@
   <link rel="icon" type="image/png" sizes="32x32" href="{% static '/admin/favicon_io/favicon-32x32.png' %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static '/admin/favicon_io/favicon-16x16.png' %}">
   <link rel="manifest" href="{% static '/admin/favicon_io/site.webmanifest' %}">
+  <script
+      src="https://code.jquery.com/jquery-3.3.1.js"
+      integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+      crossorigin="anonymous">
+    </script>
+  <script>
+    $(function(){
+      $("#nav").load("{% static '/admin/embeds/nav.html' %}");
+    });
+  </script>
+  <div id="nav"></div>
 </head>
 <body>
   <link rel="stylesheet" type="text/css" href="{% static '/chartjs/dist/Chart.min.css' %}">

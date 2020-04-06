@@ -1,3 +1,14 @@
+<script
+    src="https://code.jquery.com/jquery-3.3.1.js"
+    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous">
+  </script>
+<script>
+  $(function(){
+    $("#nav").load("{% static '/admin/embeds/nav.html' %}");
+  });
+</script>
+<div id="nav"></div>
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
 <h1>Welcome to the Wireless Sleep Monitor App!</h1>
@@ -41,4 +52,3 @@
       <p>No stats are available.</p>
     {% endif %}
   </div>
-
