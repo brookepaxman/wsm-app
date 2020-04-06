@@ -204,37 +204,36 @@ class AnalysisView(generic.ListView):
         minHR, minRR = 1000, 1000
         datasize = len(data)
         sec = data[datasize-1].time
-        for d in data:
-            if sec > 600:
-                sleepindex = 300//4  # approx 5 minute delay
-                while sleepindex < datasize:
-                    HRsum += data[sleepindex].hr
-                    RRsum += data[sleepindex].rr
-                    if maxHR < data[sleepindex].hr:
-                        maxHR = data[sleepindex].hr
-                    if maxRR < data[sleepindex].rr:
-                        maxRR = data[sleepindex].rr
-                    if minHR > data[sleepindex].hr:
-                        minHR = data[sleepindex].hr
-                    if minRR > data[sleepindex].rr:
-                        minRR = data[sleepindex].rr
-                    sleepindex += 1
-                HRavg = HRsum/(datasize - sleepindex)
-                RRavg = RRsum/(datasize - sleepindex)
-            else:
-                for d in data:
-                    HRsum += d.hr
-                    RRsum += d.rr
-                    if maxHR < d.hr:
-                        maxHR = d.hr
-                    if maxRR < d.rr:
-                        maxRR = d.rr
-                    if minHR > d.hr:
-                        minHR = d.hr
-                    if minRR > d.rr:
-                        minRR = d.rr
-                HRavg = HRsum/datasize
-                RRavg = RRsum/datasize
+        if sec > 600:
+            sleepindex = 300//4  # approx 5 minute delay
+            while sleepindex < datasize:
+                HRsum += data[sleepindex].hr
+                RRsum += data[sleepindex].rr
+                if maxHR < data[sleepindex].hr:
+                    maxHR = data[sleepindex].hr
+                if maxRR < data[sleepindex].rr:
+                    maxRR = data[sleepindex].rr
+                if minHR > data[sleepindex].hr:
+                    minHR = data[sleepindex].hr
+                if minRR > data[sleepindex].rr:
+                    minRR = data[sleepindex].rr
+                sleepindex += 1
+            HRavg = HRsum/(datasize - sleepindex)
+            RRavg = RRsum/(datasize - sleepindex)
+        else:
+            for d in data:
+                HRsum += d.hr
+                RRsum += d.rr
+                if maxHR < d.hr:
+                    maxHR = d.hr
+                if maxRR < d.rr:
+                    maxRR = d.rr
+                if minHR > d.hr:
+                    minHR = d.hr
+                if minRR > d.rr:
+                    minRR = d.rr
+            HRavg = HRsum/datasize
+            RRavg = RRsum/datasize
         tst = str(timedelta(seconds=sec))
         return HRavg, RRavg, maxHR, minHR, maxRR, minRR, tst
 
@@ -269,19 +268,18 @@ class AnalysisView(generic.ListView):
                     if(session.status == "calculate"):
                         try:
                             stat = Analysis.objects.get(sessionID = session)
-                            args = {'error':"analysis object already exists"}
                         except Analysis.DoesNotExist:
                             stat = Analysis()
                             stat.sessionID = session
                             stat.user = userid
-                            if Stat.objects.filter(sessionID = session).exists():
-                                stats = Stat.objects.filter(sessionID = session)
-                                stat.avgHR, stat.avgRR, stat.maxHR, stat.minHR, stat.maxRR, stat.minRR, stat.tst = AnalysisView.avgmaxtime(self, stats)
-                                stat.avgHRdip = AnalysisView.dipHR(self, stats)
-                                stat.save()
-                                args = {'stat':stat}
-                            else:
-                                args = {'error':"no stats for this session"}
+                        if Stat.objects.filter(sessionID = session).exists():
+                            stats = Stat.objects.filter(sessionID = session)
+                            stat.avgHR, stat.avgRR, stat.maxHR, stat.minHR, stat.maxRR, stat.minRR, stat.tst = AnalysisView.avgmaxtime(self, stats)
+                            stat.avgHRdip = AnalysisView.dipHR(self, stats)
+                            stat.save()
+                            args = {'stat':stat, 'stats':stats}
+                        else:
+                            args = {'error':"no stats for this session"}
                     elif(session.status == "done"):
                         try:
                             stat = Analysis.objects.get(sessionID = session)
