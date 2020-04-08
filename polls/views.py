@@ -203,12 +203,21 @@ class AnalysisView(generic.ListView):
     def avgmaxtime(self,data):
         HRsum, RRsum, maxHR, maxRR = 0, 0, 0, 0
         minHR, minRR = 1000, 1000
+        skipcount = 0
         datasize = len(data)
         sec = data[datasize-1].time
-        for d in data:
-            if sec > 600:
-                sleepindex = 300//4  # approx 5 minute delay
-                while sleepindex < datasize:
+        if sec > 600:
+            sleepindex = 300//4  # approx 5 minute delay
+            while sleepindex < datasize:
+                if data[sleepindex].hr < 48:
+                    skipcount += 1
+                    RRsum += data[datasize].rr
+                    if maxRR < data[sleepindex].rr:
+                        maxRR = data[sleepindex].rr
+                    if minRR > data[sleepindex].rr:
+                        minRR = data[sleepindex].rr
+                    sleepindex += 1
+                else:
                     HRsum += data[sleepindex].hr
                     RRsum += data[sleepindex].rr
                     if maxHR < data[sleepindex].hr:
@@ -220,10 +229,18 @@ class AnalysisView(generic.ListView):
                     if minRR > data[sleepindex].rr:
                         minRR = data[sleepindex].rr
                     sleepindex += 1
-                HRavg = HRsum/(datasize - sleepindex)
-                RRavg = RRsum/(datasize - sleepindex)
-            else:
-                for d in data:
+            HRavg = HRsum/(datasize - sleepindex - skipcount)
+            RRavg = RRsum/(datasize - sleepindex)
+        else:
+            for d in data:
+                if d.hr < 48:
+                    skipcount += 1
+                    RRsum += d.rr
+                    if maxRR < d.rr:
+                        maxRR = d.rr
+                    if minRR > d.rr:
+                        minRR = d.rr
+                else:
                     HRsum += d.hr
                     RRsum += d.rr
                     if maxHR < d.hr:
@@ -234,58 +251,78 @@ class AnalysisView(generic.ListView):
                         minHR = d.hr
                     if minRR > d.rr:
                         minRR = d.rr
-                HRavg = HRsum/datasize
-                RRavg = RRsum/datasize
+            HRavg = HRsum/(datasize - skipcount)
+            RRavg = RRsum/datasize
         tst = str(timedelta(seconds=sec))
         return HRavg, RRavg, maxHR, minHR, maxRR, minRR, tst
 
     def dipHR(self, data):
         dipsum = 0
+        skipcount = 0
         datasize = len(data)
         sec = data[datasize - 1].time
         if sec > 600:
             sleepindex = 300//4  # approx 5 minute delay
             awake_ref = data[sleepindex].hr
             while sleepindex < datasize:
-                dipsum += abs(awake_ref - data[sleepindex].hr)
-                sleepindex += 1
-            HRdip = dipsum/(datasize - sleepindex)
+                if data[sleepindex].hr >= 48:
+                    dipsum += abs(awake_ref - data[sleepindex].hr)
+                    sleepindex += 1
+                else:
+                    skipcount += 1
+                    sleepindex += 1
+            HRdip = dipsum/(datasize - sleepindex - skipcount)
         else:
             try:
-                awake_ref = data[10].hr  #close to 75% of 1 minute delay
+                awake_ref = data[10].hr  # close to 75% of 1 minute delay
             except IndexError:
                 print("less than 40 seconds of stats data, not enough to accurately calculate heart rate dip")
                 return -1
             for d in data:
-                dipsum += abs(awake_ref - d.hr)
-            HRdip = dipsum/datasize
+                if d.hr >= 48:
+                    dipsum += abs(awake_ref - d.hr)
+                else:
+                    skipcount += 1
+            HRdip = dipsum/(datasize - skipcount)
         return HRdip
 
     def get(self, request, session_id):
         if self.request.user.is_authenticated:
-            #name = self.request.user.username
-            #accessor = User.objects.get(user_name=name)
-            userid = self.request.user.id
+            userid = self.request.user
             try:
                 session = Session.objects.get(id = session_id)
-                stats = Stat.objects.filter(sessionID = session)
-                # stats = Stat.objects.filter(sessionID = session_id)
-                try:
-                    calc = Analysis.objects.get(sessionID_id = session_id)
-                    # calc = Analysis.objects.get(sessionID = session_id)
-                except Analysis.DoesNotExist:
-                    calc = Analysis()
-                    calc.sessionID = session
-                    #calc.user = accessor
-                    calc.user = userid
-
-                calc.avgHR, calc.avgRR, calc.maxHR, calc.minHR, calc.maxRR, calc.minRR, calc.tst = AnalysisView.avgmaxtime(self, stats)
-                calc.avgHRdip = AnalysisView.dipHR(self, stats)
-                calc.save()
-                args = {'stat':calc}
+                if(session.user == userid):
+                    if(session.status == "calculate"):
+                        try:
+                            stat = Analysis.objects.get(sessionID = session)
+                        except Analysis.DoesNotExist:
+                            stat = Analysis()
+                            stat.sessionID = session
+                            stat.user = userid
+                        if Stat.objects.filter(sessionID = session).exists():
+                            stats = Stat.objects.filter(sessionID = session)
+                            stat.avgHR, stat.avgRR, stat.maxHR, stat.minHR, stat.maxRR, stat.minRR, stat.tst = AnalysisView.avgmaxtime(self, stats)
+                            stat.avgHRdip = AnalysisView.dipHR(self, stats)
+                            stat.save()
+                            args = {'stat':stat, 'stats':stats}
+                        else:
+                            args = {'error':"no stats for this session"}
+                    elif(session.status == "done"):
+                        try:
+                            stat = Analysis.objects.get(sessionID = session)
+                            args = {'stat':stat}
+                        except Analysis.DoesNotExist:
+                            args = {'error':"sessions status indicated done, but analysis object doesn't exist, so calc not done"}
+                    elif(session.status == "running"):
+                        args = {"error": "session is running, please stop device before calculating"}
+                    else:
+                        args = {'error':"invalid session status"}
+                else: 
+                    args = {'error':"session doesn't belong to this user"}
             except Session.DoesNotExist:
-                args = {}
-
+                args = {'error':"session doesn't exist"}
+        else:
+            args = {'error':"user not authorized"}
         return render(request, self.template_name, args)
 
 class RealtimeView(generic.ListView):

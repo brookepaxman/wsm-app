@@ -2,6 +2,7 @@ env/
 polls/__pycache__/
 mysite/__pycache__/
 .vscode/
+.idea/
 polls/migrations/__pycache__/
 .DS_Store
 polls/.DS_Store
