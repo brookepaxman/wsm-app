@@ -32,13 +32,34 @@
       <ul id="hrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
         <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Sleep Summary</h3></li>
 
-        {% for stat in userinput %}
-          <h5>{{stat.date}}</h5>
-          <li>Sleep Quality: {{ stat.sleepQuality }}</li>
-          <li>Sleep Disruptions: {{ stat.sleepDisruptions }}</li>
-          <li>Sleep Notes: {{ stat.sleepNotes }}</li>
-        {% endfor %}
-      </ul>
+  {%if analysis%}
+    <div class="stats" style="display: flex">
+        <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+          {% for stat in analysis %}
+            <h3><a href={{stat.sessionID.id}}>{{stat.sessionID.startDate}}, {{stat.sessionID.startTime}}</a></h3>
+            <h4>Statistics</h4>
+            <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes and {{stat.tst.second}} seconds</li>
+            <li>Average HR: {{ stat.avgHR }}</li>
+            <li>Average RR: {{ stat.avgRR }}</li>
+            {%if stat.avgHRdip == -1%}
+              <li>Average HR Dip: Not enough data to calculate HR Dip. Please record a sleep session for longer than 1 minute</li>
+            {%else%}
+              <li>Average HR Dip: {{ stat.avgHRdip }}</li>
+            {%endif%}
+            <li>Min HR: {{ stat.minHR }}</li>
+            <li>Max HR: {{ stat.maxHR }}</li>
+            <li>Min RR: {{ stat.minRR }}</li>
+            <li>Max RR: {{ stat.maxRR }}</li>
+            <h4>Sleep Notes</h4>
+            {%if stat.sleepQuality == 0%}
+              <p>no sleep notes</p>
+            {%else%}
+              <li>Sleep Quality: {{ stat.sleepQuality }}</li>
+              <li>Sleep Disruptions: {{ stat.sleepDisruptions }}</li>
+              <li>Sleep Notes: {{ stat.sleepNotes }}</li>
+              <li>Number of Sleep Disruptions: {{ stat.numSleepDisruptions }}</li>
+            {%endif%}
+          {% endfor %}
 
       <canvas id="myChart" width="400" height="400"></canvas>
     

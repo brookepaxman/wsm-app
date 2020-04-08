@@ -4,13 +4,20 @@ from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
-from chartjs.views.lines import BaseLineChartView
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+
+from datetime import datetime
+from datetime import date
+from datetime import timedelta
+# from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
-
-from .models import User, Stat, Dummy
-
-from .serializers import DummySerializer
-
+from .models import User, Stat, Dummy, Analysis, Session
+from .forms import sleepQualityForm, calendarForm, statGeneratorForm
+from .serializers import StatSerializer, AnalysisSerializer
+from numpy import abs
+from .serializers import StatSerializer, AnalysisSerializer, StrippedAnalysisSerializer
+import random
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
@@ -25,13 +32,125 @@ class IndexView(generic.ListView):
         else:
             return False
 
+class GenerateView(generic.FormView):
+    template_name = 'polls/generate.html'
+    def get(self,request):
+        form = statGeneratorForm()
+        userid = self.request.user.id
+        args = {'form': form}
+        return render(request, self.template_name, args)
+
+
+    def post(self,request):
+        form = statGeneratorForm(request.POST)
+        test = 'a'
+        if self.request.user.is_authenticated:
+            userid = self.request.user.id
+            test = 'ab'
+            if form.is_valid():
+                new_sess = Session()
+                new_sess.startDate = form.cleaned_data['startDate']
+                new_sess.startTime = form.cleaned_data['startTime']
+                # c_user = User.objects.get(id=userid)
+                new_sess.user = self.request.user
+                new_sess.save()
+                entries = form.cleaned_data['numberofEntries']
+                time = random.randint(0, 4)
+                test = 'abc'
+                new_sess.status = 'running'
+                oldhr = random.randint(48, 84)
+                oldrr = random.randint(5, 25)
+                for e in range(0, entries):
+                    new_stat = Stat()
+                    new_stat.sessionID = new_sess
+                    new_stat.user = self.request.user
+                    new_stat.time = 4*e + time
+                    if (oldhr < 49) | (oldhr > 83):
+                        new_stat.hr = random.randint(48, 84)
+                    else:
+                        new_stat.hr = oldhr + random.randint(-3, 3)
+                    if (oldrr < 6) | (oldrr > 24):
+                        new_stat.rr = random.randint(5, 25)
+                    else:
+                        new_stat.rr = oldrr + random.randint(-2, 2)
+                    oldhr = new_stat.hr
+                    oldrr = new_stat.rr
+                    new_stat.save()
+                    if e == entries-1:
+                        test = 'Success!'
+                        new_sess.status = 'calculate'
+                new_sess.save()
+                args = {'form':form, 'test':test}
+        return render(request, self.template_name, args)
 
 class DetailView(generic.DetailView):
     template_name = 'polls/detail.html'
 
-class DummyView(viewsets.ModelViewSet):
-    queryset = Dummy.objects.order_by('time')
-    serializer_class = DummySerializer
+class StatView(viewsets.ModelViewSet):
+
+    def get_queryset(self):         # this returns most recent session of the user that is logged in
+        name = None
+        if self.request.user.is_authenticated:  # if user is logged in
+            userid = self.request.user.id
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name) # grab all of user's stat objects
+            user_allstats = Stat.objects.filter(user=userid).order_by('sessionID__id') # and filter by sessionID
+            recent = user_allstats.last()       # grab the most recent sessionID
+            recent_Sid = recent.sessionID
+            queryset = user_allstats.filter(sessionID=recent_Sid.id).order_by('time')       # filter to only have that sessionID
+            return queryset
+        else:
+            queryset = Stat.objects.order_by('time')
+            return queryset
+
+    # queryset = get_queryset()
+    # access = User.objects.get(user_name='David')
+    # queryset = Stat.objects.filter(user=access.id).order_by('time')
+    serializer_class = StatSerializer
+
+class AnalysisSetView(viewsets.ModelViewSet):
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            userid = self.request.user.id
+        userAnalysisAll = Analysis.objects.filter(user=userid).order_by('sessionID__startDate')
+        dateCutoff = date.today() - timedelta(days=7)
+        userAnalysisWeek = userAnalysisAll.filter(sessionID__startDate__gte=dateCutoff).order_by('-sessionID')
+        week_set = {}
+
+        for analysis in userAnalysisWeek:
+            print(analysis.sessionID)
+            if week_set.get(analysis.sessionID.startDate, False):
+                print("excluded: "+ str(analysis.sessionID))
+                userAnalysisWeek = userAnalysisWeek.exclude(id=analysis.id)
+            else:
+                week_set[analysis.sessionID.startDate] = True
+        # theset = userAnalysisWeek.distinct("sessionID__startDate")
+        userAnalysisWeek = userAnalysisWeek.reverse()
+        print(week_set)
+        return userAnalysisWeek
+    serializer_class = AnalysisSerializer
+
+class MonthAnalysisViewSet(viewsets.ModelViewSet):
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            userid = self.request.user.id
+        userAnalysisAll = Analysis.objects.filter(user=userid).order_by('sessionID__startDate')
+        dateCutoff = date.today() - timedelta(days=30)
+        userAnalysisMonth = userAnalysisAll.filter(sessionID__startDate__gte=dateCutoff).order_by('-sessionID')
+        month_set = {}
+
+        for analysis in userAnalysisMonth:
+            print(analysis.sessionID)
+            if month_set.get(analysis.sessionID.startDate, False):
+                print("excluded: "+ str(analysis.sessionID))
+                userAnalysisMonth = userAnalysisMonth.exclude(id=analysis.id)
+            else:
+                month_set[analysis.sessionID.startDate] = True
+        # theset = userAnalysisWeek.distinct("sessionID__startDate")
+        userAnalysisMonth = userAnalysisMonth.reverse()
+        # print(month_set)
+        return userAnalysisMonth
+    serializer_class = StrippedAnalysisSerializer
 
 class ChartView(generic.ListView):
     model = User
@@ -73,11 +192,159 @@ class UserInputView(generic.ListView):
     
 class MultiView(TemplateView):
     template_name = 'polls/analysis.html'
-    
-    def get_context_data(self, **kwargs):
-        name = self.request.user.username
-        accessor = User.objects.get(user_name=name)
-        context = super(MultiView, self).get_context_data(**kwargs)
-        context['analysis'] = Analysis.objects.filter(user=accessor.id).order_by('date')
-        context['userinput'] = UserInput.objects.filter(user=accessor.id).order_by('date')
-        return context 
+
+    def get(self,request):
+        form = calendarForm()
+        if self.request.user.is_authenticated:
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
+            # sess = Session.objects.filter(user=accessor.id)
+            args = {'form': form,'analysis':Analysis.objects.filter(user=userid).order_by('id')}
+        else:
+            args = {'form': form}
+        return render(request, self.template_name,args)
+
+
+    def post(self,request):
+        form = calendarForm(request.POST)
+        if self.request.user.is_authenticated:
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
+            if form.is_valid():
+                date = form.cleaned_data['inputDate']
+                if not Session.objects.filter(startDate = date).exists():
+                    args = {'form':form}
+                else:
+                    analysisList = Analysis.objects.none()
+                    # anal = Analysis.objects.filter(user=accessor.id)
+                    # sess = Session.objects.filter(anal__user=accessor.id,startDate = date).distinct()
+                    sess = Session.objects.filter(user=userid,startDate = date)
+                    for s in sess:
+                        a = Analysis.objects.filter(user=userid,sessionID=s)
+                        analysisList = a | analysisList
+                    analysisList.order_by('sessionID')
+                    form = calendarForm()
+                    args = {'form':form,'date':date,'analysis':analysisList}
+        else:
+            form = calendarForm()
+            args = {'form':form}
+        return render(request, self.template_name, args)
+
+
+    # def get_context_data(self, **kwargs):
+    #     name = self.request.user.username
+    #     accessor = User.objects.get(user_name=name)
+    #     context = super(MultiView, self).get_context_data(**kwargs)
+    #     context['analysis'] = Analysis.objects.filter(user=accessor.id).order_by('date')
+    #     context['userinput'] = UserInput.objects.filter(user=accessor.id).order_by('date')
+    #     return context
+
+
+class AnalysisView(generic.ListView):
+    model = Analysis
+    template_name = 'polls/calculate.html'
+
+    def avgmaxtime(self,data):
+        HRsum, RRsum, maxHR, maxRR = 0, 0, 0, 0
+        minHR, minRR = 1000, 1000
+        datasize = len(data)
+        sec = data[datasize-1].time
+        for d in data:
+            if sec > 600:
+                sleepindex = 300//4  # approx 5 minute delay
+                while sleepindex < datasize:
+                    HRsum += data[sleepindex].hr
+                    RRsum += data[sleepindex].rr
+                    if maxHR < data[sleepindex].hr:
+                        maxHR = data[sleepindex].hr
+                    if maxRR < data[sleepindex].rr:
+                        maxRR = data[sleepindex].rr
+                    if minHR > data[sleepindex].hr:
+                        minHR = data[sleepindex].hr
+                    if minRR > data[sleepindex].rr:
+                        minRR = data[sleepindex].rr
+                    sleepindex += 1
+                HRavg = HRsum/(datasize - 75)
+                RRavg = RRsum/(datasize - 75)
+            else:
+                HRsum += d.hr
+                RRsum += d.rr
+                if maxHR < d.hr:
+                    maxHR = d.hr
+                if maxRR < d.rr:
+                    maxRR = d.rr
+                if minHR > d.hr:
+                    minHR = d.hr
+                if minRR > d.rr:
+                    minRR = d.rr
+            HRavg = HRsum/datasize
+            RRavg = RRsum/datasize
+        tst = str(timedelta(seconds=sec))
+        return HRavg, RRavg, maxHR, minHR, maxRR, minRR, tst
+
+    def dipHR(self, data):
+        dipsum = 0
+        datasize = len(data)
+        sec = data[datasize - 1].time
+        if sec > 600:
+            sleepindex = 300//4  # approx 5 minute delay
+            awake_ref = data[sleepindex].hr
+            while sleepindex < datasize:
+                dipsum += abs(awake_ref - data[sleepindex].hr)
+                sleepindex += 1
+            HRdip = dipsum/(datasize - 75)
+        else:
+            try:
+                awake_ref = data[10].hr  #close to 75% of 1 minute delay
+            except IndexError:
+                print("less than 40 seconds of stats data, not enough to accurately calculate heart rate dip")
+                return -1
+            for d in data:
+                dipsum += abs(awake_ref - d.hr)
+            HRdip = dipsum/datasize
+        return HRdip
+
+    def get(self, request, session_id):
+        if self.request.user.is_authenticated:
+            userid = self.request.user
+            try:
+                session = Session.objects.get(id = session_id)
+                if(session.user == userid):
+                    if(session.status == "calculate"):
+                        try:
+                            stat = Analysis.objects.get(sessionID = session)
+                            args = {'error':"analysis object already exists"}
+                        except Analysis.DoesNotExist:
+                            stat = Analysis()
+                            stat.sessionID = session
+                            daily_date = session.startDate
+                            stat.user = userid
+                            if Stat.objects.filter(sessionID = session).exists():
+                                stats = Stat.objects.filter(sessionID = session)
+                                stats_day = Stat.objects.filter(sessionID__startDate=daily_date, user=userid)
+                                stat.avgHR, stat.avgRR, stat.maxHR, stat.minHR, stat.maxRR, stat.minRR, stat.tst = AnalysisView.avgmaxtime(self, stats)
+                                stat.dailyHR, stat.dailyRR, e1, e2, e3, e4, e5 = AnalysisView.avgmaxtime(self, stats_day)
+                                stat.avgHRdip = AnalysisView.dipHR(self, stats)
+                                stat.save()
+                                args = {'stat':stat}
+                            else:
+                                args = {'error':"no stats for this session"}
+                    elif(session.status == "done"):
+                        try:
+                            stat = Analysis.objects.get(sessionID = session)
+                            args = {'stat':stat}
+                        except Analysis.DoesNotExist:
+                            args = {'error':"sessions status indicated done, but analysis object doesn't exist, so calc not done"}
+                    elif(session.status == "running"):
+                        args = {"error": "session is running, please stop device before calculating"}
+                    else:
+                        args = {'error':"invalid session status"}
+                else: 
+                    args = {'error':"session doesn't belong to this user"}
+            except Session.DoesNotExist:
+                args = {'error':"session doesn't exist"}
+        else:
+            args = {'error':"user not authorized"}
+        return render(request, self.template_name, args)

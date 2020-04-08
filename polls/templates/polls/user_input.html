@@ -11,7 +11,37 @@
 {% endif %}
 {% endblock %}
 
+<<<<<<< Updated upstream
 <p><a href="/analysis/">Back to analysis</a> </p>
+=======
+  <p><a href="/analysis/">Back to analysis</a> </p>
+  {%if analysis%}
+    <div class="stats" >
+      <h2>{{s.startDate}}, {{s.startTime}}</h2>
+        <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+          {% for stat in analysis %}
+            <h3>Statistics</h3>
+            <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes</li>
+            <li>Average HR: {{ stat.avgHR }}</li>
+            <li>Average RR: {{ stat.avgRR }}</li>
+            <li>Average HR Dip: {{ stat.avgHRdip }}</li>
+            <li>Min HR: {{ stat.minHR }}</li>
+            <li>Max HR: {{ stat.maxHR }}</li>
+            <li>Min RR: {{ stat.minRR }}</li>
+            <li>Max RR: {{ stat.maxRR }}</li>
+            <h3>Sleep Notes</h3>
+            {%if stat.sleepQuality == 0%}
+              <p>no sleep notes</p>
+            {%else%}
+              <li>Sleep Quality: {{ stat.sleepQuality }}</li>
+              <li>Sleep Disruptions: {{ stat.sleepDisruptions }}</li>
+              <li>Sleep Notes: {{ stat.sleepNotes }}</li>
+              <li>Number of Sleep Disruptions: {{ stat.numSleepDisruptions }}</li>
+            {%endif%}
+          {% endfor %}
+        </ul>
+    </div>
+>>>>>>> Stashed changes
 
 <div class="forms">
     <h3>Add some notes about your sleep: </h3>

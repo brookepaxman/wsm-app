@@ -7,6 +7,12 @@
 {% if user.is_authenticated %}
   Hi {{ user.username }}!
   <p><a href="{% url 'logout' %}">logout</a></p>
+<<<<<<< Updated upstream
+=======
+  <a href="/line-chart" class="fill-btn" style="margin: 0; text-decoration: none;">View Charts</a>
+  <a href="/analysis" class="fill-btn" style="margin: 0; text-decoration: none;">View Analytics</a>
+  <a href="/generate" class="fill-btn" style="margin: 0; text-decoration: none;">Generate Objects</a>
+>>>>>>> Stashed changes
 {% else %}
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">login</a>
@@ -32,13 +38,22 @@
       <ul id="rrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
         <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Respiration Rate</h3></li>
 
-        {% for stat in latest_stats %}
-          <li>{{ stat.rr }}</li>
-        {% endfor %}
-      </ul>
-      <canvas id="myChart" width="400" height="400"></canvas>
-    {% else %}
-      <p>No stats are available.</p>
-    {% endif %}
-  </div>
+          {% for stat in latest_stats %}
+            <li>{{ stat.rr }}</li>
+          {% endfor %}
+        </ul>
+
+        <ul id="sessionID" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+          <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Session ID</h3></li>
+
+          {% for stat in latest_stats %}
+            <li>{{ stat.sessionID }}</li>
+          {% endfor %}
+        </ul>
+
+        <canvas id="myChart" width="400" height="400"></canvas>
+      {% else %}
+        <p>No stats are available.</p>
+      {% endif %}
+    </div>
 
