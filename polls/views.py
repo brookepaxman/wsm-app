@@ -307,8 +307,8 @@ class AnalysisView(generic.ListView):
                     if minRR > data[sleepindex].rr:
                         minRR = data[sleepindex].rr
                     sleepindex += 1
-            HRavg = HRsum/(datasize - sleepindex - skipcount)
-            RRavg = RRsum/(datasize - sleepindex)
+            HRavg = HRsum/(datasize - 75 - skipcount)
+            RRavg = RRsum/(datasize - 75)
         else:
             for d in data:
                 if d.hr < 48:
@@ -349,7 +349,7 @@ class AnalysisView(generic.ListView):
                 else:
                     skipcount += 1
                     sleepindex += 1
-            HRdip = dipsum/(datasize - sleepindex - skipcount)
+            HRdip = dipsum/(datasize - 75 - skipcount)
         else:
             try:
                 awake_ref = data[10].hr  # close to 75% of 1 minute delay
