@@ -50,4 +50,6 @@ class Analysis(models.Model):
     sleepDisruptions = models.TextField(default="")
     sleepNotes = models.TextField(default="")
     numSleepDisruptions = models.IntegerField(default=0)
+    dailyHR = models.IntegerField(default=0)
+    dailyRR = models.IntegerField(default=0)
 
