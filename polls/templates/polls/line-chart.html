@@ -5,14 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>WSM</title>
+  <title>Your Stats</title>
   <link rel="apple-touch-icon" sizes="180x180" href="{% static '/admin/favicon_io/apple-touch-icon.png' %}">
   <link rel="icon" type="image/png" sizes="32x32" href="{% static '/admin/favicon_io/favicon-32x32.png' %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static '/admin/favicon_io/favicon-16x16.png' %}">
   <link rel="manifest" href="{% static '/admin/favicon_io/site.webmanifest' %}">
-  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/bootstrap.css' %}">
-  <meta http-equiv="refresh" content="30" />
   <script
       src="https://code.jquery.com/jquery-3.3.1.js"
       integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
@@ -24,6 +21,7 @@
     });
   </script>
   <div id="nav"></div>
+  <script type="text/javascript" src="https://momentjs.com/downloads/moment.js"></script>
 </head>
 <body>
   <link rel="stylesheet" type="text/css" href="{% static '/chartjs/dist/Chart.min.css' %}">
@@ -39,37 +37,24 @@
       background-color: #2F4454;
     }
   </style>
-  <div class="nav">
-    <h2 style="margin-left: 50px; margin-top: auto; margin-bottom: auto;">Your Statistics</h2>
-  </div>
 
-<div class="container mt-20">
-  {% if user.is_authenticated %}
-    Hi {{ user.username }}!
-    <p><a href="{% url 'logout' %}">logout</a></p>
-    <a href="/analysis" class="fill-btn" style="margin: 0; text-decoration: none;">View Analytics</a>
-    <a href="/generate" class="fill-btn" style="margin: 0; text-decoration: none;">Generate Objects</a>
-  {% else %}
-    <p>You are not logged in</p>
-    <a href="{% url 'login' %}">login</a>
-  {% endif %}
-
-        <div class="container">
-          <div class="row">
-            <div class="col-md-3 text-center" style="color: white; margin-top: 80px;">
-              <a id="today" href="#" class="fill-btn chosen">Today</a>
-              <a id="week" href="#" class="fill-btn">Week</a>
-              <a id="month" href="#" class="fill-btn">Month</a>
-            </div>
-            <div class="col-md-9" style = "margin-top: 60px">
-              <canvas class="chart-style" id="myChart" width="400" height="400"></canvas>
-              <canvas class="chart-style hidden" id="myChart2" width="400" height="400"></canvas>
-              <canvas class="chart-style hidden" id="myChart3" width="400" height="400"></canvas>
-            </div>
-          </div>
+    <div class="nav">
+      <h2 style="margin-left: 50px; margin-top: auto; margin-bottom: auto;">Your Statistics</h2>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 text-center" style="color: white; margin-top: 80px;">
+          <a id="today" href="#" class="fill-btn chosen">Today</a>
+          <a id="week" href="#" class="fill-btn">Week</a>
+          <a id="month" href="#" class="fill-btn">Month</a>
         </div>
-</div>
-
+        <div class="col-md-9" style = "margin-top: 60px">
+          <canvas class="chart-style" id="myChart" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart2" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart3" width="400" height="400"></canvas>
+        </div>
+      </div>
+    </div>
 
 </body>
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
@@ -83,8 +68,11 @@
       var labels = [];
       var hrData = [];
       var rrData = [];
+      var time;
+      // var startTime = stat.sessionID.startTime;
       data.forEach(function(stat) {
-        labels.push(stat.time);
+        time = moment(stat.sessionID.startDate + "T" + stat.sessionID.startTime).clone().add(stat.time, 'seconds'); 
+        labels.push(time.format('hh:mm:ss a'));
         hrData.push(stat.hr);
         rrData.push(stat.rr);
       });
@@ -147,8 +135,8 @@
       var avgRRdata = [];
       data.forEach(function(stat) {
         sessionDate.push(stat.sessionID.startDate);
-        avgHRdata.push(stat.avgHR);
-        avgRRdata.push(stat.avgRR);
+        avgHRdata.push(stat.dailyHR);
+        avgRRdata.push(stat.dailyRR);
       });
       var ctx2 = document.getElementById('myChart2').getContext('2d');
       var myChart2 = new Chart (ctx2, {

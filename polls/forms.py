@@ -9,3 +9,9 @@ class sleepQualityForm(forms.Form):
 
 class calendarForm(forms.Form):
     inputDate = forms.DateField()
+
+class statGeneratorForm(forms.Form):
+    startDate = forms.DateField()
+    startTime = forms.TimeField()
+    numberofEntries = forms.IntegerField(min_value=1)
+    

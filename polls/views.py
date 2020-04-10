@@ -8,15 +8,16 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 
 from datetime import datetime
+from datetime import date
 from datetime import timedelta
 # from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
 from .models import User, Stat, Dummy, Analysis, Session
-from .forms import sleepQualityForm, calendarForm
+from .forms import sleepQualityForm, calendarForm, statGeneratorForm
 from .serializers import StatSerializer, AnalysisSerializer
 from numpy import abs
 from .serializers import StatSerializer, AnalysisSerializer, StrippedAnalysisSerializer
-
+import random
 
 def signup_view(request):
     form = UserCreationForm(request.POST)
@@ -44,6 +45,56 @@ class IndexView(generic.ListView):
         else:
             return False
 
+class GenerateView(generic.FormView):
+    template_name = 'polls/generate.html'
+    def get(self,request):
+        form = statGeneratorForm()
+        userid = self.request.user.id
+        args = {'form': form}
+        return render(request, self.template_name, args)
+
+
+    def post(self,request):
+        form = statGeneratorForm(request.POST)
+        test = 'a'
+        if self.request.user.is_authenticated:
+            userid = self.request.user.id
+            test = 'ab'
+            if form.is_valid():
+                new_sess = Session()
+                new_sess.startDate = form.cleaned_data['startDate']
+                new_sess.startTime = form.cleaned_data['startTime']
+                # c_user = User.objects.get(id=userid)
+                new_sess.user = self.request.user
+                new_sess.save()
+                entries = form.cleaned_data['numberofEntries']
+                time = random.randint(0, 4)
+                test = 'abc'
+                new_sess.status = 'running'
+                oldhr = random.randint(48, 84)
+                oldrr = random.randint(5, 25)
+                for e in range(0, entries):
+                    new_stat = Stat()
+                    new_stat.sessionID = new_sess
+                    new_stat.user = self.request.user
+                    new_stat.time = 4*e + time
+                    if (oldhr < 49) | (oldhr > 83):
+                        new_stat.hr = random.randint(48, 84)
+                    else:
+                        new_stat.hr = oldhr + random.randint(-3, 3)
+                    if (oldrr < 6) | (oldrr > 24):
+                        new_stat.rr = random.randint(5, 25)
+                    else:
+                        new_stat.rr = oldrr + random.randint(-2, 2)
+                    oldhr = new_stat.hr
+                    oldrr = new_stat.rr
+                    new_stat.save()
+                    if e == entries-1:
+                        test = 'Success!'
+                        new_sess.status = 'calculate'
+                new_sess.save()
+                args = {'form':form, 'test':test}
+        return render(request, self.template_name, args)
 
 class DetailView(generic.DetailView):
     template_name = 'polls/detail.html'
@@ -72,18 +123,46 @@ class StatView(viewsets.ModelViewSet):
 
 class AnalysisSetView(viewsets.ModelViewSet):
     def get_queryset(self):
-        #accessor = User.objects.get(user_name="David")
-        userid = self.request.user.id
-        return Analysis.objects.filter(user=userid).order_by('sessionID')
+        if self.request.user.is_authenticated:
+            userid = self.request.user.id
+        userAnalysisAll = Analysis.objects.filter(user=userid).order_by('sessionID__startDate')
+        dateCutoff = date.today() - timedelta(days=7)
+        userAnalysisWeek = userAnalysisAll.filter(sessionID__startDate__gte=dateCutoff).order_by('-sessionID')
+        week_set = {}
+
+        for analysis in userAnalysisWeek:
+            print(analysis.sessionID)
+            if week_set.get(analysis.sessionID.startDate, False):
+                print("excluded: "+ str(analysis.sessionID))
+                userAnalysisWeek = userAnalysisWeek.exclude(id=analysis.id)
+            else:
+                week_set[analysis.sessionID.startDate] = True
+        # theset = userAnalysisWeek.distinct("sessionID__startDate")
+        userAnalysisWeek = userAnalysisWeek.reverse()
+        print(week_set)
+        return userAnalysisWeek
     serializer_class = AnalysisSerializer
 
 class MonthAnalysisViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            #name = self.request.user.username
-            #accessor = User.objects.get(user_name=name)
             userid = self.request.user.id
-        return Analysis.objects.filter(user=userid).order_by('sessionID')[:30]
+        userAnalysisAll = Analysis.objects.filter(user=userid).order_by('sessionID__startDate')
+        dateCutoff = date.today() - timedelta(days=30)
+        userAnalysisMonth = userAnalysisAll.filter(sessionID__startDate__gte=dateCutoff).order_by('-sessionID')
+        month_set = {}
+
+        for analysis in userAnalysisMonth:
+            print(analysis.sessionID)
+            if month_set.get(analysis.sessionID.startDate, False):
+                print("excluded: "+ str(analysis.sessionID))
+                userAnalysisMonth = userAnalysisMonth.exclude(id=analysis.id)
+            else:
+                month_set[analysis.sessionID.startDate] = True
+        # theset = userAnalysisWeek.distinct("sessionID__startDate")
+        userAnalysisMonth = userAnalysisMonth.reverse()
+        # print(month_set)
+        return userAnalysisMonth
     serializer_class = StrippedAnalysisSerializer
 
 class ChartView(generic.ListView):
@@ -215,8 +294,8 @@ class AnalysisView(generic.ListView):
                     if minRR > data[sleepindex].rr:
                         minRR = data[sleepindex].rr
                     sleepindex += 1
-            HRavg = HRsum/(datasize - sleepindex - skipcount)
-            RRavg = RRsum/(datasize - sleepindex)
+            HRavg = HRsum/(datasize - 75 - skipcount)
+            RRavg = RRsum/(datasize - 75)
         else:
             for d in data:
                 if d.hr < 48:
@@ -257,7 +336,7 @@ class AnalysisView(generic.ListView):
                 else:
                     skipcount += 1
                     sleepindex += 1
-            HRdip = dipsum/(datasize - sleepindex - skipcount)
+            HRdip = dipsum/(datasize - 75 - skipcount)
         else:
             try:
                 awake_ref = data[10].hr  # close to 75% of 1 minute delay
@@ -285,13 +364,16 @@ class AnalysisView(generic.ListView):
                         except Analysis.DoesNotExist:
                             stat = Analysis()
                             stat.sessionID = session
+                            daily_date = session.startDate
                             stat.user = userid
                             if Stat.objects.filter(sessionID = session).exists():
                                 stats = Stat.objects.filter(sessionID = session)
+                                stats_day = Stat.objects.filter(sessionID__startDate=daily_date, user=userid)
                                 stat.avgHR, stat.avgRR, stat.maxHR, stat.minHR, stat.maxRR, stat.minRR, stat.tst = AnalysisView.avgmaxtime(self, stats)
+                                stat.dailyHR, stat.dailyRR, e1, e2, e3, e4, e5 = AnalysisView.avgmaxtime(self, stats_day)
                                 stat.avgHRdip = AnalysisView.dipHR(self, stats)
                                 stat.save()
-                                args = {'stat':stat}
+                                args = {'stat':stat, 'stats':stats}
                             else:
                                 args = {'error':"no stats for this session"}
                     elif(session.status == "done"):
