@@ -28,18 +28,19 @@ def signup_view(request):
         login(request, user)
         return redirect('logout')
     return render(request, 'signup.html', {'form': form})
-    
+
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
-    context_object_name = 'latest_stats'
+    context_object_name = 'queryset'
 
     def get_queryset(self):
         name = None
         if self.request.user.is_authenticated:
             #name = self.request.user.username
-            userid = self.request.user.id 
+            userid = self.request.user.id
             #accessor = User.objects.get(user_name=name)
-            return Stat.objects.filter(user=userid).order_by('time')
+            queryset = Stat.objects.filter(user=userid).order_by('time')
+            return queryset
         else:
             return False
 
@@ -86,21 +87,7 @@ class MonthAnalysisViewSet(viewsets.ModelViewSet):
     serializer_class = StrippedAnalysisSerializer
 
 class ChartView(generic.ListView):
-    model = User
-    template_name = 'polls/line-chart.html'
-    context_object_name = 'queryset'
 
-    def get_queryset(self):     # this is here mostly for debugging purposes
-        name = None
-        if self.request.user.is_authenticated:
-            #name = self.request.user.username
-            #accessor = User.objects.get(user_name=name)
-            userid = self.request.user.id
-            queryset = Stat.objects.filter(user=userid).order_by('time')
-            return queryset
-        else:
-            queryset = Stat.objects.order_by('time')
-            return queryset
 
 class UserInputView(generic.ListView):
     model = Analysis
@@ -317,7 +304,7 @@ class AnalysisView(generic.ListView):
                         args = {"error": "session is running, please stop device before calculating"}
                     else:
                         args = {'error':"invalid session status"}
-                else: 
+                else:
                     args = {'error':"session doesn't belong to this user"}
             except Session.DoesNotExist:
                 args = {'error':"session doesn't exist"}
