@@ -15,32 +15,16 @@
   <a href="{% url 'login' %}">login</a>
 {% endif %}
 
-  {% if latest_stats %}
+  {% if latest_stat %}
   <div class="stats" style="display: flex">
       <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
         <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Time (s)</h3></li>
-        {% for stat in latest_stats %}
-          <li>{{ stat.time }}</li>
-        {% endfor %}
-      </ul>
-      <ul id="hrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Heart Rate</h3></li>
-
-        {% for stat in latest_stats %}
-          <li>{{ stat.hr }}</li>
-        {% endfor %}
-      </ul>
-
-      <ul id="rrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Respiration Rate</h3></li>
-
-        {% for stat in latest_stats %}
-          <li>{{ stat.rr }}</li>
-        {% endfor %}
+        <li>Heart Rate: {{ latest_stat.hr }} bpm</li>
+        <li>Respiration Rate: {{ latest_stat.rr}} rpm</li>
       </ul>
       <canvas id="myChart" width="400" height="400"></canvas>
     {% else %}
-      <p>No stats are available.</p>
+      <p>Please start your WSM device to view your real-time vital signs measurements.</p>
     {% endif %}
   </div>
 {% endblock %}

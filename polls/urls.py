@@ -19,6 +19,7 @@ urlpatterns = [
     path('analysis/', views.MultiView.as_view(), name='analysis'),
     path('line-chart/', views.ChartView.as_view(), name='line-chart'),
     path('analysis/<int:session_id>/', views.UserInputView.as_view(),name='user_input'),
+    path('realtime', views.RealtimeView.as_view(), name='realtime'),
     path('calc/<int:session_id>/', views.AnalysisView.as_view(), name='calculate'),
     path('generate/', views.GenerateView.as_view(), name='generate')
     #path('<int:pk>/results/', views.ResultsView.as_view(), name='results'),

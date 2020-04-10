@@ -5,7 +5,6 @@ from django.views import generic
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
 
 from datetime import datetime
 from datetime import date
@@ -13,14 +12,14 @@ from datetime import timedelta
 # from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
 from .models import User, Stat, Dummy, Analysis, Session
-from .forms import sleepQualityForm, calendarForm, statGeneratorForm
+from .forms import sleepQualityForm, calendarForm, statGeneratorForm, SignUpForm
 from .serializers import StatSerializer, AnalysisSerializer
 from numpy import abs
 from .serializers import StatSerializer, AnalysisSerializer, StrippedAnalysisSerializer
 import random
 
 def signup_view(request):
-    form = UserCreationForm(request.POST)
+    form = SignUpForm(request.POST)
     if form.is_valid():
         form.save()
         username = form.cleaned_data.get('username')
@@ -28,6 +27,8 @@ def signup_view(request):
         user = authenticate(username=username, password=password)
         login(request, user)
         return redirect('logout')
+    else:
+        form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
 class IndexView(generic.ListView):
@@ -405,3 +406,24 @@ class AnalysisView(generic.ListView):
         else:
             args = {'error':"user not authorized"}
         return render(request, self.template_name, args)
+
+class RealtimeView(generic.ListView):
+    template_name = 'polls/realtime.html'
+    context_object_name = 'latest_stat'
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            userid = self.request.user.id 
+            latestSession = Session.objects.filter(user=userid).latest('id')
+            print(latestSession.id)
+            print(latestSession.status)
+            latestStat = Stat.objects.filter(user=userid, sessionID=latestSession.id).latest('time')
+            print(latestStat.hr)
+            print(latestStat.rr)
+            print(latestStat.sessionID)
+            if latestSession.status == "running":
+                return Stat.objects.filter(user=userid, sessionID=latestSession.id).latest('time')
+            else:
+                return False
+        else:
+            return False
