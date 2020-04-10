@@ -31,9 +31,8 @@ def signup_view(request):
     return render(request, 'signup.html', {'form': form})
 
 class IndexView(generic.ListView):
-     template_name = 'polls/index.html'
+    template_name = 'polls/index.html'
     context_object_name = 'latest_stats'
-
     def get_queryset(self):
         name = None
         if self.request.user.is_authenticated:
