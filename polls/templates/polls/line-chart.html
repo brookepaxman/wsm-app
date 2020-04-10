@@ -21,6 +21,7 @@
     });
   </script>
   <div id="nav"></div>
+  <script type="text/javascript" src="https://momentjs.com/downloads/moment.js"></script>
 </head>
 <body>
   <link rel="stylesheet" type="text/css" href="{% static '/chartjs/dist/Chart.min.css' %}">
@@ -67,8 +68,11 @@
       var labels = [];
       var hrData = [];
       var rrData = [];
+      var time;
+      // var startTime = stat.sessionID.startTime;
       data.forEach(function(stat) {
-        labels.push(stat.time);
+        time = moment(stat.sessionID.startDate + "T" + stat.sessionID.startTime).clone().add(stat.time, 'seconds'); 
+        labels.push(time.format('hh:mm:ss a'));
         hrData.push(stat.hr);
         rrData.push(stat.rr);
       });
@@ -131,8 +135,8 @@
       var avgRRdata = [];
       data.forEach(function(stat) {
         sessionDate.push(stat.sessionID.startDate);
-        avgHRdata.push(stat.avgHR);
-        avgRRdata.push(stat.avgRR);
+        avgHRdata.push(stat.dailyHR);
+        avgRRdata.push(stat.dailyRR);
       });
       var ctx2 = document.getElementById('myChart2').getContext('2d');
       var myChart2 = new Chart (ctx2, {
