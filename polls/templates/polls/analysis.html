@@ -10,10 +10,10 @@
   <link rel="icon" type="image/png" sizes="32x32" href="{% static '/admin/favicon_io/favicon-32x32.png' %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static '/admin/favicon_io/favicon-16x16.png' %}">
   <link rel="manifest" href="{% static '/admin/favicon_io/site.webmanifest' %}">
-  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static '/admin/css/bootstrap.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static '/admin/css/forms.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static '/admin/css/widgets.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
   <script
       src="https://code.jquery.com/jquery-3.3.1.js"
       integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
@@ -26,7 +26,7 @@
   </script>
   <div id="nav"></div>
 </head>
-<body style="background-color:#1a1544">
+<body>
   <div class="container mt-20">
     {% if not user.is_authenticated %}
       <p>You are not logged in. Please log in to see this page.</p>
