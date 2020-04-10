@@ -1,17 +1,19 @@
 body {
   margin: 0;
+  background-color: #0E0B2B;
+  color: #ffffff;
 }
 h1 {
   font-size: 40px;
   text-align:center;
-  color:#3d3d5c;
+  color:#ffffff;
   font-weight:600;
   font-family: calibri;
 }
 
 h2 {
   font-family: calibri;
-  color:#3d3d5c;
+  color:#ffffff;
 }
 
 .chart-style {
@@ -32,7 +34,7 @@ h2 {
 .fill-btn {
   color: #ffffff;
   padding: 3px 17px;
-  background-color: #da7b93;
+  background-color: #007bff;
   border-radius: 5px;
   border: 1px solid white;
   display: block;
@@ -49,9 +51,9 @@ h2 {
 
 a.fill-btn:hover {
   text-decoration: none;
-  color: #ffffff;
-  background-color: #d15c7a;
-  border: solid 1px #ffffff;
+  color: #007bff;
+  background-color: #ffffff;
+  border: solid 1px #007bff;
   font-weight: bold;
 }
 
@@ -62,6 +64,24 @@ a.fill-btn.chosen:hover {
   background-color: #e5e5e5;
 }
 
+.outline-btn {
+  border-radius: 5px;
+  padding: 3px 17px;
+  color: #007bff;
+  background-color: transparent;
+  border: solid 1px #007bff;
+  width: fit-content;
+  margin: 10px;
+  font-weight: bold;
+}
+
+a.outline-btn:hover {
+  text-decoration: none;
+  color: #ffffff;
+  border: solid 1px #ffffff;
+  font-weight: bold;
+}
+
 .hidden {
   display: none !important;
 
@@ -69,7 +89,7 @@ a.fill-btn.chosen:hover {
 
 .nav-container {
   height: 70px;
-  background-color: #0E0B2B;
+  background-color: #ecedf1;
   width: 100%;
 }
 
@@ -77,6 +97,12 @@ a.fill-btn.chosen:hover {
   color: #ffffff;
   margin: 0;
   padding-top: 7px;
+}
+
+.subnav {
+  border: 1px solid #ecedf1;
+  height: 50px;
+  width: 100%;
 }
 
 .text-center {

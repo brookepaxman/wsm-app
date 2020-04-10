@@ -1,0 +1,23 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
+<h1>Welcome to the Wireless Sleep Monitor App!</h1>
+{% block content %}
+{% if not user.is_authenticated %}
+  <p>You are not logged in. Please log in to see this page.</p>
+  <a href="{% url 'login' %}">login</a>
+{% else %}
+  Hi {{ user.username }}!
+  <p><a href="/">Home</a></p>
+
+  <p><a href="{% url 'logout' %}">logout</a></p>
+
+  <!-- <p><a href="">See all</a> </p> -->
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Generate Stat Objects">
+  </form>
+  {{test}}
+{% endif %}
+{% endblock %}
