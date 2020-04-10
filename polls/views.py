@@ -31,8 +31,8 @@ def signup_view(request):
     return render(request, 'signup.html', {'form': form})
 
 class IndexView(generic.ListView):
-    template_name = 'polls/index.html'
-    context_object_name = 'queryset'
+     template_name = 'polls/index.html'
+    context_object_name = 'latest_stats'
 
     def get_queryset(self):
         name = None
@@ -40,8 +40,7 @@ class IndexView(generic.ListView):
             #name = self.request.user.username
             userid = self.request.user.id
             #accessor = User.objects.get(user_name=name)
-            queryset = Stat.objects.filter(user=userid).order_by('time')
-            return queryset
+            return Stat.objects.filter(user=userid).order_by('time')
         else:
             return False
 
@@ -166,7 +165,21 @@ class MonthAnalysisViewSet(viewsets.ModelViewSet):
     serializer_class = StrippedAnalysisSerializer
 
 class ChartView(generic.ListView):
+    model = User
+    template_name = 'polls/line-chart.html'
+    context_object_name = 'queryset'
 
+    def get_queryset(self):# this is here mostly for debugging purposes
+        name = None
+        if self.request.user.is_authenticated:
+            #name = self.request.user.username
+            #accessor = User.objects.get(user_name=name)
+            userid = self.request.user.id
+            queryset = Stat.objects.filter(user=userid).order_by('time')
+            return queryset
+        else:
+            queryset = Stat.objects.order_by('time')
+            return queryset
 
 class UserInputView(generic.ListView):
     model = Analysis
