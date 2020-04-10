@@ -1,14 +1,9 @@
-<script
-    src="https://code.jquery.com/jquery-3.3.1.js"
-    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-    crossorigin="anonymous">
-  </script>
-<script>
-  $(function(){
-    $("#nav").load("{% static '/admin/embeds/nav.html' %}");
-  });
-</script>
-<div id="nav"></div>
+<!-- templates/signup.html -->
+{% extends 'template.html' %}
+
+{% block title %}WSM | Sign Up{% endblock %}
+{% block content %}
+
 <h2>Sign up Form</h2>
 <form method="post">
   {% csrf_token %}
@@ -26,3 +21,5 @@
   {% endfor %}
   <button type="submit">Sign up</button>
 </form>
+
+{% endblock %}
