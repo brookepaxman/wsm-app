@@ -1,71 +1,86 @@
-{% load static %}
-
-<script
-    src="https://code.jquery.com/jquery-3.3.1.js"
-    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-    crossorigin="anonymous">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Analysis</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static '/admin/favicon_io/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static '/admin/favicon_io/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static '/admin/favicon_io/favicon-16x16.png' %}">
+  <link rel="manifest" href="{% static '/admin/favicon_io/site.webmanifest' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/bootstrap.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/forms.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/widgets.css' %}">
+  <script
+      src="https://code.jquery.com/jquery-3.3.1.js"
+      integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+      crossorigin="anonymous">
+    </script>
+  <script>
+    $(function(){
+      $("#nav").load("{% static '/admin/embeds/nav.html' %}");
+    });
   </script>
-<script>
-  $(function(){
-    $("#nav").load("{% static '/admin/embeds/nav.html' %}");
-  });
-</script>
-<div id="nav"></div>
-<link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
-<h1>Welcome to the Wireless Sleep Monitor App!</h1>
-{% block content %}
-{% if not user.is_authenticated %}
-  <p>You are not logged in. Please log in to see this page.</p>
-  <a href="{% url 'login' %}">login</a>
-{% else %}
-  Hi {{ user.username }}!
-  <p><a href="/">Home</a></p>
+  <div id="nav"></div>
+</head>
+<body style="background-color:#1a1544">
+  <div class="container mt-20">
+    {% if not user.is_authenticated %}
+      <p>You are not logged in. Please log in to see this page.</p>
+      <a href="{% url 'login' %}">login</a>
+    {% else %}
+      <p style="color:whitesmoke">Hi {{ user.username }}!</p>
+      <p>
+        <a href="{% url 'logout' %}">logout</a><br>
+        <a href="" class="fill-btn" style="margin: 0; text-decoration: none;">See all</a>
+      </p>
 
-  <p><a href="{% url 'logout' %}">logout</a></p>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="submit-row" type="submit" value="Submit">
+      </form>
 
-  <p><a href="">See all</a> </p>
+      <h2>{{date}}</h2>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit">
-  </form>
+      {%if analysis%}
+        <div class="stats" style="display: flex">
+            <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
+              {% for stat in analysis %}
+                <h3><a href={{stat.sessionID.id}}>{{stat.sessionID.startDate}}, {{stat.sessionID.startTime}}</a></h3>
+                <h4>Statistics</h4>
+                <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes and {{stat.tst.second}} seconds</li>
+                <li>Average HR: {{ stat.avgHR }}</li>
+                <li>Average RR: {{ stat.avgRR }}</li>
+                {%if stat.avgHRdip == -1%}
+                  <li>Average HR Dip: Not enough data to calculate HR Dip. Please record a sleep session for longer than 1 minute</li>
+                {%else%}
+                  <li>Average HR Dip: {{ stat.avgHRdip }}</li>
+                {%endif%}
+                <li>Min HR: {{ stat.minHR }}</li>
+                <li>Max HR: {{ stat.maxHR }}</li>
+                <li>Min RR: {{ stat.minRR }}</li>
+                <li>Max RR: {{ stat.avgRR }}</li>
+                <h4>Sleep Notes</h4>
+                {%if stat.sleepQuality == 0%}
+                  <p>no sleep notes</p>
+                {%else%}
+                  <li>Sleep Quality: {{ stat.sleepQuality }}</li>
+                  <li>Sleep Disruptions: {{ stat.sleepDisruptions }}</li>
+                  <li>Sleep Notes: {{ stat.sleepNotes }}</li>
+                  <li>Number of Sleep Disruptions: {{ stat.numSleepDisruptions }}</li>
+                {%endif%}
+              {% endfor %}
 
-  <h2>{{date}}</h2>
-
-  {%if analysis%}
-    <div class="stats" style="display: flex">
-        <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-          {% for stat in analysis %}
-            <h3><a href={{stat.sessionID.id}}>{{stat.sessionID.startDate}}, {{stat.sessionID.startTime}}</a></h3>
-            <h4>Statistics</h4>
-            <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes and {{stat.tst.second}} seconds</li>
-            <li>Average HR: {{ stat.avgHR }}</li>
-            <li>Average RR: {{ stat.avgRR }}</li>
-            {%if stat.avgHRdip == -1%}
-              <li>Average HR Dip: Not enough data to calculate HR Dip. Please record a sleep session for longer than 1 minute</li>
-            {%else%}
-              <li>Average HR Dip: {{ stat.avgHRdip }}</li>
-            {%endif%}
-            <li>Min HR: {{ stat.minHR }}</li>
-            <li>Max HR: {{ stat.maxHR }}</li>
-            <li>Min RR: {{ stat.minRR }}</li>
-            <li>Max RR: {{ stat.avgRR }}</li>
-            <h4>Sleep Notes</h4>
-            {%if stat.sleepQuality == 0%}
-              <p>no sleep notes</p>
-            {%else%}
-              <li>Sleep Quality: {{ stat.sleepQuality }}</li>
-              <li>Sleep Disruptions: {{ stat.sleepDisruptions }}</li>
-              <li>Sleep Notes: {{ stat.sleepNotes }}</li>
-              <li>Number of Sleep Disruptions: {{ stat.numSleepDisruptions }}</li>
-            {%endif%}
-          {% endfor %}
-
-        </ul>
-    </div>
-  {%else%}
-    <p>no statistics for this day</p>
-  {%endif%}
-{% endif %}
-{% endblock %}
+            </ul>
+        </div>
+      {%else%}
+        <p>no statistics for this day</p>
+      {%endif%}
+    {% endif %}
+  </div>
+</body>
+</html>
