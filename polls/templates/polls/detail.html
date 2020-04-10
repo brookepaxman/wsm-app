@@ -1,16 +1,9 @@
-{% load static %}
+<!-- templates/polls/detail.html -->
+{% extends 'template.html' %}
 
-<script
-    src="https://code.jquery.com/jquery-3.3.1.js"
-    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-    crossorigin="anonymous">
-  </script>
-<script>
-  $(function(){
-    $("#nav").load("{% static '/admin/embeds/nav.html' %}");
-  });
-</script>
-<div id="nav"></div>
+{% block title %}WSM | Detail{% endblock %}
+{% block content %}
+
 <h2 style="font-family:calibri; color:#3d3d5c">{{ user.user_name }}</h2>
 <div class="stats" style="display: flex">
       <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
@@ -37,3 +30,5 @@
   </div>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+{% endblock %}

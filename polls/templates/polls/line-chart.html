@@ -1,32 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  {% load static %}
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Your Stats</title>
-  <link rel="apple-touch-icon" sizes="180x180" href="{% static '/admin/favicon_io/apple-touch-icon.png' %}">
-  <link rel="icon" type="image/png" sizes="32x32" href="{% static '/admin/favicon_io/favicon-32x32.png' %}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{% static '/admin/favicon_io/favicon-16x16.png' %}">
-  <link rel="manifest" href="{% static '/admin/favicon_io/site.webmanifest' %}">
-  <script
-      src="https://code.jquery.com/jquery-3.3.1.js"
-      integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-      crossorigin="anonymous">
-    </script>
-  <script>
-    $(function(){
-      $("#nav").load("{% static '/admin/embeds/nav.html' %}");
-    });
-  </script>
-  <div id="nav"></div>
-  <script type="text/javascript" src="https://momentjs.com/downloads/moment.js"></script>
-</head>
-<body>
-  <link rel="stylesheet" type="text/css" href="{% static '/chartjs/dist/Chart.min.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/bootstrap.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
+<!-- templates/polls/line-chart.html -->
+{% extends 'template.html' %}
+
+{% block title %}WSM | Charts{% endblock %}
+{% block content %}
+
+{% load static %}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 
   <style>
@@ -71,7 +49,7 @@
       var time;
       // var startTime = stat.sessionID.startTime;
       data.forEach(function(stat) {
-        time = moment(stat.sessionID.startDate + "T" + stat.sessionID.startTime).clone().add(stat.time, 'seconds'); 
+        time = moment(stat.sessionID.startDate + "T" + stat.sessionID.startTime).clone().add(stat.time, 'seconds');
         labels.push(time.format('hh:mm:ss a'));
         hrData.push(stat.hr);
         rrData.push(stat.rr);
@@ -292,4 +270,5 @@
     }
   });
 </script>
-</html>
+
+{% endblock %}
