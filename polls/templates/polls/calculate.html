@@ -1,17 +1,10 @@
-{% load static %}
+<!-- templates/polls/calculate.html -->
+{% extends 'template.html' %}
 
-<script
-    src="https://code.jquery.com/jquery-3.3.1.js"
-    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-    crossorigin="anonymous">
-  </script>
-<script>
-  $(function(){
-    $("#nav").load("{% static '/admin/embeds/nav.html' %}");
-  });
-</script>
-<div id="nav"></div>
-<link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
+{% block title %}WSM | Calculate{% endblock %}
+{% block content %}
+
+  <div class="container mt-20">
 {{error}}
 
 {%if stat%}
@@ -36,7 +29,7 @@
     <table>
         <tr>
             <th>Time</th>
-            <th>HR</th> 
+            <th>HR</th>
             <th>RR</th>
         </tr>
         {%for s in stats%}
@@ -48,3 +41,6 @@
         {%endfor%}
     </table>
 {%endif%}
+</div>
+
+{% endblock %}

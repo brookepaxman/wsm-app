@@ -1,5 +1,5 @@
 <!-- templates/registration/login.html -->
-{% extends 'base.html' %}
+{% extends 'template.html' %}
 
 {% block title %}Login{% endblock %}
 
@@ -9,7 +9,7 @@
   {% if form.errors %}
     <p>Your username and password didn't match. Please try again.</p>
   {% endif %}
-  
+
   {% if next %}
     {% if user.is_authenticated %}
       <p>Your account doesn't have access to this page. To proceed,
@@ -34,11 +34,8 @@
     <input type="submit" value="Login" />
     <input type="hidden" name="next" value="{{ next }}" />
   </form>
-  
+
 {# Assumes you setup the password_reset view in your URLconf #}
 <p><a href="{% url 'password_reset' %}">Forgot Password</a></p>
-  
+
 {% endblock %}
-
-
-
