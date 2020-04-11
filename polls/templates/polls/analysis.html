@@ -1,37 +1,11 @@
+<!-- templates/polls/analysis.html -->
 {% extends 'template.html' %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  {% load static %}
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Analysis</title>
-  <link rel="apple-touch-icon" sizes="180x180" href="{% static '/admin/favicon_io/apple-touch-icon.png' %}">
-  <link rel="icon" type="image/png" sizes="32x32" href="{% static '/admin/favicon_io/favicon-32x32.png' %}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{% static '/admin/favicon_io/favicon-16x16.png' %}">
-  <link rel="manifest" href="{% static '/admin/favicon_io/site.webmanifest' %}">
-  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/bootstrap.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
-  <script
-      src="https://code.jquery.com/jquery-3.3.1.js"
-      integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-      crossorigin="anonymous">
-    </script>
-  <script>
-    $(function(){
-      $("#nav").load("{% static '/admin/embeds/nav.html' %}");
-    });
-  </script>
-  <div id="nav"></div>
-  
-</head>
 
+{% block title %}WSM | Analysis{% endblock %}
+{% block content %}
 
-<body style="background-color: white;">
+{% load static %}
 
-  {% block title %}WSM | Analysis{% endblock %}
-  {% block content %}
 
   <div class="container mt-20">
     {% if not user.is_authenticated %}
@@ -52,15 +26,16 @@
 
       <h2>{{date}}</h2>
 
-      <div class="tooltip">Hover over me
-        <span class="tooltiptext">Tooltip text</span>
+      <div class="tooltip-2 row">
+        <p>Hover over me</p>
+        <span class="tooltiptext-2">Tooltip text</span>
       </div>
 
       {%if analysis%}
         <div>
           {% for stat in analysis %}
-            <h3 style="text-align: center;">HERE'S HOW YOU SLEPT ON</h3>
-            <h3 style="text-align: center;"><a href={{stat.sessionID.id}}>{{stat.sessionID.startDate}}, {{stat.sessionID.startTime}}</a></h3>
+            <h3 class="text-uppercase text-center">Here's how you slept on</h3>
+            <h3 class="text-center"><a href={{stat.sessionID.id}}>{{stat.sessionID.startDate}}, {{stat.sessionID.startTime}}</a></h3>
               <ul style="font-size: 20px; font-family:calibri">
                 <h4>Statistics</h4>
                 <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes and {{stat.tst.second}} seconds</li>
@@ -84,7 +59,7 @@
                   <li>Sleep Notes: {{ stat.sleepNotes }}</li>
                   <li>Number of Sleep Disruptions: {{ stat.numSleepDisruptions }}</li>
                 {%endif%}
-          
+
             </ul>
             {% endfor %}
         </div>
@@ -95,4 +70,3 @@
   </div>
 
   {% endblock %}
-</body>
