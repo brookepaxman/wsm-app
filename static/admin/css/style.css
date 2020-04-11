@@ -32,11 +32,11 @@ h2 {
 }
 
 .fill-btn {
-  color: #ffffff;
+  color: #0E0B2B;
   padding: 3px 17px;
   background-color: #007bff;
   border-radius: 5px;
-  border: 1px solid white;
+  border: 2px solid #0E0B2B;
   display: block;
   width: fit-content;
   margin: 10px auto;
@@ -51,9 +51,9 @@ h2 {
 
 a.fill-btn:hover {
   text-decoration: none;
-  color: #007bff;
+  color: #0E0B2B;
   background-color: #ffffff;
-  border: solid 1px #007bff;
+  border: solid 2px #0E0B2B;
   font-weight: bold;
 }
 
@@ -66,10 +66,10 @@ a.fill-btn.chosen:hover {
 
 .outline-btn {
   border-radius: 5px;
-  padding: 3px 17px;
+  padding: 5px 16px;
   color: #007bff;
   background-color: transparent;
-  border: solid 1px #007bff;
+  border: solid 2px #007bff;
   width: fit-content;
   margin: 10px;
   font-weight: bold;
@@ -78,7 +78,7 @@ a.fill-btn.chosen:hover {
 a.outline-btn:hover {
   text-decoration: none;
   color: #ffffff;
-  border: solid 1px #ffffff;
+  border: solid 2px #ffffff;
   font-weight: bold;
 }
 
@@ -117,4 +117,8 @@ a.outline-btn:hover {
   position: absolute;
   left: 30px;
   top: 9px;
+}
+
+.mt-30 {
+  margin-top: 30px;
 }
