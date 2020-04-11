@@ -371,24 +371,24 @@ class AnalysisView(generic.ListView):
                 session = Session.objects.get(id = session_id)
                 if(session.user == userid):
                     if(session.status == "calculate"):
+                        daily_date = session.startDate
                         try:
                             stat = Analysis.objects.get(sessionID = session)
-                            args = {'error':"analysis object already exists"}
                         except Analysis.DoesNotExist:
                             stat = Analysis()
                             stat.sessionID = session
-                            daily_date = session.startDate
                             stat.user = userid
-                            if Stat.objects.filter(sessionID = session).exists():
-                                stats = Stat.objects.filter(sessionID = session)
-                                stats_day = Stat.objects.filter(sessionID__startDate=daily_date, user=userid)
-                                stat.avgHR, stat.avgRR, stat.maxHR, stat.minHR, stat.maxRR, stat.minRR, stat.tst = AnalysisView.avgmaxtime(self, stats)
-                                stat.dailyHR, stat.dailyRR, e1, e2, e3, e4, e5 = AnalysisView.avgmaxtime(self, stats_day)
-                                stat.avgHRdip = AnalysisView.dipHR(self, stats)
-                                stat.save()
-                                args = {'stat':stat, 'stats':stats}
-                            else:
-                                args = {'error':"no stats for this session"}
+
+                        if Stat.objects.filter(sessionID = session).exists():
+                            stats = Stat.objects.filter(sessionID = session).order_by('time')
+                            stats_day = Stat.objects.filter(sessionID__startDate=daily_date, user=userid)
+                            stat.avgHR, stat.avgRR, stat.maxHR, stat.minHR, stat.maxRR, stat.minRR, stat.tst = AnalysisView.avgmaxtime(self, stats)
+                            stat.dailyHR, stat.dailyRR, e1, e2, e3, e4, e5 = AnalysisView.avgmaxtime(self, stats_day)
+                            stat.avgHRdip = AnalysisView.dipHR(self, stats)
+                            stat.save()
+                            args = {'stat':stat, 'stats':stats}
+                        else:
+                            args = {'error':"no stats for this session"}
                     elif(session.status == "done"):
                         try:
                             stat = Analysis.objects.get(sessionID = session)
