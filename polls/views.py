@@ -166,7 +166,7 @@ class MonthAnalysisViewSet(viewsets.ModelViewSet):
 
 class ChartView(generic.ListView):
     model = User
-    template_name = 'polls/line-chart.html'
+    template_name = 'polls/graphs.html'
     context_object_name = 'queryset'
 
     def get_queryset(self):# this is here mostly for debugging purposes
@@ -413,7 +413,7 @@ class RealtimeView(generic.ListView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            userid = self.request.user.id 
+            userid = self.request.user.id
             latestSession = Session.objects.filter(user=userid).latest('id')
             print(latestSession.id)
             print(latestSession.status)

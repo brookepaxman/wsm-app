@@ -8,7 +8,7 @@
   {% if user.is_authenticated %}
   <h2>Hi, {{ user.username }}!</h2>
     <p><a href="{% url 'logout' %}">logout</a></p>
-    <a href="/line-chart" class="outline-btn" style="text-decoration: none;">View my data</a>
+    <a href="/graphs" class="outline-btn" style="text-decoration: none;">View my data</a>
     <a href="/analysis" class="outline-btn" style="text-decoration: none;">View Analytics</a>
     <a href="/generate" class="outline-btn" style="text-decoration: none;">Generate Objects</a>
     <div class="row">
