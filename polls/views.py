@@ -13,9 +13,8 @@ from datetime import timedelta
 from rest_framework import viewsets
 from .models import User, Stat, Dummy, Analysis, Session
 from .forms import sleepQualityForm, calendarForm, statGeneratorForm, SignUpForm
-from .serializers import StatSerializer, AnalysisSerializer
 from numpy import abs
-from .serializers import StatSerializer, AnalysisSerializer, StrippedAnalysisSerializer
+from .serializers import StatSerializer, AnalysisSerializer, StrippedAnalysisSerializer, SessionSerializer
 import random
 
 def signup_view(request):
@@ -144,36 +143,33 @@ class AnalysisSetView(viewsets.ModelViewSet):
 
 class MonthAnalysisViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
+        month = self.request.query_params.get('month')
         if self.request.user.is_authenticated:
             userid = self.request.user.id
-        userAnalysisAll = Analysis.objects.filter(user=userid).order_by('sessionID__startDate')
-        dateCutoff = date.today() - timedelta(days=30)
-        userAnalysisMonth = userAnalysisAll.filter(sessionID__startDate__gte=dateCutoff).order_by('-sessionID')
-        month_set = {}
+            queryset = Analysis.objects.filter(user=userid).filter(sessionID__startDate__month=month)
+            month_set = {}
 
-        for analysis in userAnalysisMonth:
-            print(analysis.sessionID)
-            if month_set.get(analysis.sessionID.startDate, False):
-                print("excluded: "+ str(analysis.sessionID))
-                userAnalysisMonth = userAnalysisMonth.exclude(id=analysis.id)
-            else:
-                month_set[analysis.sessionID.startDate] = True
-        # theset = userAnalysisWeek.distinct("sessionID__startDate")
-        userAnalysisMonth = userAnalysisMonth.reverse()
-        # print(month_set)
-        return userAnalysisMonth
+            for analysis in queryset:
+                print(analysis.sessionID)
+                if month_set.get(analysis.sessionID.startDate, False):
+                    print("excluded: "+ str(analysis.sessionID))
+                    queryset = queryset.exclude(id=analysis.id)
+                else:
+                    month_set[analysis.sessionID.startDate] = True
+            # theset = userAnalysisWeek.distinct("sessionID__startDate")
+            queryset = queryset.reverse()
+            # print(month_set)
+            return queryset
     serializer_class = StrippedAnalysisSerializer
 
 class ChartView(generic.ListView):
     model = User
-    template_name = 'polls/line-chart.html'
+    template_name = 'polls/graphs.html'
     context_object_name = 'queryset'
 
     def get_queryset(self):# this is here mostly for debugging purposes
         name = None
         if self.request.user.is_authenticated:
-            #name = self.request.user.username
-            #accessor = User.objects.get(user_name=name)
             userid = self.request.user.id
             queryset = Stat.objects.filter(user=userid).order_by('time')
             return queryset
@@ -413,7 +409,7 @@ class RealtimeView(generic.ListView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            userid = self.request.user.id 
+            userid = self.request.user.id
             latestSession = Session.objects.filter(user=userid).latest('id')
             print(latestSession.id)
             print(latestSession.status)
