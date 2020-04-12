@@ -172,7 +172,6 @@ a.outline-btn:hover {
   visibility: visible;
 }
 
-<<<<<<< HEAD
 .circles {
   display: flex;
 }
@@ -212,7 +211,6 @@ a.outline-btn:hover {
   width: 275px;
   height: 150px;  
 }
-=======
 .nav-container ul li {
   padding-left: 25px;
   padding-right: 25px;
@@ -327,4 +325,3 @@ option {
 .dropdown {
   border-radius: 5px;
 }
->>>>>>> 239334af4d61418b935e1e831cbbc6cd20b742fe
