@@ -100,8 +100,7 @@ a.outline-btn:hover {
 
 .nav-container {
   height: 70px;
-  /* background-color: #ecedf1; */
-  background-color: #0c1962;
+  background-color: #ecedf1;
   width: 100%;
 }
 
@@ -383,7 +382,7 @@ option {
 
 .home-number {
   font-size: 64px;
-  color: #00ffff;
+  color: #007bff;
   display: inline;
 }
 
@@ -394,9 +393,13 @@ option {
   padding-right: 5px;
 }
 
+.mt-40 {
+  margin-top: 40px;
+}
+
 .grey-block {
   background-color: #242630;
-  height: 450px;
+  height: 515px;
   position: relative;
 }
 
