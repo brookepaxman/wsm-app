@@ -215,13 +215,15 @@ class UserInputView(generic.ListView):
 class MultiView(generic.TemplateView):
     template_name = 'polls/analysis.html'
 
+
     def get(self,request):
-        form = calendarForm()
         if self.request.user.is_authenticated:
+            form = calendarForm()
             #name = self.request.user.username
             #accessor = User.objects.get(user_name=name)
             userid = self.request.user.id
             # sess = Session.objects.filter(user=accessor.id)
+        
             args = {'form': form,'stats':Analysis.objects.filter(user=userid).order_by('-id')}
             # args = {'form': form,'stats':Analysis.objects.filter(user=userid).order_by('id').last()}
         else:
