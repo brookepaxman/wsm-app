@@ -17,7 +17,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('<int:pk>/', views.DetailView.as_view(), name='detail'),
     path('analysis/', views.MultiView.as_view(), name='analysis'),
-    path('line-chart/', views.ChartView.as_view(), name='line-chart'),
+    path('graphs/', views.ChartView.as_view(), name='graphs'),
     path('analysis/<int:session_id>/', views.UserInputView.as_view(),name='user_input'),
     path('realtime', views.RealtimeView.as_view(), name='realtime'),
     path('calc/<int:session_id>/', views.AnalysisView.as_view(), name='calculate'),
