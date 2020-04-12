@@ -16,6 +16,15 @@ h2 {
   color:#ffffff;
 }
 
+h3 {
+  color:#03AAF2;
+}
+
+h4{
+  color:white;
+
+}
+
 .chart-style {
   background-color: #ffffff;
   display:block;
@@ -131,30 +140,77 @@ a.outline-btn:hover {
 
 .tooltip-2 {
   position: relative;
+  margin: auto;
   display: inline-block;
-  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
 }
 
-/* Tooltip text */
 .tooltip-2 .tooltiptext-2 {
   visibility: hidden;
   width: 120px;
   background-color: black;
   color: #fff;
   text-align: center;
-  padding: 5px 0;
   border-radius: 6px;
-
-  /* Position the tooltip text - see examples below! */
+  padding: 5px 0;
   position: absolute;
   z-index: 1;
+  top: -5px;
+  left: 110%;
 }
 
-/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip-2 .tooltiptext-2::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent black transparent transparent;
+}
 .tooltip-2:hover .tooltiptext-2 {
   visibility: visible;
 }
 
+.circles {
+  display: flex;
+}
+.circle-with-text {
+  background: linear-gradient(blue, purple);
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  text-align: center;
+  margin: 5px 20px;
+  font-size: 30px;
+  padding: 15px;
+  display: flex;
+  height: 130px;
+  width: 130px;
+  color: #fff;
+}
+
+#rcorners1 {
+  margin: auto;
+  text-align: center;
+  font-size: 30px;
+  border-radius: 25px;
+  background:  #B775FD;
+  padding: 15px 20px 20px 70px; 
+  width: 500px;
+  height: 75px;  
+}
+
+#rcorners2 {
+  margin: auto;
+  text-align: center;
+  font-size: 20px;
+  border-radius: 25px;
+  background:  #B775FD;
+  padding: 20px;
+  width: 275px;
+  height: 150px;  
+}
 .nav-container ul li {
   padding-left: 25px;
   padding-right: 25px;
