@@ -20,10 +20,30 @@
 <body>
   <div id="navigation">
     {% block navigation %}
-      <div class="nav-container flex">
-        <a class="fill-btn nav-home" href="/">
-          Home
-        </a>
+      <div class="nav-container">
+        <ul class="flex">
+          <li>
+            <a class="nav-link-txt" href="/">
+              Home
+            </a>
+          </li>
+          <li>
+            <a class="nav-link-txt" href="">
+              Login
+            </a>
+          </li>
+          <li>
+            <a class="nav-link-txt" href="">
+              Sign up
+            </a>
+          </li>
+          <li>
+            <a href="nav-link-txt" href="">
+              About us
+            </a>
+          </li>
+        </ul>
+
       </div>
     {% endblock %}
   </div>

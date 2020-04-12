@@ -41,12 +41,13 @@ h2 {
   width: fit-content;
   margin: 10px auto;
   font-weight: bold;
+  text-decoration: none;
 }
 
 .fill-btn.chosen {
-  color: #da7b93;
+  color: #0E0B2B;
   background-color: #ffffff;
-  border: 1px solid #da7b93;
+  border: 2px solid #0E0B2B;
 }
 
 a.fill-btn:hover {
@@ -59,12 +60,13 @@ a.fill-btn:hover {
 
 a.fill-btn.chosen:hover {
   text-decoration: none;
-  color: #da7b93;
-  border: 1px solid #da7b93;
+  color: #0E0B2B;
+  border: 2px solid #0E0B2B;
   background-color: #e5e5e5;
 }
 
 .outline-btn {
+  text-decoration: none;
   border-radius: 5px;
   padding: 5px 16px;
   color: #007bff;
@@ -151,4 +153,19 @@ a.outline-btn:hover {
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip-2:hover .tooltiptext-2 {
   visibility: visible;
+}
+
+.nav-link-txt {
+  margin-top: 20px;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.nav-container ul {
+  list-style: none;
+  padding-top: 20px;
+}
+
+.flex {
+  display: flex;
 }

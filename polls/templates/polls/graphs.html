@@ -11,15 +11,12 @@
     h2 {
       color: #ffffff;
     }
-    body {
-      background-color: #2F4454;
-    }
   </style>
 
-    <div class="nav">
-      <h2 style="margin-left: 50px; margin-top: auto; margin-bottom: auto;">Your Statistics</h2>
-    </div>
     <div class="container">
+      <div class="row">
+        <h2 style="margin-left: 40px; margin-top: 30px; margin-bottom: auto;">Your Statistics</h2>
+      </div>
       <div class="row">
         <div class="col-md-3 text-center" style="color: white; margin-top: 80px;">
           <a id="today" href="#" class="fill-btn chosen">Today</a>
@@ -62,12 +59,12 @@
           datasets: [{
             label: 'Heart Rate',
             data: hrData,
-            borderColor: '#376e6f',
+            borderColor: '#B775FD',
             fill: false
           }, {
             label: 'Respiration Rate',
             data: rrData,
-            borderColor: '#da7b93',
+            borderColor: '#007bff',
             fill: false
           }]
         },
@@ -124,12 +121,12 @@
           datasets: [{
             label: 'Average Heart Rate',
             data: avgHRdata,
-            borderColor: '#376e6f',
+            borderColor: '#B775FD',
             fill: false,
           }, {
             label: 'Average Respiration Rate',
             data: avgRRdata,
-            borderColor: '#da7b93',
+            borderColor: '#007bff',
             fill: false,
           }]
         },
@@ -168,23 +165,23 @@
           datasets: [{
             label: 'Heart Rate',
             data: hrData,
-            backgroundColor: 'rgba(55,110,111,0.4)',
+            backgroundColor: 'rgba(183,117,253,0.4)',
             fill: false
           }, {
             data: hrData,
             label: 'HR Line',
-            borderColor: '#376e6f',
+            borderColor: '#B775FD',
             fill: false,
             type: 'line'
           }, {
             label: 'Respiration Rate',
             data: rrData,
-            backgroundColor: 'rgba(218,123,147,0.4)',
+            backgroundColor: 'rgba(0,123,255,0.4)',
             fill: false
           }, {
             label: 'RR Line',
             data: rrData,
-            borderColor: '#da7b93',
+            borderColor: '#007bff',
             fill: false,
             type: 'line'
           }]
