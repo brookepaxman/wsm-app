@@ -98,21 +98,16 @@ class DetailView(generic.DetailView):
     template_name = 'polls/detail.html'
 
 class StatView(viewsets.ModelViewSet):
-
     def get_queryset(self):         # this returns most recent session of the user that is logged in
-        name = None
         if self.request.user.is_authenticated:  # if user is logged in
             userid = self.request.user.id
-            #name = self.request.user.username
-            #accessor = User.objects.get(user_name=name) # grab all of user's stat objects
-            user_allstats = Stat.objects.filter(user=userid).order_by('sessionID__id') # and filter by sessionID
+            user_allstats = Stat.objects.filter(user=userid).order_by('sessionID__startDate') # and filter by sessionID
             recent = user_allstats.last()       # grab the most recent sessionID
             recent_Sid = recent.sessionID
             queryset = user_allstats.filter(sessionID=recent_Sid.id).order_by('time')       # filter to only have that sessionID
             return queryset
         else:
-            queryset = Stat.objects.order_by('time')
-            return queryset
+            return False
 
     # queryset = get_queryset()
     # access = User.objects.get(user_name='David')
