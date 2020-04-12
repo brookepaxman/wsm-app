@@ -404,10 +404,11 @@ option {
   margin-left: auto;
   margin-right: auto;
   border-radius: 3px;
-  min-height: 150px;
+  height: 200px;
   width: 100%;
   max-width: 275px;
   padding: 15px;
+  overflow-y: scroll;
 }
 
 .mb-60 {
