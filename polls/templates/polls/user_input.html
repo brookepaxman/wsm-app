@@ -21,30 +21,33 @@
 <div class="container"></div>
 <h3 style="text-align: center;">{{s.startDate}}, {{s.startTime}}</h3><br>
   {%if stat.sleepQuality == 0%}
-  <h4 style="text-align: center;">No notes yet. Add some below.</h4><br><br>
+  <h4 style="text-align: center;">No notes yet. Add some below.</h4>
   {%else%}
     
       
-
-      <div class="row">
-        <h4>Your Notes:</h3>
-      </div><br>
-
-      <div class="row">
-        <div id="rcorners2">
-          Sleep Quality: <br><br>
-          {{stat.sleepQuality}}
-      </div>
-
-      <div id="rcorners2">
-        Sleep Disruptions: <br><br>
-        {{stat.numSleepDisruptions}}
-    </div>
-    <div id="rcorners2">
-      Sleep Notes: <br><br>
-      {{stat.sleepNotes}}
+  <div class="row mt-30">
+    <h4 class="pl-15">Your Notes:</h4>
   </div>
-    </div><br><br>
+  <div class="row mt-20 mb-100">
+    <div class="col-md-4">
+      <div class="note ml-0">
+        <p class="large">Sleep Quality:</p>
+        <p class="medium">{{stat.sleepQuality}}</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="note">
+        <p class="large">Sleep Disruptions:</p>
+        <p class="medium">{{stat.numSleepDisruptions}}</p>
+      </div>
+    </div>
+    <div class="col-md-4 mr-0">
+      <div class="note">
+        <p class="large">Sleep Notes:</p>
+        <p class="medium">{{stat.sleepNotes}}</p>
+      </div>
+    </div>
+  </div>
     {%endif%}
     <div>
       <h3>Add or edit some notes about your sleep: </h3>
@@ -53,7 +56,7 @@
         {{ form.as_p }}
         <input type="submit" value="Submit">
       </form>
-    </div>
+    </div><br><br><br>
   
 {% endif %}
 </div>
