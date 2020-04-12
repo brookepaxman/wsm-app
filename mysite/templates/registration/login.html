@@ -6,11 +6,22 @@
 {% block content %}
 
 <style>
+  h3 {
+    color: #0E0B2B;
+  }
+  
+  .login-box {
+    background-color: #ffffff;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 5px;
+    box-shadow: 0 0 7px #ffffff;
+    color: #0b102b;
+  }
   input[type=text], input[type=password] {
       width: 40%;
       padding: 12px 20px;
-      margin: 8px 0;
-      display: inline-block;
   }
 
   input[type=submit] {
@@ -19,9 +30,14 @@
       margin: 8px 0;
       cursor: pointer;
   }
-  
+
   input[type=submit]:hover {
       background-color: #01137c;
+  }
+
+  .margin-auto {
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .center {
@@ -36,49 +52,66 @@
   width: 24%;
   padding: 5px;
 }
+.pt-20 {
+  padding-top: 20px;
+}
+.mt-50 {
+  margin-top: 50px;
+}
+.pb-20 {
+  padding-bottom: 20px;
+}
+.mb-20 {
+  margin-bottom: 20px;
+}
 
 </style>
 <body>
-  <br />
-  <h3 class="center">Good to see you again!</h3>
-  <div class="center">
-  {% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
-  {% endif %}
-  
-  {% if next %}
-    {% if user.is_authenticated %}
-      <p>Your account doesn't have access to this page. To proceed,
-      please login with an account that has access.</p>
-    {% else %}
-      <p>Please login to see this page.</p>
-    {% endif %}
-  {% endif %}
-</div>
-  <form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <div class="center">
-      <input type="text" class="form-control" id="{{form.username.id_for_label}}" name="{{form.username.html_name}}" placeholder="Username" />
-      <br />
-      <input type="password" class="form-control" id="{{form.password.id_for_label}}" name="{{form.password.html_name}}" placeholder="Password" />
+  <div class="container">
+    <div class="row">
+      <div class="col-md-10 offset-md-1 mt-50">
+        <div class="login-box pb-20">
+          <h3 class="text-center pt-20 mb-20">Good to see you again!</h3>
+          <div class="">
+            {% if form.errors %}
+              <p>Your username and password didn't match. Please try again.</p>
+            {% endif %}
+
+            {% if next %}
+              {% if user.is_authenticated %}
+                <p>Your account doesn't have access to this page. To proceed,
+                please login with an account that has access.</p>
+              {% else %}
+                <p>Please login to see this page.</p>
+              {% endif %}
+            {% endif %}
+          </div>
+          <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+              <input type="text" class="form-control margin-auto" style="margin-bottom: 15px" id="{{form.username.id_for_label}}" name="{{form.username.html_name}}" placeholder="Username" />
+              <input type="password" class="form-control margin-auto" id="{{form.password.id_for_label}}" name="{{form.password.html_name}}" placeholder="Password" />
+
+
+            <p class="text-center"><a href="{% url 'password_reset' %}">Forgot password?</a></p>
+
+            <div class="text-center">
+              <input type="submit" class="btn btn-primary" value="Log In" />
+              <input type="hidden" name="next" value="{{ next }}" />
+            </div>
+          </form>
+          <div class="text-center">
+            <p>Don't have an account?
+              <a href="{% url 'signup' %}">Sign up here!</a>
+            </p>
+
+          </div>
+        </div>
+      </div>
     </div>
-
-
-    <p class="center2"><a href="{% url 'password_reset' %}">Forgot password?</a></p>
-
-    <div class="center">
-      <input type="submit" class="btn btn-primary" value="Log In" />
-      <input type="hidden" name="next" value="{{ next }}" />
-    </div>
-  </form>
-  <div class="center2">
-    <p>Don't have an account? 
-      <a href="{% url 'signup' %}">Sign up here!</a>
-    </p> 
-
   </div>
-  
-  
+
+
+
 </body>
 
 {% endblock %}

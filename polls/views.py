@@ -188,7 +188,7 @@ class UserInputView(generic.ListView):
             #accessor = User.objects.get(user_name=name)
             userid = self.request.user.id
             s = Session.objects.get(id=session_id)
-            args = {'form': form,'s':s,'analysis':Analysis.objects.filter(user=userid,sessionID=s)}
+            args = {'form': form,'s':s,'stat':Analysis.objects.get(user=userid,sessionID=s)}
         else:
             args = {'form': form}
         return render(request, self.template_name,args)
@@ -207,13 +207,12 @@ class UserInputView(generic.ListView):
                 data = Analysis.objects.get(sessionID = s)
 
                 data.sleepQuality = form.cleaned_data['sleepQuality']
-                data.sleepDisruptions = form.cleaned_data['sleepDisruptions']
                 data.sleepNotes = form.cleaned_data['sleepNotes']
                 data.numSleepDisruptions = form.cleaned_data['numDisruptions']
 
                 data.save()
                 form = sleepQualityForm()
-                args = {'form':form,'s':s,'analysis':Analysis.objects.filter(user=userid,sessionID=s)}
+                args = {'form':form,'s':s,'stat':Analysis.objects.get(user=userid,sessionID=s)}
             except Analysis.DoesNotExist:
                 args = {'form':form}
         return render(request, self.template_name, args)
@@ -228,7 +227,8 @@ class MultiView(generic.TemplateView):
             #accessor = User.objects.get(user_name=name)
             userid = self.request.user.id
             # sess = Session.objects.filter(user=accessor.id)
-            args = {'form': form,'analysis':Analysis.objects.filter(user=userid).order_by('id')}
+            args = {'form': form,'stats':Analysis.objects.filter(user=userid).order_by('-id')}
+            # args = {'form': form,'stats':Analysis.objects.filter(user=userid).order_by('id').last()}
         else:
             args = {'form': form}
         return render(request, self.template_name,args)
@@ -254,7 +254,7 @@ class MultiView(generic.TemplateView):
                         analysisList = a | analysisList
                     analysisList.order_by('sessionID')
                     form = calendarForm()
-                    args = {'form':form,'date':date,'analysis':analysisList}
+                    args = {'form':form,'date':date,'stats':analysisList}
         else:
             form = calendarForm()
             args = {'form':form}

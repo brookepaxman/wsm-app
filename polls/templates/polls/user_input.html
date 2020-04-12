@@ -10,49 +10,51 @@
   <p>You are not logged in. Please log in to see this page.</p>
   <a href="{% url 'login' %}">login</a>
 {% else %}
-  Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">logout</a><br>
+<h2 class="text-center" style="margin-bottom: 0;">Hi, {{ user.username }}!</h2>
+<p class="text-center" style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
+<div class="subnav-container">
+  <a href="/graphs" class="outline-btn" style="margin-left: 0">View my data</a>
+  <a href="/analysis" class="outline-btn active">Back to Analytics</a>
+  <a href="/generate" class="outline-btn" style="margin-right: 0">Generate Objects</a>
+ 
+</div><br><br>
+<div class="container"></div>
+<h3 style="text-align: center;">{{s.startDate}}, {{s.startTime}}</h3><br>
+  {%if stat.sleepQuality == 0%}
+  <h4 style="text-align: center;">No notes yet. Add some below.</h4><br><br>
+  {%else%}
+    
+      
 
-  <a href="/analysis/" class="fill-btn" style="margin: 0; text-decoration: none;">Back to Analysis</a></p>
+      <div class="row">
+        <h4>Your Notes:</h3>
+      </div><br>
 
-  {%if analysis%}
-    <div class="stats" >
-      <h2>{{s.startDate}}, {{s.startTime}}</h2>
-        <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-          {% for stat in analysis %}
-            <h3>Statistics</h3>
-            <li>Total time: {{stat.tst.hour}} hours and {{stat.tst.minute}} minutes</li>
-            <li>Average HR: {{ stat.avgHR }}</li>
-            <li>Average RR: {{ stat.avgRR }}</li>
-            <li>Average HR Dip: {{ stat.avgHRdip }}</li>
-            <li>Min HR: {{ stat.minHR }}</li>
-            <li>Max HR: {{ stat.maxHR }}</li>
-            <li>Min RR: {{ stat.minRR }}</li>
-            <li>Max RR: {{ stat.avgRR }}</li>
-            <h3>Sleep Notes</h3>
-            {%if stat.sleepQuality == 0%}
-              <p>no sleep notes</p>
-            {%else%}
-              <li>Sleep Quality: {{ stat.sleepQuality }}</li>
-              <li>Sleep Disruptions: {{ stat.sleepDisruptions }}</li>
-              <li>Sleep Notes: {{ stat.sleepNotes }}</li>
-              <li>Number of Sleep Disruptions: {{ stat.numSleepDisruptions }}</li>
-            {%endif%}
-          {% endfor %}
-        </ul>
+      <div class="row">
+        <div id="rcorners2">
+          Sleep Quality: <br><br>
+          {{stat.sleepQuality}}
+      </div>
+
+      <div id="rcorners2">
+        Sleep Disruptions: <br><br>
+        {{stat.numSleepDisruptions}}
     </div>
-
-    <div class="forms">
+    <div id="rcorners2">
+      Sleep Notes: <br><br>
+      {{stat.sleepNotes}}
+  </div>
+    </div><br><br>
+    {%endif%}
+    <div>
       <h3>Add or edit some notes about your sleep: </h3>
-      <form method="post">
+      <form class="form-container" method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Submit">
       </form>
     </div>
-  {%else%}
-    <p>no stats</p>
-  {%endif%}
+  
 {% endif %}
 </div>
 {% endblock %}
