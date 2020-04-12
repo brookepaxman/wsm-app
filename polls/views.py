@@ -98,21 +98,16 @@ class DetailView(generic.DetailView):
     template_name = 'polls/detail.html'
 
 class StatView(viewsets.ModelViewSet):
-
     def get_queryset(self):         # this returns most recent session of the user that is logged in
-        name = None
         if self.request.user.is_authenticated:  # if user is logged in
             userid = self.request.user.id
-            #name = self.request.user.username
-            #accessor = User.objects.get(user_name=name) # grab all of user's stat objects
-            user_allstats = Stat.objects.filter(user=userid).order_by('sessionID__id') # and filter by sessionID
+            user_allstats = Stat.objects.filter(user=userid).order_by('sessionID__startDate') # and filter by sessionID
             recent = user_allstats.last()       # grab the most recent sessionID
             recent_Sid = recent.sessionID
             queryset = user_allstats.filter(sessionID=recent_Sid.id).order_by('time')       # filter to only have that sessionID
             return queryset
         else:
-            queryset = Stat.objects.order_by('time')
-            return queryset
+            return False
 
     # queryset = get_queryset()
     # access = User.objects.get(user_name='David')
@@ -212,7 +207,7 @@ class UserInputView(generic.ListView):
 
                 data.save()
                 form = sleepQualityForm()
-                args = {'form':form,'s':s,'analysis':Analysis.objects.filter(user=userid,sessionID=s)}
+                args = {'form':form,'s':s,'stat':Analysis.objects.get(user=userid,sessionID=s)}
             except Analysis.DoesNotExist:
                 args = {'form':form}
         return render(request, self.template_name, args)
@@ -220,15 +215,17 @@ class UserInputView(generic.ListView):
 class MultiView(generic.TemplateView):
     template_name = 'polls/analysis.html'
 
+
     def get(self,request):
-        form = calendarForm()
         if self.request.user.is_authenticated:
+            form = calendarForm()
             #name = self.request.user.username
             #accessor = User.objects.get(user_name=name)
             userid = self.request.user.id
             # sess = Session.objects.filter(user=accessor.id)
-            # args = {'form': form,'analysis':Analysis.objects.filter(user=userid).order_by('id')}
-            args = {'form': form,'stat':Analysis.objects.filter(user=userid).order_by('id').last()}
+        
+            args = {'form': form,'stats':Analysis.objects.filter(user=userid).order_by('-id')}
+            # args = {'form': form,'stats':Analysis.objects.filter(user=userid).order_by('id').last()}
         else:
             args = {'form': form}
         return render(request, self.template_name,args)
@@ -254,7 +251,7 @@ class MultiView(generic.TemplateView):
                         analysisList = a | analysisList
                     analysisList.order_by('sessionID')
                     form = calendarForm()
-                    args = {'form':form,'date':date,'analysis':analysisList}
+                    args = {'form':form,'date':date,'stats':analysisList}
         else:
             form = calendarForm()
             args = {'form':form}

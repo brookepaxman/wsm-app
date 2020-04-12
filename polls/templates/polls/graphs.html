@@ -1,4 +1,4 @@
-<!-- templates/polls/line-chart.html -->
+<!-- templates/polls/graphs.html -->
 {% extends 'template.html' %}
 
 {% block title %}WSM | Graphs{% endblock %}
@@ -13,14 +13,14 @@
     }
   </style>
 
-    <div class="container mt-20">
+    <div id="home" class="container mt-20 mb-100">
       {% if user.is_authenticated %}
         <h2 class="text-center" style="margin-bottom: 0;">{{ user.username }}'s Statistics</h2>
         <p class="text-center" style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
         <div class="subnav-container">
           <a href="/graphs" class="outline-btn active" style="margin-left: 0">View my data</a>
           <a href="/analysis" class="outline-btn">View Analytics</a>
-          <a href="/generate" class="outline-btn" style="margin-right: 0">Generate Objects</a>
+          <a href="/realtime" class="outline-btn" style="margin-right: 0;">Real-time Display</a>
         </div>
 
       {% else %}
@@ -29,8 +29,8 @@
       {% endif %}
       <div class="row">
         <div class="col-md-3 text-center" style="color: white; margin-top: 80px;">
-          <a id="today" href="#" class="fill-btn chosen">Today</a>
-          <a id="week" href="#" class="fill-btn">Week</a>
+          <a id="today" href="#home" class="fill-btn chosen">Last Session</a>
+          <a id="week" href="#home" class="fill-btn">Week</a>
           <label for="months">Choose a month:</label>
           <select class="month" id="months">
             <option value="1">January</option>
@@ -79,12 +79,18 @@
     method: "GET",
     url: endpoint,
     success: function(data){
+      var sessionDate = "";
       var labels = [];
       var hrData = [];
       var rrData = [];
       var time;
       // var startTime = stat.sessionID.startTime;
+      var first_iteration = true;
       data.forEach(function(stat) {
+        if(first_iteration) {
+          sessionDate = stat.sessionID.startDate;
+          first_iteration = false;
+        }
         time = moment(stat.sessionID.startDate + "T" + stat.sessionID.startTime).clone().add(stat.time, 'seconds');
         labels.push(time.format('hh:mm:ss a'));
         hrData.push(stat.hr);
@@ -128,7 +134,7 @@
           },
           title: {
             display: true,
-            text: "Today's HR and RR over time"
+            text: "HR and RR over time on "+sessionDate
           }
         }
       });

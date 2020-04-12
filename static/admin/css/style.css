@@ -8,7 +8,7 @@ h1 {
   text-align:center;
   color:#ffffff;
   font-weight:600;
-  font-family: calibri;
+  font-family: Calibri;
 }
 
 h2 {
@@ -104,6 +104,36 @@ a.outline-btn:hover {
   width: 100%;
 }
 
+.footer-container {
+  height: 50px;
+  background-color: #ecedf1;
+  width: 100%;
+}
+
+.footer-container ul {
+  list-style: none;
+}
+
+.footer-container ul li {
+  margin-top: 11px;
+  color: #0E0B2B;
+}
+
+.small-margin {
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+.footer-fixed {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+
+.mb-100 {
+  margin-bottom: 100px;
+}
+
 .nav-container h1 {
   color: #ffffff;
   margin: 0;
@@ -136,6 +166,14 @@ a.outline-btn:hover {
 
 .mt-30 {
   margin-top: 30px;
+}
+
+.mt-80 {
+  margin-top: 80px;
+}
+
+.mt-10 {
+  margin-top: 10px;
 }
 
 .tooltip-2 {
@@ -173,7 +211,7 @@ a.outline-btn:hover {
 }
 
 .circles {
-  margin-top: 50px;
+  margin-top: 40px;
   display: flex;
 }
 .circle-with-text {
@@ -327,6 +365,51 @@ option {
   border-radius: 5px;
 }
 
+.big-h1 {
+  font-size: 72px;
+}
+
+.big-h3 {
+  font-size: 18px;
+  color: #a3a1b4;
+  font-weight: normal;
+}
+
+#mid-header {
+  font-size: 32px;
+  color: #ffffff;
+}
+
+.home-number {
+  font-size: 64px;
+  color: #007bff;
+  display: inline;
+}
+
+.home-text {
+  font-size: 28px;
+  color: #ffffff;
+  display: inline;
+  padding-right: 5px;
+}
+
+.mt-40 {
+  margin-top: 40px;
+}
+
+.grey-block {
+  background-color: #242630;
+  height: 515px;
+  position: relative;
+}
+
+.vertical-center {
+  position: absolute;
+  top: 50%;
+  height: 350px;
+  margin-top: -185px;
+  width: 100%;
+}
 .sleep-time-box {
   padding: 15px;
   border-radius: 3px;
@@ -366,4 +449,29 @@ option {
 }
 .outline-btn.active:hover {
   border: solid 2px #007bff;
+}
+
+.note {
+  background-color: #B775FD;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 3px;
+  height: 200px;
+  width: 100%;
+  max-width: 275px;
+  padding: 15px;
+  overflow-y: scroll;
+}
+
+.mb-60 {
+  margin-bottom: 60px;
+}
+
+.ml-0 {
+  margin-left: 0;
+}
+
+.mr-0 {
+  margin-right: 0;
 }
