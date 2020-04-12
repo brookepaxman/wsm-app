@@ -6,8 +6,8 @@ from django.forms.widgets import SelectDateWidget
 from django.contrib.admin.widgets import AdminDateWidget
 
 class sleepQualityForm(forms.Form):
-    sleepQuality = forms.IntegerField(label="Rate your sleep from 1-5",min_value=1,max_value=5)
-    numDisruptions = forms.IntegerField(label="Number of sleep disruptions",min_value = 0)
+    sleepQuality = forms.IntegerField(widget=forms.NumberInput(attrs={'style': 'width: 50px'}),label="Rate your sleep from 1-5",min_value=1,max_value=5)
+    numDisruptions = forms.IntegerField(widget=forms.NumberInput(attrs={'style': 'width: 50px'}),label="Number of sleep disruptions",min_value = 0)
     sleepNotes = forms.CharField(label="Enter notes about your sleep:",widget=forms.Textarea)
     # inputDate = forms.DateField(widget=forms.SelectDateWidget(years=[1990,1991,1992]))
     # sleepNotes = forms.CharField(widget=forms.TextInput(attrs={'size': 50}))
