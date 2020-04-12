@@ -10,12 +10,11 @@
   <link rel="icon" type="image/png" sizes="32x32" href="{% static '/admin/favicon_io/favicon-32x32.png' %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static '/admin/favicon_io/favicon-16x16.png' %}">
   <link rel="manifest" href="{% static '/admin/favicon_io/site.webmanifest' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="{% static '/admin/css/bootstrap.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
 
   <title>{% block title %}Basic Site Template{% endblock %}</title>
-  <meta http-equiv="refresh" content="30" />
-
 </head>
 <body>
   <div id="navigation">
@@ -28,17 +27,17 @@
             </a>
           </li>
           <li>
-            <a class="nav-link-txt" href="">
+            <a class="nav-link-txt" href="{% url 'login' %}">
               Login
             </a>
           </li>
           <li>
-            <a class="nav-link-txt" href="">
+            <a class="nav-link-txt" href="/signup">
               Sign up
             </a>
           </li>
           <li>
-            <a href="nav-link-txt" href="">
+            <a class="nav-link-txt" href="">
               About us
             </a>
           </li>
