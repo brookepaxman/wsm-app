@@ -207,7 +207,7 @@ class UserInputView(generic.ListView):
 
                 data.save()
                 form = sleepQualityForm()
-                args = {'form':form,'s':s,'analysis':Analysis.objects.filter(user=userid,sessionID=s)}
+                args = {'form':form,'s':s,'stat':Analysis.objects.get(user=userid,sessionID=s)}
             except Analysis.DoesNotExist:
                 args = {'form':form}
         return render(request, self.template_name, args)
@@ -222,8 +222,8 @@ class MultiView(generic.TemplateView):
             #accessor = User.objects.get(user_name=name)
             userid = self.request.user.id
             # sess = Session.objects.filter(user=accessor.id)
-            # args = {'form': form,'analysis':Analysis.objects.filter(user=userid).order_by('id')}
-            args = {'form': form,'stat':Analysis.objects.filter(user=userid).order_by('id').last()}
+            args = {'form': form,'stats':Analysis.objects.filter(user=userid).order_by('-id')}
+            # args = {'form': form,'stats':Analysis.objects.filter(user=userid).order_by('id').last()}
         else:
             args = {'form': form}
         return render(request, self.template_name,args)
@@ -249,7 +249,7 @@ class MultiView(generic.TemplateView):
                         analysisList = a | analysisList
                     analysisList.order_by('sessionID')
                     form = calendarForm()
-                    args = {'form':form,'date':date,'analysis':analysisList}
+                    args = {'form':form,'date':date,'stats':analysisList}
         else:
             form = calendarForm()
             args = {'form':form}

@@ -10,8 +10,8 @@
   }
 </style>
 
-<div class="container mt-20">
   {% if user.is_authenticated %}
+  <div class="container mt-20">
     <h2 class="text-center" style="margin-bottom: 0;">Hi, {{ user.username }}!</h2>
     <p class="text-center" style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
     <div class="subnav-container">
@@ -25,10 +25,78 @@
         <h3 class="text-center">with the Wireless Sleep Monitor</h3>
       </div>
     </div>
+  </div>
   {% else %}
-    <h2 class="text-center mt-50" style="margin-bottom: 0">You are not logged in</h2>
-    <p class="text-center" style="margin-bottom: 30px;"><a class="fill-btn" href="{% url 'login' %}">login</a></p>
-  {% endif %}
+<div class="container mt-20">
+  <div class="row">
+    <div class="col-md-8 offset-md-2 mt-30">
+      <h1 class="text-center big-h1">Learn your sleep</h1>
+      <br>
+      <h3 class="text-center big-h3">
+        Sleep affects everyone, and understanding how you sleep can help you to learn more about yourself and your habits.
+         Let us make keeping track of your sleep easy for you!
+      </h3>
+    </div>
+  </div>
+  <div class="row mt-80" id="mid-header">
+    <div class="col-md text-center">
+      Average Sleep Time
+    </div>
+    <div class="col-md text-center">
+      Users
+    </div>
+    <div class="col-md text-center">
+      Average Sleep Quality
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md text-center">
+      <p class="home-number">6</p>
+      <p class="home-text">hrs</p>
+      <p class="home-number">49</p>
+      <p class="home-text">min</p>
+    </div>
+    <div class="col-md text-center">
+      <p class="home-number">12</p>
+    </div>
+    <div class="col-md text-center">
+      <p class="home-number">7.9 </p>
+      <p class="home-text">/</p>
+      <p class="home-text">10</p>
+    </div>
+  </div>
 </div>
+<div class="mt-20 grey-block">
+  <div class="row vertical-center">
+    <div class="col-md-3 offset-md-2">
+      <h1 class="text-center big-h1 ">How does good sleep affect our life?</h1>
+    </div>
+    <div class="col-md-5 offset-md-1 big-h3">
+      <p>Sleep helps us retain recently gained knowledge and developed skills.</p>
+      <p>Sleep helps us to pay attention, make decisions, and be creative.</p>
+      <p>Sleep helps maintain a healthy balance of the hormones that make you feel hungry (ghrelin) or full (leptin).</p>
+      <p>Sleep affects how our bodies reacts to insulin, which lowers the risk of getting diabetes.</p>
+      <p>Sleep supports healthy growth and development in children and teens, playing a role in puberty.</p>
+      <p>Sleep encourages a healthy immune system, vital for fighting off harmful substances.</p>
+      <p>Sleep helps to regulate our emotions and think clearer.</p>
+    </div>
+  </div>
+</div>
+<div class="container mt-50">
+
+</div>
+{% endif %}
+
+      <!-- {% if latest_stats %}
+
+        {% else %}
+          <p>No stats are available.</p>
+        {% endif %} -->
+<!-- </div> -->
 
 {% endblock %}
+
+<!-- Keeping track of the things you do can help you to understand
+        yourself better from things like caloric intake and workout notes to keeping a weekly schedule.
+        Sleep affects all of us, and the time asleep and quality of the sleep often sets the mood for the
+        following day. Let us make keeping track of your sleep easy for you! -->
