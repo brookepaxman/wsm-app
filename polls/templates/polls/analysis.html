@@ -43,6 +43,18 @@
     margin-left: 5px;
     margin-right: 5px;
   }
+  .circles h4 {
+    margin-top: 10px;
+  }
+  p.large{
+    font-size: 20px;
+  }
+  p.medium {
+    font-size: 18px;
+  }
+  .pl-15 {
+    padding-left: 15px;
+  }
 </style>
 
 
@@ -74,7 +86,7 @@
 
 
       {%if stat%}
-        <div>
+        <div class="mb-60">
           <div class="container">
             <div class="row">
               <div class="col-12 how-you-slept">
@@ -90,7 +102,7 @@
               </div>
                 <div class="row">
                   <div class="col-md-6 offset-md-3">
-                    <h6 class="text-center" style="margin-bottom: 20;">Total Sleep Time</h6>
+                    <h6 class="text-center" style="margin-top: 20px">Total Sleep Time</h6>
                     <div class="sleep-time-box">
                       <h3 class="text-center" style="color: #0E0B2B">
                         {%if stat.tst.hour != 0%}
@@ -168,24 +180,30 @@
 
                 </div>
 
-                <div class="row mt-50">
-                  <h4>Your Notes:</h4>
-                </div><br>
 
-                <div class="row">
-                  <div id="rcorners2">
-                    Sleep Quality: <br><br>
-                    {{stat.sleepQuality}}
+                <div class="row mt-50">
+                  <h4 class="pl-15">Your Notes:</h4>
                 </div>
-                <div id="rcorners2">
-                  Sleep Disruptions: <br><br>
-                  {{stat.numSleepDisruptions}}
-              </div>
-              <div id="rcorners2">
-                Sleep Notes: <br>
-                {{stat.sleepNotes}}
-            </div>
-                </div><br><br><br>
+                <div class="row mt-20 mb-100">
+                  <div class="col-md-4">
+                    <div class="note ml-0">
+                      <p class="large">Sleep Quality:</p>
+                      <p class="medium">{{stat.sleepQuality}}</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="note">
+                      <p class="large">Sleep Disruptions:</p>
+                      <p class="medium">{{stat.numSleepDisruptions}}</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4 mr-0">
+                    <div class="note">
+                      <p class="large">Sleep Notes:</p>
+                      <p class="medium">{{stat.sleepNotes}}</p>
+                    </div>
+                  </div>
+                </div>
 
           </div>
 

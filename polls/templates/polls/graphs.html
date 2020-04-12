@@ -13,7 +13,7 @@
     }
   </style>
 
-    <div class="container mt-20">
+    <div id="home" class="container mt-20 mb-100">
       {% if user.is_authenticated %}
         <h2 class="text-center" style="margin-bottom: 0;">{{ user.username }}'s Statistics</h2>
         <p class="text-center" style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
@@ -29,8 +29,8 @@
       {% endif %}
       <div class="row">
         <div class="col-md-3 text-center" style="color: white; margin-top: 80px;">
-          <a id="today" href="#" class="fill-btn chosen">Today</a>
-          <a id="week" href="#" class="fill-btn">Week</a>
+          <a id="today" href="#home" class="fill-btn chosen">Today</a>
+          <a id="week" href="#home" class="fill-btn">Week</a>
           <label for="months">Choose a month:</label>
           <select class="month" id="months">
             <option value="1">January</option>
