@@ -87,10 +87,10 @@ a.fill-btn.chosen:hover {
 }
 
 a.outline-btn:hover {
+  color: #0E0B2B;
   text-decoration: none;
-  color: #ffffff;
-  border: solid 2px #ffffff;
   font-weight: bold;
+  background-color: #007bff;
 }
 
 .hidden {
@@ -358,4 +358,12 @@ option {
 
 .mt-50 {
   margin-top: 50px;
+}
+
+.outline-btn.active {
+  border: solid 2px #ffffff;
+  color: #ffffff;
+}
+.outline-btn.active:hover {
+  border: solid 2px #007bff;
 }
