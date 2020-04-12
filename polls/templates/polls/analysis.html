@@ -12,11 +12,7 @@
       <p>You are not logged in. Please log in to see this page.</p>
       <a href="{% url 'login' %}">login</a>
     {% else %}
-      <p>Hi {{ user.username }}!</p>
-      <p>
-        <a href="{% url 'logout' %}" class="fill-btn" style="margin: 0; text-decoration: none;">logout</a><br>
-        <a href="" class="fill-btn" style="margin: 0; text-decoration: none;">See all</a>
-      </p>
+  
 
       <form method="post">
         {% csrf_token %}
