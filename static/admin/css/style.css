@@ -8,7 +8,7 @@ h1 {
   text-align:center;
   color:#ffffff;
   font-weight:600;
-  font-family: calibri;
+  font-family: Calibri;
 }
 
 h2 {
@@ -100,7 +100,8 @@ a.outline-btn:hover {
 
 .nav-container {
   height: 70px;
-  background-color: #ecedf1;
+  /* background-color: #ecedf1; */
+  background-color: #0c1962;
   width: 100%;
 }
 
@@ -166,6 +167,14 @@ a.outline-btn:hover {
 
 .mt-30 {
   margin-top: 30px;
+}
+
+.mt-80 {
+  margin-top: 80px;
+}
+
+.mt-10 {
+  margin-top: 10px;
 }
 
 .tooltip-2 {
@@ -357,6 +366,47 @@ option {
   border-radius: 5px;
 }
 
+.big-h1 {
+  font-size: 72px;
+}
+
+.big-h3 {
+  font-size: 18px;
+  color: #a3a1b4;
+  font-weight: normal;
+}
+
+#mid-header {
+  font-size: 32px;
+  color: #ffffff;
+}
+
+.home-number {
+  font-size: 64px;
+  color: #00ffff;
+  display: inline;
+}
+
+.home-text {
+  font-size: 28px;
+  color: #ffffff;
+  display: inline;
+  padding-right: 5px;
+}
+
+.grey-block {
+  background-color: #242630;
+  height: 450px;
+  position: relative;
+}
+
+.vertical-center {
+  position: absolute;
+  top: 50%;
+  height: 350px;
+  margin-top: -185px;
+  width: 100%;
+}
 .sleep-time-box {
   padding: 15px;
   border-radius: 3px;
