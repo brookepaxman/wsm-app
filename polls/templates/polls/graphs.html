@@ -15,15 +15,18 @@
 
     <div class="container mt-20">
       {% if user.is_authenticated %}
-        <h2>{{ user.username }}'s Statistics</h2>
-        <p><a href="{% url 'logout' %}">logout</a></p>
+        <h2 class="text-center" style="margin-bottom: 0;">{{ user.username }}'s Statistics</h2>
+        <p class="text-center" style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
+        <div class="subnav-container">
+          <a href="/graphs" class="outline-btn active" style="margin-left: 0">View my data</a>
+          <a href="/analysis" class="outline-btn">View Analytics</a>
+          <a href="/generate" class="outline-btn" style="margin-right: 0">Generate Objects</a>
+        </div>
+
       {% else %}
-        <p>You are not logged in</p>
-        <a href="{% url 'login' %}">login</a>
+        <h2 style="margin-bottom: 0">You are not logged in</h2>
+        <p style="margin-bottom: 30px;"><a href="{% url 'login' %}">login</a></p>
       {% endif %}
-      <a href="/graphs" class="outline-btn" style="margin-left: 0">View my data</a>
-      <a href="/analysis" class="outline-btn">View Analytics</a>
-      <a href="/generate" class="outline-btn">Generate Objects</a>
       <div class="row">
         <div class="col-md-3 text-center" style="color: white; margin-top: 80px;">
           <a id="today" href="#" class="fill-btn chosen">Today</a>
@@ -70,8 +73,6 @@
 <script type="text/javascript">
 
   $(document).ready(function(){
-
-
 
   var endpoint = '/api/stats/?format=json'
   $.ajax({

@@ -4,13 +4,21 @@
 {% block title %}WSM | Home{% endblock %}
 {% block content %}
 
+<style>
+  h3 {
+    color: #ffffff;
+  }
+</style>
+
 <div class="container mt-20">
   {% if user.is_authenticated %}
-  <h2>Hi, {{ user.username }}!</h2>
-    <p><a href="{% url 'logout' %}">logout</a></p>
-    <a href="/graphs" class="outline-btn" style="margin-left: 0;">View my data</a>
-    <a href="/analysis" class="outline-btn">View Analytics</a>
-    <a href="/generate" class="outline-btn">Generate Objects</a>
+    <h2 class="text-center" style="margin-bottom: 0;">Hi, {{ user.username }}!</h2>
+    <p class="text-center" style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
+    <div class="subnav-container">
+      <a href="/graphs" class="outline-btn" style="margin-left: 0;">View my data</a>
+      <a href="/analysis" class="outline-btn">View Analytics</a>
+      <a href="/generate" class="outline-btn" style="margin-right: 0;">Generate Objects</a>
+    </div>
     <div class="row">
       <div class="col-md-10 offset-md-1 mt-30">
         <h1 class="text-center">Learn your sleep</h1>
@@ -18,8 +26,8 @@
       </div>
     </div>
   {% else %}
-    <p>You are not logged in</p>
-    <a href="{% url 'login' %}">login</a>
+    <h2 class="text-center" style="margin-bottom: 0">You are not logged in</h2>
+    <p class="text-center" style="margin-bottom: 30px;"><a href="{% url 'login' %}">login</a></p>
   {% endif %}
 
       {% if latest_stats %}

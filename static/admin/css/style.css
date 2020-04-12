@@ -87,10 +87,10 @@ a.fill-btn.chosen:hover {
 }
 
 a.outline-btn:hover {
+  color: #0E0B2B;
   text-decoration: none;
-  color: #ffffff;
-  border: solid 2px #ffffff;
   font-weight: bold;
+  background-color: #007bff;
 }
 
 .hidden {
@@ -173,6 +173,7 @@ a.outline-btn:hover {
 }
 
 .circles {
+  margin-top: 50px;
   display: flex;
 }
 .circle-with-text {
@@ -196,9 +197,9 @@ a.outline-btn:hover {
   font-size: 30px;
   border-radius: 25px;
   background:  #B775FD;
-  padding: 15px 20px 20px 70px; 
+  padding: 15px 20px 20px 70px;
   width: 500px;
-  height: 75px;  
+  height: 75px;
 }
 
 #rcorners2 {
@@ -209,7 +210,7 @@ a.outline-btn:hover {
   background:  #B775FD;
   padding: 20px;
   width: 275px;
-  height: 150px;  
+  height: 150px;
 }
 .nav-container ul li {
   padding-left: 25px;
@@ -324,4 +325,45 @@ option {
 
 .dropdown {
   border-radius: 5px;
+}
+
+.sleep-time-box {
+  padding: 15px;
+  border-radius: 3px;
+  background-color: #ecedf1;
+}
+
+.subnav-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
+}
+
+.margin-auto{
+  margin-right: auto;
+  margin-bottom: auto;
+}
+
+.mb-40 {
+  margin-bottom: 40px;
+}
+
+.text-right{
+  text-align: right;
+}
+
+.mr-20 {
+  margin-right: 20px;
+}
+
+.mt-50 {
+  margin-top: 50px;
+}
+
+.outline-btn.active {
+  border: solid 2px #ffffff;
+  color: #ffffff;
+}
+.outline-btn.active:hover {
+  border: solid 2px #007bff;
 }
