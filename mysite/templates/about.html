@@ -1,0 +1,232 @@
+<!-- templates/about.html -->
+{% extends 'template.html' %}
+{% block title %} About{% endblock %}
+{% block content %}
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+      }
+
+      html {
+        box-sizing: border-box;
+      }
+
+      *, *:before, *:after {
+        box-sizing: inherit;
+      }
+
+      .column {
+        float: left;
+        width: 25%;
+        margin-bottom: 16px;
+        padding: 0 8px;
+        text-align: center;
+      }
+
+      .column2 {
+        float: left;
+        width: 20%;
+        margin-bottom: 16px;
+        padding: 0 8px;
+        text-align: center;
+      }
+
+      .column3 {
+        float: left;
+        width: 50%;
+        margin-bottom: 16px;
+        padding: 0 8px;
+        text-align: center;
+      }
+
+      .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        padding: 10px;
+        margin: 8px;
+        float: none; /* Added */
+        margin-bottom: 10px;
+      }
+
+      .about-section {
+        padding: 20px;
+        text-align: center;
+        background-color: #0E0B2B;
+        color: white;
+      }
+
+
+      .container {
+        padding: 0 16px;
+      }
+
+      .container::after, .row::after {
+        content: "";
+        clear: both;
+        display: table;
+        margin: 0 auto;
+      }
+
+      .repo{
+        margin-left: auto;
+        margin-right: auto;
+        width: 10%;
+        padding-bottom: 20px;
+      }
+
+      .title {
+        color: grey;
+      }
+
+
+      @media screen and (max-width: 650px) {
+        .column {
+          width: 100%;
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="about-section">
+      <h1 style="text-align:center;font-size:64px">About</h1>
+      <p style="text-align:justify; padding-left:200px; padding-right:200px; padding-bottom:50px">The Wireless Sleep Monitor (WSM) is a non-contact device used
+        for measuring a user's heart rate and respiration rate over a period of sleep. Using a millimeter-wave radar on the XWR1843 EVM Board from Texas Instruments,
+        the WSM collects signals from body displacement during sleep and records the processed data. Heart rate and respiration rate data is tracked and stored for user
+        display through the WSM web application. Through the web application, a user can view a graphical visualization of a particular night's sleep, calculated analytics
+        of their sleep, and record any disruptions themselves. Overall, the device acts as a novel, nonintrusive system to record and display sleeping vitals to a user. A link
+        to the code repository is found at the bottom of the page.
+      </p>
+    </div>
+
+  <h2 style="text-align:center;font-size:32px">Development Team</h2>
+  <div class="row">
+    <div class="column">
+      <div class="card">
+        <img src="/assets/about/brooke.jpg" alt="Brooke Paxman" style="width:100%">
+        <div class="container">
+          <h2 style="font-size:20px">Brooke Paxman</h2>
+          <p class="title">ECE &#8226 Software Engineering and Design</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="column">
+      <div class="card">
+        <img src="/assets/about/david-lok.jpg" alt="David Lok" style="width:100%">
+        <div class="container">
+          <h2 style="font-size:20px">David Lok</h2>
+          <p class="title">ECE &#8226 Software Engineering and Design</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="column">
+      <div class="card">
+        <img src="/assets/about/kayla.jpg" alt="Kayla Tran" style="width:100%">
+        <div class="container">
+          <h2 style="font-size:20px">Kayla Tran</h2>
+          <p class="title">ECE &#8226 Software Engineering and Design</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="column">
+      <div class="card">
+        <img src=".jpg" alt="Rabia Khan" style="width:100%">
+        <div class="container">
+          <h2 style="font-size:20px">Rabia Khan</h2>
+          <p class="title">ECE &#8226 Software Engineering and Design</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="column">
+      <div class="card">
+        <img src="/w3images/team1.jpg" alt="Adam Ali" style="width:100%">
+          <div class="container">
+            <h2 style="font-size:20px">Adam Ali</h2>
+            <p class="title">ECE &#8226 Embedded Systems and Computer Architecture</p>
+          </div>
+        </div>
+      </div>
+
+    <div class="column">
+      <div class="card">
+        <img src="../assets/about/andrew.jpg" alt="Andrew Han" style="width:100%">
+          <div class="container">
+            <h2 style="font-size:20px">Andrew Han</h2>
+            <p class="title">ECE &#8226 Electronics and Integrated Circuits</p>
+          </div>
+        </div>
+      </div>
+
+    <div class="column">
+      <div class="card">
+        <img src="../assets/about/Nithanth.jpg" alt="Nithanth Ram" style="width:100%">
+          <div class="container">
+            <h2 style="font-size:20px">Nithanth Ram</h2>
+            <p class="title">ECE &#8226 Data Science and Information Processing</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 style="text-align:center;font-size:32px">Tools</h2>
+    <div class="row">
+      <div class="column2">
+        <div class="card">
+          <img src="../assets/about/googlecloud.png" alt="GCP Logo" style="width:100%">
+        </div>
+      </div>
+
+      <div class="column2">
+        <div class="card">
+          <img src="../assets/about/Django.png" alt="Django Logo" style="width:100%">
+        </div>
+      </div>
+
+    <div class="column2">
+      <div class="card">
+        <img src="../assets/about/mysql.png" alt="MySQL Logo" style="width:100%">
+      </div>
+    </div>
+
+    <div class="column2">
+      <div class="card">
+        <img src="../assets/about/chartjs-logo.svg" alt="Chartjs Logo" style="width:100%">
+      </div>
+    </div>
+
+    <div class="column2">
+      <div class="card">
+        <img src="../assets/about/TI_hardware.png" alt="Texas Instruments Radar" style="width:100%">
+      </div>
+    </div>
+  </div>
+
+    <h2 style="text-align:center;font-size:32px">Sponsors</h2>
+    <div class="row">
+      <div class="column3">
+        <div class="card">
+          <img src="../assets/about/UT_ECE.png" alt="UT ECE Logo" style="width:50%">
+        </div>
+      </div>
+
+      <div class="column3">
+        <div class="card">
+          <img src="../assets/about/TI.png" alt="Texas Instruments Logo" style="width:50%">
+        </div>
+      </div>
+    </div>
+    <h2 style="text-align:center;font-size:32px">Repository</h2>
+      <div class="repo">
+        <a href="https://github.com/brookepaxman/wsm-app">
+          <img src = "../assets/about/github.svg" alt="Repository Link" style="width:100%">
+        </a>
+      </div>
+  </body>
+
+{% endblock %}
