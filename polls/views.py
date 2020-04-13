@@ -233,7 +233,7 @@ class MultiView(generic.TemplateView):
             # sess = Session.objects.filter(user=accessor.id)
         
             args = {'form': form,'stat':Analysis.objects.filter(user=userid).order_by('sessionID__startDate').last()}
-            # args = {'form': form,'stats':Analysis.objects.filter(user=userid).order_by('id').last()}
+            # args = {'form': form,'stats':Analysis.objects.filter(user=userid).order_by('-sessionID__startDate')}
         else:
             args = {'form': form}
         return render(request, self.template_name,args)
