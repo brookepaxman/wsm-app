@@ -414,6 +414,9 @@ option {
   padding: 15px;
   border-radius: 3px;
   background-color: #ecedf1;
+  width: 88%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .subnav-container {
@@ -474,4 +477,22 @@ option {
 
 .mr-0 {
   margin-right: 0;
+}
+
+
+.sub-row {
+  display: flex;
+  margin-top: 50px;
+}
+.sub-row h2 {
+  top: -7px;
+  position: relative;
+  left: 50px;
+}
+.sub-row p {
+  position: relative;
+  top: -3px;
+  font-size: 18px;
+  right: 50px;
+  font-weight: 600;
 }

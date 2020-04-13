@@ -6,7 +6,7 @@
 {% block content %}
 <style>
   body {
-       font-family: Arial, Helvetica, sans-serif;
+       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
        margin: 0;
      }
 
@@ -95,6 +95,10 @@
          display: block;
        }
      }
+     .large-container {
+       margin-left: 5%;
+       margin-right: 5%;
+     }
 </style>
   <body>
     <div class="about-section">
@@ -106,137 +110,140 @@
         of their sleep, and record any disruptions themselves. Overall, the device acts as a novel, nonintrusive system to record and display sleeping vitals to a user. A link
         to the code repository is found at the bottom of the page.
       </p>
-      <p style="text-aligned:center; padding-bottom:250px; padding-top:50px">&#8226 &#8226 &#8226</p>
+      <p style="text-aligned:center; padding-bottom:100px; padding-top:50px">&#8226 &#8226 &#8226</p>
     </div>
 
-  <h2 style="text-align:center;font-size:48px;color:#FFFFFF;margin-bottom:30px">Development Team</h2>
-  <div class="row">
-    <div class="column">
-      <div class="card">
-        <img src = "{% static 'admin/img/about/brooke.jpg' %}" alt="Brooke Paxman" style="width:100%">
-        <div class="container">
-          <h2 style="font-size:20px;color:#0E0B2B">Brooke Paxman</h2>
-          <p class="title">ECE &#8226 Software Engineering and Design</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="column">
-      <div class="card">
-        <img src="{% static 'admin/img/about/david-lok.jpg' %}" alt="David Lok" style="width:100%">
-        <div class="container">
-          <h2 style="font-size:20px;color:#0E0B2B">David Lok</h2>
-          <p class="title">ECE &#8226 Software Engineering and Design</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="column">
-      <div class="card">
-        <img src="{% static 'admin/img/about/kayla.jpg' %}" alt="Kayla Tran" style="width:100%">
-        <div class="container">
-          <h2 style="font-size:20px;color:#0E0B2B">Kayla Tran</h2>
-          <p class="title">ECE &#8226 Software Engineering and Design</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="column">
-      <div class="card">
-        <img src="{% static 'admin/img/about/rabia.jpg' %}" alt="Rabia Khan" style="width:100%">
-        <div class="container">
-          <h2 style="font-size:20px;color:#0E0B2B">Rabia Khan</h2>
-          <p class="title">ECE &#8226 Software Engineering and Design</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="column">
-      <div class="card">
-        <img src="{% static 'admin/img/about/adam.jpg' %}" alt="Adam Ali" style="width:100%">
-          <div class="container">
-            <h2 style="font-size:20px;color:#0E0B2B">Adam Ali</h2>
-            <p class="title">ECE &#8226 Embedded Systems and Computer Architecture</p>
-          </div>
-        </div>
-      </div>
-
-    <div class="column">
-      <div class="card">
-        <img src="{% static 'admin/img/about/andrew.jpg' %}" alt="Andrew Han" style="width:100%">
-          <div class="container">
-            <h2 style="font-size:20px;color:#0E0B2B">Andrew Han</h2>
-            <p class="title">ECE &#8226 Electronics and Integrated Circuits</p>
-          </div>
-        </div>
-      </div>
-
-    <div class="column">
-      <div class="card">
-        <img src="{% static 'admin/img/about/Nithanth.jpg' %}" alt="Nithanth Ram" style="width:100%">
-          <div class="container">
-            <h2 style="font-size:20px;color:#0E0B2B">Nithanth Ram</h2>
-            <p class="title">ECE &#8226 Data Science and Information Processing</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <h2 style="text-align:center;font-size:48px;color:#FFFFFF;margin-top:100px;margin-bottom:30px">Tools</h2>
+  <div class="large-container">
+    <h2 style="text-align:center;font-size:48px;color:#FFFFFF;margin-bottom:30px">Development Team</h2>
     <div class="row">
+      <div class="column">
+        <div class="card">
+          <img src = "{% static 'admin/img/about/brooke.jpg' %}" alt="Brooke Paxman" style="width:100%">
+          <div class="container">
+            <h2 style="font-size:20px;color:#0E0B2B">Brooke Paxman</h2>
+            <p class="title">ECE &#8226 Software Engineering and Design</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="card">
+          <img src="{% static 'admin/img/about/david-lok.jpg' %}" alt="David Lok" style="width:100%">
+          <div class="container">
+            <h2 style="font-size:20px;color:#0E0B2B">David Lok</h2>
+            <p class="title">ECE &#8226 Software Engineering and Design</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="card">
+          <img src="{% static 'admin/img/about/kayla.jpg' %}" alt="Kayla Tran" style="width:100%">
+          <div class="container">
+            <h2 style="font-size:20px;color:#0E0B2B">Kayla Tran</h2>
+            <p class="title">ECE &#8226 Software Engineering and Design</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="card">
+          <img src="{% static 'admin/img/about/rabia.jpg' %}" alt="Rabia Khan" style="width:100%">
+          <div class="container">
+            <h2 style="font-size:20px;color:#0E0B2B">Rabia Khan</h2>
+            <p class="title">ECE &#8226 Software Engineering and Design</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="column">
+        <div class="card">
+          <img src="{% static 'admin/img/about/adam.jpg' %}" alt="Adam Ali" style="width:100%">
+            <div class="container">
+              <h2 style="font-size:20px;color:#0E0B2B">Adam Ali</h2>
+              <p class="title">ECE &#8226 Embedded Systems and Computer Architecture</p>
+            </div>
+          </div>
+        </div>
+
+      <div class="column">
+        <div class="card">
+          <img src="{% static 'admin/img/about/andrew.jpg' %}" alt="Andrew Han" style="width:100%">
+            <div class="container">
+              <h2 style="font-size:20px;color:#0E0B2B">Andrew Han</h2>
+              <p class="title">ECE &#8226 Electronics and Integrated Circuits</p>
+            </div>
+          </div>
+        </div>
+
+      <div class="column">
+        <div class="card">
+          <img src="{% static 'admin/img/about/Nithanth.jpg' %}" alt="Nithanth Ram" style="width:100%">
+            <div class="container">
+              <h2 style="font-size:20px;color:#0E0B2B">Nithanth Ram</h2>
+              <p class="title">ECE &#8226 Data Science and Information Processing</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 style="text-align:center;font-size:48px;color:#FFFFFF;margin-top:100px;margin-bottom:30px">Tools</h2>
+      <div class="row">
+        <div class="column2">
+          <div class="card">
+            <img src="{% static 'admin/img/about/googlecloud.png' %}" alt="GCP Logo" style="width:100%">
+          </div>
+        </div>
+
+        <div class="column2">
+          <div class="card">
+            <img src="{% static 'admin/img/about/Django.png' %}" alt="Django Logo" style="width:100%">
+          </div>
+        </div>
+
       <div class="column2">
         <div class="card">
-          <img src="{% static 'admin/img/about/googlecloud.png' %}" alt="GCP Logo" style="width:100%">
+          <img src="{% static 'admin/img/about/mysql.png' %}" alt="MySQL Logo" style="width:100%">
         </div>
       </div>
 
       <div class="column2">
         <div class="card">
-          <img src="{% static 'admin/img/about/Django.png' %}" alt="Django Logo" style="width:100%">
+          <img src="{% static 'admin/img/about/chartjs-logo.svg' %}" alt="Chartjs Logo" style="width:100%">
         </div>
       </div>
 
-    <div class="column2">
-      <div class="card">
-        <img src="{% static 'admin/img/about/mysql.png' %}" alt="MySQL Logo" style="width:100%">
+      <div class="column2">
+        <div class="card">
+          <img src="{% static 'admin/img/about/TI_hardware.png' %}" alt="Texas Instruments Radar" style="width:100%">
+        </div>
       </div>
     </div>
 
-    <div class="column2">
-      <div class="card">
-        <img src="{% static 'admin/img/about/chartjs-logo.svg' %}" alt="Chartjs Logo" style="width:100%">
-      </div>
-    </div>
+      <h2 style="text-align:center;font-size:48px;color:#FFFFFF;margin-top:100px;margin-bottom:30px">Sponsors</h2>
+      <div class="row">
+        <div class="column3">
+          <div class="card">
+            <img src="{% static 'admin/img/about/UT_ECE.png' %}" alt="UT ECE Logo" style="width:50%" align="middle">
+          </div>
+        </div>
 
-    <div class="column2">
-      <div class="card">
-        <img src="{% static 'admin/img/about/TI_hardware.png' %}" alt="Texas Instruments Radar" style="width:100%">
+        <div class="column3">
+          <div class="card">
+            <img src="{% static 'admin/img/about/TI.png' %}" alt="Texas Instruments Logo" style="width:50%" align="middle">
+          </div>
+        </div>
       </div>
-    </div>
+      <h2 style="text-align:center;font-size:48px;color:#FFFFFF;margin-top:100px;margin-bottom:30px">Repository</h2>
+        <div class="repo">
+          <a href="https://github.com/brookepaxman/wsm-app">
+            <img class = "marginauto" src = "{% static 'admin/img/about/github.png' %}"alt="Repository Link" width="100%" align="middle">
+          </a>
+        </div>
   </div>
 
-    <h2 style="text-align:center;font-size:48px;color:#FFFFFF;margin-top:100px;margin-bottom:30px">Sponsors</h2>
-    <div class="row">
-      <div class="column3">
-        <div class="card">
-          <img src="{% static 'admin/img/about/UT_ECE.png' %}" alt="UT ECE Logo" style="width:50%" align="middle">
-        </div>
-      </div>
-
-      <div class="column3">
-        <div class="card">
-          <img src="{% static 'admin/img/about/TI.png' %}" alt="Texas Instruments Logo" style="width:50%" align="middle">
-        </div>
-      </div>
-    </div>
-    <h2 style="text-align:center;font-size:48px;color:#FFFFFF;margin-top:100px;margin-bottom:30px">Repository</h2>
-      <div class="repo">
-        <a href="https://github.com/brookepaxman/wsm-app">
-          <img class = "marginauto" src = "{% static 'admin/img/about/github.png' %}"alt="Repository Link" width="100%" align="middle">
-        </a>
-      </div>
   </body>
 
 {% endblock %}

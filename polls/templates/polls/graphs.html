@@ -12,21 +12,24 @@
       color: #ffffff;
     }
   </style>
+  {% if user.is_authenticated %}
 
+  <div class="sub-row">
+    <h2 style="margin-bottom: 0;">{{ user.username }}'s Statistics</h2>
+    <div class="subnav-container">
+      <a href="/graphs" class="outline-btn active" style="margin-left: 0;">View my data</a>
+      <a href="/analysis" class="outline-btn">View Analytics</a>
+      <a href="/realtime" class="outline-btn" style="margin-right: 0;">Real-time Display</a>
+    </div>
+    <p style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
+  </div>
+  {% else %}
+  <div class="container mt-20">
+    <h2 style="margin-bottom: 0">You are not logged in</h2>
+    <p style="margin-bottom: 30px;"><a href="{% url 'login' %}">login</a></p>
+  </div>
+  {% endif %}
     <div id="home" class="container mt-20 mb-100">
-      {% if user.is_authenticated %}
-        <h2 class="text-center" style="margin-bottom: 0;">{{ user.username }}'s Statistics</h2>
-        <p class="text-center" style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
-        <div class="subnav-container">
-          <a href="/graphs" class="outline-btn active" style="margin-left: 0">View my data</a>
-          <a href="/analysis" class="outline-btn">View Analytics</a>
-          <a href="/realtime" class="outline-btn" style="margin-right: 0;">Real-time Display</a>
-        </div>
-
-      {% else %}
-        <h2 style="margin-bottom: 0">You are not logged in</h2>
-        <p style="margin-bottom: 30px;"><a href="{% url 'login' %}">login</a></p>
-      {% endif %}
       <div class="row">
         <div class="col-md-3 text-center" style="color: white; margin-top: 80px;">
           <a id="today" href="#home" class="fill-btn chosen">Last Session</a>
@@ -66,8 +69,6 @@
         </div>
       </div>
     </div>
-
-</body>
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
 <script src="{% static '/chartjs/dist/Chart.js' %}"></script>
 <script type="text/javascript">
