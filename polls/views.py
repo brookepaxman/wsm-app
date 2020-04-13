@@ -75,7 +75,7 @@ class GenerateView(generic.FormView):
                     new_stat = Stat()
                     new_stat.sessionID = new_sess
                     new_stat.user = self.request.user
-                    new_stat.time = 4*e + time
+                    new_stat.time = 72*e + time
                     if (oldhr < 49) | (oldhr > 83):
                         new_stat.hr = random.randint(48, 84)
                     else:
@@ -129,7 +129,7 @@ class AnalysisSetView(viewsets.ModelViewSet):
         userAnalysisAll = Analysis.objects.filter(user=userid).order_by('sessionID__startDate')
         dateCutoff = date.today() - timedelta(days=7)
         userAnalysisWeek = userAnalysisAll.filter(sessionID__startDate__gte=dateCutoff).order_by('-sessionID')
-        week_set = {}
+        week_set = {} # ^^ assumes that sessions are being calculated in order
 
         for analysis in userAnalysisWeek:
             print(analysis.sessionID)
@@ -149,7 +149,7 @@ class MonthAnalysisViewSet(viewsets.ModelViewSet):
         month = self.request.query_params.get('month')
         if self.request.user.is_authenticated:
             userid = self.request.user.id
-            queryset = Analysis.objects.filter(user=userid).filter(sessionID__startDate__month=month)
+            queryset = Analysis.objects.filter(user=userid).filter(sessionID__startDate__month=month).order_by('-sessionID')
             month_set = {}
 
             for analysis in queryset:
@@ -160,7 +160,7 @@ class MonthAnalysisViewSet(viewsets.ModelViewSet):
                 else:
                     month_set[analysis.sessionID.startDate] = True
             # theset = userAnalysisWeek.distinct("sessionID__startDate")
-            queryset = queryset.reverse()
+            queryset = queryset.order_by('sessionID__startDate')
             # print(month_set)
             return queryset
     serializer_class = StrippedAnalysisSerializer
@@ -290,7 +290,7 @@ class AnalysisView(generic.ListView):
             while sleepindex < datasize:
                 if data[sleepindex].hr < 48:
                     skipcount += 1
-                    RRsum += data[datasize].rr
+                    RRsum += data[sleepindex].rr
                     if maxRR < data[sleepindex].rr:
                         maxRR = data[sleepindex].rr
                     if minRR > data[sleepindex].rr:
