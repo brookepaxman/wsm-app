@@ -11,6 +11,10 @@
     h2 {
       color: #ffffff;
     }
+    .subnav-container{
+      position: relative;
+      left: -3%;
+    }
   </style>
   {% if user.is_authenticated %}
 
@@ -69,7 +73,7 @@
         </div>
       </div>
     </div>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
 <script src="{% static '/chartjs/dist/Chart.js' %}"></script>
 <script type="text/javascript">
 
@@ -161,18 +165,18 @@
       });
       var ctx2 = document.getElementById('myChart2').getContext('2d');
       var myChart2 = new Chart (ctx2, {
-        type: 'line',
+        type: 'bar',
         data: {
           labels: sessionDate,
           datasets: [{
             label: 'Average Heart Rate',
             data: avgHRdata,
-            borderColor: '#B775FD',
-            fill: false,
+            backgroundColor: 'rgba(183,117,253,0.4)',
+            fill: false
           }, {
             label: 'Average Respiration Rate',
             data: avgRRdata,
-            borderColor: '#007bff',
+            backgroundColor: 'rgba(0,123,255,0.4)',
             fill: false,
           }]
         },
@@ -226,8 +230,6 @@
             hrData.push(stat.avgHR);
             rrData.push(stat.avgRR);
           });
-          console.log(hrData);
-          console.log(rrData);
           var monthName = monthList[selectedMonth-1]
           var ctx3 = document.getElementById('myChart_'+selectedMonth).getContext('2d');
           var myChart3 = new Chart (ctx3, {
@@ -239,23 +241,11 @@
                 data: hrData,
                 backgroundColor: 'rgba(183,117,253,0.4)',
                 fill: false
-              }, {
-                data: hrData,
-                label: 'HR Line',
-                borderColor: '#B775FD',
-                fill: false,
-                type: 'line'
-              }, {
+              },{
                 label: 'Respiration Rate',
                 data: rrData,
                 backgroundColor: 'rgba(0,123,255,0.4)',
                 fill: false
-              }, {
-                label: 'RR Line',
-                data: rrData,
-                borderColor: '#007bff',
-                fill: false,
-                type: 'line'
               }]
             },
             options: {
