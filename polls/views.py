@@ -139,7 +139,7 @@ class AnalysisSetView(viewsets.ModelViewSet):
             else:
                 week_set[analysis.sessionID.startDate] = True
         # theset = userAnalysisWeek.distinct("sessionID__startDate")
-        userAnalysisWeek = userAnalysisWeek.reverse()
+        userAnalysisWeek = userAnalysisWeek.order_by('sessionID__startDate')
         print(week_set)
         return userAnalysisWeek
     serializer_class = AnalysisSerializer

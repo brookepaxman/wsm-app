@@ -123,7 +123,7 @@
             yAxes: [{
               scaleLabel: {
                 display: true,
-                labelString: 'Beats/Breaths Per Second',
+                labelString: 'Beats/Breaths Per Minute',
                 fontFamily: 'calibri',
                 fontSize: 16
               }
@@ -181,6 +181,24 @@
           }]
         },
         options: {
+          scales:{
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Average Beats/Breaths Per Minute',
+                fontFamily: 'calibri',
+                fontSize: 16
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Day',
+                fontFamily: 'calibri',
+                fontSize: 16
+              }
+            }]
+          },
           title: {
             display: true,
             text: "This week's HR and RR over time"
@@ -253,7 +271,7 @@
                 yAxes: [{
                   scaleLabel: {
                     display: true,
-                    labelString: 'Average Beats/Breaths Per Second',
+                    labelString: 'Average Beats/Breaths Per Minute',
                     fontFamily: 'calibri',
                     fontSize: 16
                   }
