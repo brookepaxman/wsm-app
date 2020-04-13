@@ -45,6 +45,7 @@
   }
   .circles h4 {
     margin-top: 10px;
+    font-size: 18px;
   }
   p.large{
     font-size: 20px;
@@ -58,6 +59,11 @@
   .subnav-container {
     position: relative;
     left: -2%;
+  }
+  .alignment-txt {
+    width: 130px;
+    margin-left: auto;
+    margin-right: auto;
   }
 </style>
 {% if not user.is_authenticated %}
@@ -126,14 +132,14 @@
                     <div class="circle-with-text" style="margin-left: auto;">
                       {{ stat.avgHR }}
                     </div>
-                    <h4 class="text-right mr-20">Average HR</h4>
+                    <h4 style="width: 130px; margin-left: auto" class="mr-20 text-center">Average Heart Rate (BPM)</h4>
                   </div>
 
                   <div class="col-md-4">
                     <div class="circle-with-text" style="margin-left: auto; margin-right: auto;">
                       {{ stat.avgRR }}
                     </div>
-                    <h4 class="text-center">Average RR</h4>
+                    <h4 class="text-center alignment-txt">Average Respiration Rate (BPM)</h4>
                   </div>
 
                   <div class="col-md-4">
@@ -144,7 +150,7 @@
                         {{ stat.avgHRdip }}
                       {%endif%}
                     </div>
-                    <h4>Average HR Dip</h4>
+                    <h4 style="width: 130px; margin-left: 20px; text-align: center;">Average Heart Rate Dip (BPM)</h4>
                   </div>
 
                 </div>
@@ -155,28 +161,28 @@
                     <div class="circle-with-text center-circle">
                       {{ stat.minHR }}
                     </div>
-                    <h4 class="text-center">Min HR</h4>
+                    <h4 class="text-center alignment-txt">Min Heart Rate (BPM)</h4>
                   </div>
 
                   <div class="col-md-3">
                     <div class="circle-with-text center-circle">
                       {{ stat.maxHR }}
                     </div>
-                    <h4 class="text-center">Max HR</h4>
+                    <h4 class="text-center alignment-txt">Max Heart Rate (BPM)</h4>
                   </div>
 
                   <div class="col-md-3">
                     <div class="circle-with-text center-circle">
                       {{ stat.minRR }}
                     </div>
-                    <h4 class="text-center">Min RR</h4>
+                    <h4 class="text-center alignment-txt">Min Respiration Rate (BPM)</h4>
                   </div>
 
                   <div class="col-md-3">
                     <div class="circle-with-text center-circle">
                       {{ stat.avgRR }}
                     </div>
-                    <h4 class="text-center">Max RR</h4>
+                    <h4 class="text-center alignment-txt">Max Respiration Rate (BPM)</h4>
                   </div>
 
 
@@ -239,10 +245,10 @@
                   <div class="sleep-time-box">
                     <h3 class="text-center" style="color: #0E0B2B">
                       {%if stat.tst.hour != 0%}
-                        {{stat.tst.hour}} hours 
+                        {{stat.tst.hour}} hours
                       {%endif%}
                       {%if stat.tst.minute != 0%}
-                        {{stat.tst.minute}} minutes 
+                        {{stat.tst.minute}} minutes
                       {%endif%}
                       {%if stat.tst.seconds != 0%}
                         {{stat.tst.second}} seconds
