@@ -94,8 +94,16 @@ class GenerateView(generic.FormView):
                 args = {'form':form, 'test':test}
         return render(request, self.template_name, args)
 
+
 class DetailView(generic.DetailView):
     template_name = 'polls/detail.html'
+
+
+class AboutView(generic.ListView):
+    template_name = 'polls/about.html'
+
+    def get(self,request):
+        return render(request, self.template_name)
 
 class StatView(viewsets.ModelViewSet):
     def get_queryset(self):         # this returns most recent session of the user that is logged in
