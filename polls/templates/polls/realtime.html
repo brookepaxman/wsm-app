@@ -81,23 +81,35 @@ th.c {
 h1 {
   color:  #03AAF2
 }
+.subnav-container {
+  position: relative;
+  left: -3%;
+}
 </style>
 <body>
+  {% if user.is_authenticated %}
+    <div class="sub-row">
+      <h2 style="margin-bottom: 0;">Hi, {{ user.username }}!</h2>
+      <div class="subnav-container">
+        <a href="/graphs" class="outline-btn" style="margin-left: 0;">View my data</a>
+        <a href="/analysis" class="outline-btn">View Analytics</a>
+        <a href="/realtime" class="outline-btn active" style="margin-right: 0;">Real-time Display</a>
+      </div>
+      <p style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
+    </div>
+  {% else %}
+    <h2 class="text-center mt-20">You are not logged in</h2>
+    <a class="fill-btn" href="{% url 'login' %}">login</a>
+  {% endif %}
   <div class="container">
-    {% if user.is_authenticated %}
-    Hi {{ user.username }}!
-    <p><a href="{% url 'logout' %}">logout</a></p>
-    {% else %}
-    <p>You are not logged in</p>
-    <a href="{% url 'login' %}">login</a>
-    {% endif %}
+
     <div class="center">
       {% if latest_stat %}
       <h1 class="text-center pt-10 mb-10">Your Current Vital Signs Measurements</h1>
       <table style="width:100%">
         <tr>
           <th class="b">Heart Rate</th>
-          <th class="b">Breathing Rate</th> 
+          <th class="b">Breathing Rate</th>
         </tr>
         <tr>
           <th class="c">{{ latest_stat.hr }}</th>
