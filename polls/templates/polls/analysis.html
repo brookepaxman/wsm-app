@@ -79,11 +79,10 @@
         </form>
       </div>
 
-      <a href="" class="fill-btn mt-25 mb-40" style="text-decoration: none;">See all</a><br>
+      <a href="" class="fill-btn mt-25 mb-40" style="text-decoration: none;">See Most Recent</a><br>
 
 
-      {%if stats%}
-      {%for stat in stats%}
+      {%if stat%}
         <div class="mb-60">
           <div class="container">
             <div class="row">
@@ -214,6 +213,135 @@
 
 
         </div><br>
+      {%elif stats%}
+      {%for stat in stats%}
+      <div class="mb-60">
+        <div class="container">
+          <div class="row">
+            <div class="col-12 how-you-slept">
+              <h3 class="text-uppercase text-center">Here's how you slept on</h3>
+            </div>
+          </div>
+            <div class="tooltip-container">
+              <div class="tooltip-2">
+                <h3 style="color:white" class="text-center"><a href={{stat.sessionID.id}}>{{stat.sessionID.startDate}} at {{stat.sessionID.startTime}}</a></h3>
+                <span class="tooltiptext-2">Click here to edit your notes!</span>
+                <hr>
+              </div>
+            </div>
+              <div class="row">
+                <div class="col-md-6 offset-md-3">
+                  <h4 class="text-center" style="margin-bottom: 20px;">Total Sleep Time</h4>
+                  <div class="sleep-time-box">
+                    <h3 class="text-center" style="color: #0E0B2B">
+                      {%if stat.tst.hour != 0%}
+                        {{stat.tst.hour}} hours and
+                      {%endif%}
+                      {%if stat.tst.minute != 0%}
+                        {{stat.tst.minute}} minutes and
+                      {%endif%}
+                      {%if stat.tst.seconds != 0%}
+                        {{stat.tst.second}} seconds
+                      {%endif%}
+                    </h3>
+                  </div>
+                </div>
+              </div><br>
+
+              <div class="circles row">
+
+                <div class="col-md-4">
+                  <div class="circle-with-text" style="margin-left: auto;">
+                    {{ stat.avgHR }}
+                  </div>
+                  <h4 class="text-right mr-20">Average HR</h4>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="circle-with-text" style="margin-left: auto; margin-right: auto;">
+                    {{ stat.avgRR }}
+                  </div>
+                  <h4 class="text-center">Average RR</h4>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="circle-with-text">
+                    {%if stat.avgHRdip == -1%}
+                      Average HR Dip: Not enough data to calculate HR Dip. Please record a sleep session for longer than 1 minute
+                    {%else%}
+                      {{ stat.avgHRdip }}
+                    {%endif%}
+                  </div>
+                  <h4>Average HR Dip</h4>
+                </div>
+
+              </div>
+
+
+              <div class="circles row">
+                <div class="col-md-3">
+                  <div class="circle-with-text center-circle">
+                    {{ stat.minHR }}
+                  </div>
+                  <h4 class="text-center">Min HR</h4>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="circle-with-text center-circle">
+                    {{ stat.maxHR }}
+                  </div>
+                  <h4 class="text-center">Max HR</h4>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="circle-with-text center-circle">
+                    {{ stat.minRR }}
+                  </div>
+                  <h4 class="text-center">Min RR</h4>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="circle-with-text center-circle">
+                    {{ stat.avgRR }}
+                  </div>
+                  <h4 class="text-center">Max RR</h4>
+                </div>
+
+
+              </div>
+
+              {%if stat.sleepQuality == 0 %}
+              <div class="mt-50">
+                <h4 style="text-align: center;">Click the date above to add notes about your sleep!</h4>
+              </div><br>
+              {%else%}
+              <div class="row mt-50">
+                <h4 class="pl-15">Your Notes:</h4>
+              </div>
+              <div class="row mt-20 mb-100">
+                <div class="col-md-4">
+                  <div class="note ml-0">
+                    <p class="large">Sleep Quality:</p>
+                    <p class="medium">{{stat.sleepQuality}}</p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="note">
+                    <p class="large">Sleep Disruptions:</p>
+                    <p class="medium">{{stat.numSleepDisruptions}}</p>
+                  </div>
+                </div>
+                <div class="col-md-4 mr-0">
+                  <div class="note">
+                    <p class="large">Sleep Notes:</p>
+                    <p class="medium">{{stat.sleepNotes}}</p>
+                  </div>
+                </div>
+              </div>
+              
+              </div>
+              {%endif%}
+        </div>
         {%endfor%}
       {%else%}
         <p style="color:white">no statistics for this day</p>
