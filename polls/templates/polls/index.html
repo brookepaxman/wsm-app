@@ -64,7 +64,11 @@
   <div class="row">
     <div class="col-md text-center">
       <p class="home-number">{{hours}}</p>
-      <p class="home-text">hrs</p>
+      {% if hours == 1%}
+        <p class="home-text">hr</p>
+      {% else %}
+        <p class="home-text">hrs</p>
+      {% endif %}
       <p class="home-number">{{minutes}}</p>
       <p class="home-text">min</p>
     </div>
