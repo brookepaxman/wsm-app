@@ -1,0 +1,371 @@
+<!-- templates/polls/graphs.html -->
+{% extends 'template.html' %}
+
+{% block title %}WSM | Graphs{% endblock %}
+{% block content %}
+
+{% load static %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+
+  <style>
+    h2 {
+      color: #ffffff;
+    }
+    .subnav-container{
+      position: relative;
+      left: -3%;
+    }
+  </style>
+  {% if user.is_authenticated %}
+
+  <div class="sub-row">
+    <h2 style="margin-bottom: 0;">{{ user.username }}'s Statistics</h2>
+    <div class="subnav-container">
+      <a href="/graphs" class="outline-btn active" style="margin-left: 0;">View my data</a>
+      <a href="/analysis" class="outline-btn">View Analytics</a>
+      <a href="/realtime" class="outline-btn" style="margin-right: 0;">Real-time Display</a>
+    </div>
+    <p style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
+  </div>
+  {% else %}
+  <div class="container mt-20">
+    <h2 style="margin-bottom: 0">You are not logged in</h2>
+    <p style="margin-bottom: 30px;"><a href="{% url 'login' %}">login</a></p>
+  </div>
+  {% endif %}
+    <div id="home" class="container mt-20 mb-100">
+      <div class="row">
+        <div class="col-md-3 text-center" style="color: white; margin-top: 80px;">
+          <a id="today" href="#home" class="fill-btn chosen">Last Session</a>
+          <a id="week" href="#home" class="fill-btn">Week</a>
+          <label for="months">Choose a month:</label>
+          <select class="month" id="months">
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+        </div>
+        <div class="col-md-9" style = "margin-top: 60px">
+          <canvas class="chart-style" id="myChart" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart2" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart_1" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart_2" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart_3" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart_4" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart_5" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart_6" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart_7" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart_8" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart_9" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart_10" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart_11" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart_12" width="400" height="400"></canvas>
+
+        </div>
+      </div>
+    </div>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
+<script src="{% static '/chartjs/dist/Chart.js' %}"></script>
+<script type="text/javascript">
+
+  $(document).ready(function(){
+
+  var endpoint = '/api/stats/?format=json'
+  $.ajax({
+    method: "GET",
+    url: endpoint,
+    success: function(data){
+      var sessionDate = "";
+      var labels = [];
+      var hrData = [];
+      var rrData = [];
+      var time;
+      // var startTime = stat.sessionID.startTime;
+      var first_iteration = true;
+      data.forEach(function(stat) {
+        if(first_iteration) {
+          sessionDate = stat.sessionID.startDate;
+          first_iteration = false;
+        }
+        time = moment(stat.sessionID.startDate + "T" + stat.sessionID.startTime).clone().add(stat.time, 'seconds');
+        labels.push(time.format('hh:mm:ss a'));
+        hrData.push(stat.hr);
+        rrData.push(stat.rr);
+      });
+      var ctx = document.getElementById('myChart').getContext('2d');
+      var myChart = new Chart (ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Heart Rate',
+            data: hrData,
+            borderColor: '#B775FD',
+            fill: false
+          }, {
+            label: 'Respiration Rate',
+            data: rrData,
+            borderColor: '#007bff',
+            fill: false
+          }]
+        },
+        options: {
+          scales:{
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Beats/Breaths Per Minute',
+                fontFamily: 'calibri',
+                fontSize: 16
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Time',
+                fontFamily: 'calibri',
+                fontSize: 16
+              }
+            }]
+          },
+          title: {
+            display: true,
+            text: "HR and RR over time on "+sessionDate
+          }
+        }
+      });
+    },
+    error: function(error_data) {
+      console.log("error")
+      console.log(error_data)
+    }
+  });
+
+  var endpoint2 = '/api/analysis/?format=json'
+  $.ajax({
+    method: "GET",
+    url: endpoint2,
+    success: function(data){
+      var sessionDate = [];
+      var avgHRdata = [];
+      var avgRRdata = [];
+      data.forEach(function(stat) {
+        sessionDate.push(stat.sessionID.startDate);
+        avgHRdata.push(stat.dailyHR);
+        avgRRdata.push(stat.dailyRR);
+      });
+      var ctx2 = document.getElementById('myChart2').getContext('2d');
+      var myChart2 = new Chart (ctx2, {
+        type: 'bar',
+        data: {
+          labels: sessionDate,
+          datasets: [{
+            label: 'Average Heart Rate',
+            data: avgHRdata,
+            backgroundColor: 'rgb(183,117,253)',
+            fill: false
+          }, {
+            label: 'Average Respiration Rate',
+            data: avgRRdata,
+            backgroundColor: 'rgb(0,123,255)',
+            fill: false,
+          }]
+        },
+        options: {
+          scales:{
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Average Beats/Breaths Per Minute',
+                fontFamily: 'calibri',
+                fontSize: 16
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Day',
+                fontFamily: 'calibri',
+                fontSize: 16
+              }
+            }]
+          },
+          title: {
+            display: true,
+            text: "This week's HR and RR over time"
+          }
+        }
+      });
+    },
+    error: function(error_data) {
+      console.log("error")
+      console.log(error_data)
+    }
+  });
+
+  $("select.month").change(function(){
+      var selectedMonth = $(this).children("option:selected").val();
+      var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      var i;
+      for(i = 1; i <= 12; i++) {
+        if(i != selectedMonth){
+          $("#myChart_"+i).addClass("hidden");
+        }
+      }
+      if($("#myChart_"+selectedMonth).hasClass("hidden")) {
+        $("#myChart_"+selectedMonth).removeClass("hidden");
+      }
+      $("#myChart2").addClass("hidden");
+      $("#myChart").addClass("hidden");
+      if(! $(this).hasClass("chosen") ) {
+        $(this).addClass("chosen");
+      }
+      if( $("#week").hasClass("chosen")) {
+        $("#week").removeClass("chosen");
+      }
+      if($("#today").hasClass("chosen")) {
+        $("#today").removeClass("chosen");
+      }
+      var endpoint3 = '/api/month?format=json&month=' + selectedMonth + ''
+      $.ajax({
+        method: "GET",
+        url: endpoint3,
+        success: function(data){
+          var labels = [];
+          var hrData = [];
+          var rrData = [];
+          data.forEach(function(stat) {
+            labels.push(stat.sessionID.startDate);
+            hrData.push(stat.avgHR);
+            rrData.push(stat.avgRR);
+          });
+          var monthName = monthList[selectedMonth-1]
+          var ctx3 = document.getElementById('myChart_'+selectedMonth).getContext('2d');
+          var myChart3 = new Chart (ctx3, {
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: 'Heart Rate',
+                data: hrData,
+                backgroundColor: 'rgb(183,117,253)',
+                fill: false
+              },{
+                label: 'Respiration Rate',
+                data: rrData,
+                backgroundColor: 'rgb(0,123,255)',
+                fill: false
+              }]
+            },
+            options: {
+              scales:{
+                yAxes: [{
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Average Beats/Breaths Per Minute',
+                    fontFamily: 'calibri',
+                    fontSize: 16
+                  }
+                }],
+                xAxes: [{
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Day',
+                    fontFamily: 'calibri',
+                    fontSize: 16
+                  }
+                }]
+              },
+              title: {
+                display: true,
+                text: monthName + "'s HR and RR over time"
+              }
+            }
+          });
+        },
+        error: function(error_data) {
+          console.log("error")
+          console.log(error_data)
+        }
+      });
+  });
+
+  $("select.month").click(function(){
+    $("#myChart").addClass("hidden");
+    $("#myChart2").addClass("hidden");
+    var mnth = $(this).children("option:selected").val();
+    if($("#myChart_"+mnth).hasClass("hidden")) {
+      $("#myChart_"+mnth).removeClass("hidden");
+    }
+    var i;
+    for(i = 1; i <= 12; i++) {
+      if(i != mnth) {
+        $("#myChart_"+i).addClass("hidden");
+      }
+    }
+    if(! $(this).hasClass("chosen") ) {
+      $(this).addClass("chosen");
+    }
+    if( $("#today").hasClass("chosen")) {
+      $("#today").removeClass("chosen");
+    }
+    if($("#week").hasClass("chosen")) {
+      $("#week").removeClass("chosen");
+    }
+  });
+
+  $("#today").click(function() {
+    if($("#myChart").hasClass("hidden")) {
+      $("#myChart").removeClass("hidden");
+    }
+    $("#myChart2").addClass("hidden");
+    $("#myChart3").addClass("hidden");
+    var i;
+    for(i = 1; i <= 12; i++) {
+      $("#myChart_"+i).addClass("hidden");
+    }
+    if(! $(this).hasClass("chosen") ) {
+      $(this).addClass("chosen");
+    }
+    if( $("select.month").hasClass("chosen")) {
+      $("select.month").removeClass("chosen");
+    }
+    if($("#week").hasClass("chosen")) {
+      $("#week").removeClass("chosen");
+    }
+  });
+  $("#week").click(function() {
+    if($("#myChart2").hasClass("hidden")) {
+      $("#myChart2").removeClass("hidden");
+    }
+    $("#myChart").addClass("hidden");
+    $("#myChart3").addClass("hidden");
+    var i;
+    for(i = 1; i <= 12; i++) {
+      $("#myChart_"+i).addClass("hidden");
+    }
+    if(! $(this).hasClass("chosen") ) {
+      $(this).addClass("chosen");
+    }
+    if( $("select.month").hasClass("chosen")) {
+      $("select.month").removeClass("chosen");
+    }
+    if($("#today").hasClass("chosen")) {
+      $("#today").removeClass("chosen");
+    }
+  });
+
+});
+
+</script>
+
+{% endblock %}

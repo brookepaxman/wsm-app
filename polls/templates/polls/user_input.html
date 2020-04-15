@@ -1,25 +1,63 @@
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
-<h1>Welcome to the Wireless Sleep Monitor App!</h1>
+<!-- templates/polls/user-input.html -->
+{% extends 'template.html' %}
+
+{% block title %}WSM | User Input{% endblock %}
 {% block content %}
-{% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">logout</a></p>
-{% else %}
-  <p>You are not logged in</p>
+
+  <div class="container mt-20">
+
+{% if not user.is_authenticated %}
+  <p>You are not logged in. Please log in to see this page.</p>
   <a href="{% url 'login' %}">login</a>
+{% else %}
+<h2 class="text-center" style="margin-bottom: 0;">Hi, {{ user.username }}!</h2>
+<p class="text-center" style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
+<div class="subnav-container">
+  <a href="/graphs" class="outline-btn" style="margin-left: 0">View my data</a>
+  <a href="/analysis" class="outline-btn active">Back to Analytics</a>
+  <a href="/generate" class="outline-btn" style="margin-right: 0">Generate Objects</a>
+ 
+</div><br><br>
+<div class="container"></div>
+<h3 style="text-align: center;">{{s.startDate}}, {{s.startTime}}</h3><br>
+  {%if stat.sleepQuality == 0%}
+  <h4 style="text-align: center;">No notes yet. Add some below.</h4>
+  {%else%}
+    
+      
+  <div class="row mt-30">
+    <h4 class="pl-15">Your Notes:</h4>
+  </div>
+  <div class="row mt-20 mb-100">
+    <div class="col-md-4">
+      <div class="note ml-0">
+        <p class="large">Sleep Quality:</p>
+        <p class="medium">{{stat.sleepQuality}}</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="note">
+        <p class="large">Sleep Disruptions:</p>
+        <p class="medium">{{stat.numSleepDisruptions}}</p>
+      </div>
+    </div>
+    <div class="col-md-4 mr-0">
+      <div class="note">
+        <p class="large">Sleep Notes:</p>
+        <p class="medium">{{stat.sleepNotes}}</p>
+      </div>
+    </div>
+  </div>
+    {%endif%}
+    <div>
+      <h3>Add or edit some notes about your sleep: </h3>
+      <form class="form-container" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit">
+      </form>
+    </div><br><br><br>
+  
 {% endif %}
-{% endblock %}
-
-<p><a href="/analysis/">Back to analysis</a> </p>
-
-<div class="forms">
-    <h3>Add some notes about your sleep: </h3>
-
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="Submit">
-    </form>
-
 </div>
+{% endblock %}

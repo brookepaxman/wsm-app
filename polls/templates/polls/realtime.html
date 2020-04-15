@@ -1,0 +1,126 @@
+<!-- templates/polls/realtime.html -->
+{% extends 'template.html' %}
+
+{% block title %}WSM | Realtime{% endblock %}
+{% block content %}
+
+{% load static %}
+<meta http-equiv="refresh" content="15" />
+
+
+<style>
+  .login-box {
+    background-color: #ffffff;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 5px;
+    box-shadow: 0 0 7px #ffffff;
+    color: #0b102b;
+  }
+  input[type=text], input[type=password] {
+      width: 40%;
+      padding: 12px 20px;
+  }
+
+  input[type=submit] {
+      width: 40%;
+      padding: 8px 20px;
+      margin: 8px 0;
+      cursor: pointer;
+  }
+
+  input[type=submit]:hover {
+      background-color: #01137c;
+  }
+
+  .margin-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .center {
+  margin: auto;
+  text-align: center;
+  width: 60%;
+  padding: 5px;
+  }
+
+  .center2 {
+  margin: auto;
+  width: 24%;
+  padding: 5px;
+}
+.pt-20 {
+  padding-top: 20px;
+}
+.mt-50 {
+  margin-top: 50px;
+}
+.pb-10 {
+  padding-bottom: 10px;
+}
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+th.a {
+  font-size: 15px;
+}
+
+th.b {
+  font-size: 150%;
+  color:white
+}
+
+th.c {
+  font-size: 500%;
+  color:#DDC8FE
+}
+
+h1 {
+  color:  #03AAF2
+}
+.subnav-container {
+  position: relative;
+  left: -3%;
+}
+</style>
+<body>
+  {% if user.is_authenticated %}
+    <div class="sub-row">
+      <h2 style="margin-bottom: 0;">Hi, {{ user.username }}!</h2>
+      <div class="subnav-container">
+        <a href="/graphs" class="outline-btn" style="margin-left: 0;">View my data</a>
+        <a href="/analysis" class="outline-btn">View Analytics</a>
+        <a href="/realtime" class="outline-btn active" style="margin-right: 0;">Real-time Display</a>
+      </div>
+      <p style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
+    </div>
+  {% else %}
+    <h2 class="text-center mt-20">You are not logged in</h2>
+    <a class="fill-btn" href="{% url 'login' %}">login</a>
+  {% endif %}
+  <div class="container">
+
+    <div class="center">
+      {% if latest_stat %}
+      <h1 class="text-center pt-10 mb-10">Your Current Vital Signs Measurements</h1>
+      <table style="width:100%">
+        <tr>
+          <th class="b">Heart Rate</th>
+          <th class="b">Breathing Rate</th>
+        </tr>
+        <tr>
+          <th class="c">{{ latest_stat.hr }}</th>
+          <th class="c">{{ latest_stat.rr }}</th>
+        </tr>
+      </table>
+      {% else %}
+      <h3 class="text-center pt-20 mb-20">Please start your WSM device to view your realtime vital signs measurements</h3>
+      {% endif %}
+    </div>
+  </div>
+</body>
+
+{% endblock %}

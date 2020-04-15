@@ -1,42 +1,116 @@
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static '/admin/css/style.css' %}">
-<h1>Welcome to the Wireless Sleep Monitor App!</h1>
+<!-- templates/polls/index.html -->
+{% extends 'template.html' %}
+
+{% block title %}WSM | Home{% endblock %}
 {% block content %}
-{% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">logout</a></p>
-{% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
+
+<style>
+  h3 {
+    color: #ffffff;
+  }
+  .grey-block {
+    padding-top: 50px;
+  }
+  #content {
+    padding-bottom: 100px;
+  }
+  .subnav-container {
+    position: relative;
+    left: -2.5%;
+  }
+</style>
+
+  {% if user.is_authenticated %}
+  <div class="sub-row">
+    <h2 style="margin-bottom: 0;">Hi, {{ user.username }}!</h2>
+    <div class="subnav-container">
+      <a href="/graphs" class="outline-btn" style="margin-left: 0;">View my data</a>
+      <a href="/analysis" class="outline-btn">View Analytics</a>
+      <a href="/realtime" class="outline-btn" style="margin-right: 0;">Real-time Display</a>
+    </div>
+    <p style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
+  </div>
+  <div class="container mt-20">
+    <div class="row">
+      <div class="col-md-10 offset-md-1 mt-30">
+        <h1 class="text-center">Learn your sleep</h1>
+        <h3 class="text-center">with the Wireless Sleep Monitor</h3>
+      </div>
+    </div>
+  </div>
+  {% else %}
+<div class="container mt-20">
+  <div class="row">
+    <div class="col-md-8 offset-md-2 mt-30">
+      <h1 class="text-center big-h1">Learn your sleep</h1>
+      <br>
+      <h3 class="text-center big-h3">
+        Sleep affects everyone, and understanding how you sleep can help you to learn more about yourself and your habits.
+         Let us make keeping track of your sleep easy for you!
+      </h3>
+    </div>
+  </div>
+  <div class="row mt-80" id="mid-header">
+    <div class="col-md text-center">
+      Average Sleep Time
+    </div>
+    <div class="col-md text-center">
+      Users
+    </div>
+    <div class="col-md text-center">
+      Average Sleep Quality
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md text-center">
+      <p class="home-number">6</p>
+      <p class="home-text">hrs</p>
+      <p class="home-number">49</p>
+      <p class="home-text">min</p>
+    </div>
+    <div class="col-md text-center">
+      <p class="home-number">12</p>
+    </div>
+    <div class="col-md text-center">
+      <p class="home-number">7.9 </p>
+      <p class="home-text">/</p>
+      <p class="home-text">10</p>
+    </div>
+  </div>
+</div>
+<div class="mt-40 grey-block">
+  <div class="container mb-100">
+    <div class="row">
+      <div class="col-md-5">
+        <h1 class="text-center big-h1 " style="margin-top: 20%">How does good sleep affect our life?</h1>
+      </div>
+      <div class="col-md-6 offset-md-1 big-h3">
+        <p>Sleep helps us retain recently gained knowledge and developed skills.</p>
+        <p>Sleep helps us to pay attention, make decisions, and be creative.</p>
+        <p>Sleep helps maintain a healthy balance of the hormones that make you feel hungry (ghrelin) or full (leptin).</p>
+        <p>Sleep affects how our bodies reacts to insulin, which lowers the risk of getting diabetes.</p>
+        <p>Sleep supports healthy growth and development in children and teens, playing a role in puberty.</p>
+        <p>Sleep encourages a healthy immune system, vital for fighting off harmful substances.</p>
+        <p>Sleep helps to regulate our emotions and think clearer.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container mt-50">
+
+</div>
 {% endif %}
+
+      <!-- {% if latest_stats %}
+
+        {% else %}
+          <p>No stats are available.</p>
+        {% endif %} -->
+<!-- </div> -->
+
 {% endblock %}
 
-  {% if latest_stats %}
-  <div class="stats" style="display: flex">
-      <ul id="timedata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Time (s)</h3></li>
-        {% for stat in latest_stats %}
-          <li>{{ stat.time }}</li>
-        {% endfor %}
-      </ul>
-      <ul id="hrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Heart Rate</h3></li>
-
-        {% for stat in latest_stats %}
-          <li>{{ stat.hr }}</li>
-        {% endfor %}
-      </ul>
-
-      <ul id="rrdata" style="font-size: 20px; color:#3d3d5c; font-family:calibri">
-        <li style="list-style:none"><h3 style="color:#3d3d5c; font-family:calibri">Respiration Rate</h3></li>
-
-        {% for stat in latest_stats %}
-          <li>{{ stat.rr }}</li>
-        {% endfor %}
-      </ul>
-      <canvas id="myChart" width="400" height="400"></canvas>
-    {% else %}
-      <p>No stats are available.</p>
-    {% endif %}
-  </div>
-
+<!-- Keeping track of the things you do can help you to understand
+        yourself better from things like caloric intake and workout notes to keeping a weekly schedule.
+        Sleep affects all of us, and the time asleep and quality of the sleep often sets the mood for the
+        following day. Let us make keeping track of your sleep easy for you! -->

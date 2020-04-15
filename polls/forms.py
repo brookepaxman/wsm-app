@@ -19,6 +19,7 @@ class calendarForm(forms.ModelForm):
     inputDate = forms.ModelChoiceField(label="Select a date", queryset = None, empty_label="No date selected")
     
 
+
     # def __init__(self, user, *args, **kwargs):
     #     super(calendarForm, self).__init__(*args, **kwargs)
     #     self.fields['inputDate'] = forms.ChoiceField(

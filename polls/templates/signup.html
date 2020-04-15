@@ -1,0 +1,120 @@
+<!-- templates/signup.html -->
+{% extends 'template.html' %}
+
+{% block title %}WSM | Sign Up{% endblock %}
+{% block content %}
+
+<style>
+  input[type=text], input[type=password] {
+      width: 40%;
+      padding: 12px 20px;
+      display: block;
+  }
+
+  input[type=submit] {
+      display: block;
+      width: 40%;
+      padding: px 20px;
+      cursor: pointer;
+  }
+
+  input[type=submit]:hover {
+      background-color: #01137c;
+  }
+
+  button[type=submit]:hover {
+      background-color: #01137c;
+  }
+
+  .margin-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .center {
+  margin: auto;
+  text-align: center;
+  width: 60%;
+  padding: 5px;
+  }
+
+  .center2 {
+  margin: auto;
+  width: 24%;
+  padding: 5px;
+}
+.login-box {
+  background-color: #ffffff;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 5px;
+  box-shadow: 0 0 7px #ffffff;
+  color: #0b102b;
+}
+
+.login-box h2 {
+  color: #0b102b;
+}
+
+.margin-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pt-20 {
+  padding-top: 20px;
+}
+.mt-50 {
+  margin-top: 50px;
+}
+.pb-20 {
+  padding-bottom: 20px;
+}
+.mb-20 {
+  margin-bottom: 20px;
+}
+.mb-15 {
+  margin-bottom: 15px;
+}
+.pl-40 {
+  padding-left: 30px;
+}
+h3 {
+  color: #0E0B2B;
+}
+
+</style>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-10 offset-md-1 mt-50">
+        <div class="login-box pb-20">
+          <h3 class="text-center pt-20 mb-20 bold">Sign Up</h3>
+          <form method="post">
+            {% csrf_token %}
+            {% if messages %}
+                  <ul>
+                      {% for message in messages %}
+                      <li>{{ message }}</li>
+                      {% endfor %}
+                  </ul>
+              {% endif %}
+            <input type="text" class="form-control margin-auto mb-15" id="{{form.username.id_for_label}}" name="{{form.username.html_name}}" placeholder="Username" />
+            <input type="text" class="form-control margin-auto mb-15" id="{{form.email.id_for_label}}" name="{{form.email.html_name}}" placeholder="Email" />
+            <input style="margin-bottom: 4px;" type="password" class="form-control margin-auto" id="{{form.password1.id_for_label}}" name="{{form.password1.html_name}}" placeholder="Password" />
+            {% if form.password1.help_text %}
+                <small style="color: grey">{{ form.password1.help_text }}</small>
+            {% endif %}
+            <input style="margin-bottom: 4px" type="password" class="form-control margin-auto" id="{{form.password2.id_for_label}}" name="{{form.password2.html_name}}" placeholder="Confirm Password" />
+            {% if form.password2.help_text %}
+                <small style="color: grey; display: block;" class="text-center mb-15">{{ form.password2.help_text }}</small>
+            {% endif %}
+            <input type="submit" class="btn btn-primary margin-auto" value="Sign Up"/>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+{% endblock %}
