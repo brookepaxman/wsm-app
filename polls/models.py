@@ -36,7 +36,7 @@ class Analysis(models.Model):
     maxHR = models.IntegerField(default=0)
     minRR = models.IntegerField(default=0)
     maxRR = models.IntegerField(default=0)
-    sleepQuality = models.IntegerField(default=3)
+    sleepQuality = models.IntegerField(default=0)
     sleepDisruptions = models.TextField(default="")
     sleepNotes = models.TextField(default="")
     numSleepDisruptions = models.IntegerField(default=0)

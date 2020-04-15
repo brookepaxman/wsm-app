@@ -56,7 +56,7 @@ class IndexView(generic.ListView):
             avgtst = Analysis.objects.all().aggregate(Avg('tst'))
             hours = math.floor(avgtst['tst__avg']/3600)
             minutes = round((avgtst['tst__avg']/60)%60)
-            avgquality = Analysis.objects.all().aggregate(Avg('sleepQuality'))
+            avgquality = Analysis.objects.exclude(sleepQuality=0).aggregate(Avg('sleepQuality'))
             avgquality['sleepQuality__avg'] = round(avgquality['sleepQuality__avg'], 2)
             args = {'users':users, 'hours':hours, 'minutes':minutes, 'avgquality':avgquality}
             return render(request, self.template_name, args)
