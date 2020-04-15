@@ -6,13 +6,15 @@ from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import login, authenticate
 from django.db.models import Avg
+from django.conf import settings
+
 
 from datetime import datetime
 from datetime import date
 from datetime import timedelta
 # from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
-from .models import User, Stat, Dummy, Analysis, Session
+from .models import Stat, Dummy, Analysis, Session
 from .forms import sleepQualityForm, calendarForm, statGeneratorForm, SignUpForm
 from numpy import abs
 from .serializers import StatSerializer, AnalysisSerializer, StrippedAnalysisSerializer, SessionSerializer
@@ -50,7 +52,7 @@ class IndexView(generic.ListView):
             args = {'users':0, 'avgtst':0, 'avgquality':0}  # throwaway args
             return render(request, self.template_name, args) # index.html should prevent this from displaying
         else:
-            users = User.objects.all().count()
+            users = User.objects.count()
             avgtst = Analysis.objects.all().aggregate(Avg('tst'))
             hours = math.floor(avgtst['tst__avg']/3600)
             minutes = round((avgtst['tst__avg']/60)%60)
