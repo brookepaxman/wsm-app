@@ -2,10 +2,8 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
-
-class Session(models.Model):
-    startDate = models.DateField('date published')
-    startTime = models.TimeField()
+from django.conf import settings
+from django.forms import ModelForm
 
 class User(models.Model):
     user_name = models.CharField(max_length=200)
@@ -16,6 +14,13 @@ class User(models.Model):
 
     def was_published_recently(self):
         return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+
+
+class Session(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    startDate = models.DateField('date published')
+    startTime = models.TimeField()
+    status = models.TextField(default="")
 
 
 class Stat(models.Model):
@@ -53,4 +58,7 @@ class Analysis(models.Model):
     maxRR = models.IntegerField(default=0)
     numSleepDisruptions = models.IntegerField(default=0)
     
+
+    def __str__(self):
+        return self.sessionID.startDate.strftime("%b %d, %Y, ") + self.sessionID.startTime.strftime("%I:%M %p")
 

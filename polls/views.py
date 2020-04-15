@@ -43,24 +43,45 @@ class UserInputView(generic.ListView):
     
 class MultiView(TemplateView):
     template_name = 'polls/analysis.html'
-    
+
     def get(self,request):
-        form = calendarForm()
-        name = self.request.user.username
-        accessor = User.objects.get(user_name=name)
+        form = calendarForm(request=request)
+        if self.request.user.is_authenticated:
+            userid = self.request.user.id
+            args = {'form': form,'stat':Analysis.objects.filter(user=userid).order_by('sessionID__startDate').last()}
+        else:
+            args = {'form': form}
+        return render(request, self.template_name,args)
 
         return render(request, self.template_name, {'form': form,'analysis':Analysis.objects.filter(user=accessor.id).order_by('date'),
         'userinput':UserInput.objects.filter(user=accessor.id).order_by('date')})
 
     
     def post(self,request):
-        form = calendarForm(request.POST)
-        name = self.request.user.username
-        accessor = User.objects.get(user_name=name)
-        if form.is_valid():
-            txt = form.cleaned_data['inputDate']
-            args = {'form':form,'txt':txt,'analysis':Analysis.objects.filter(user=accessor.id),
-        'userinput':UserInput.objects.filter(user=accessor.id).order_by('date')}
+        if self.request.user.is_authenticated:
+            form = calendarForm(request=request.POST)
+            userid = self.request.user.id
+            if form.is_valid():
+                stat = form.cleaned_data['inputDate']
+                # if not Session.objects.filter(startDate = date).exists():
+                #     args = {'form':form}
+                # else:
+                #     analysisList = Analysis.objects.none()
+                #     # anal = Analysis.objects.filter(user=accessor.id)
+                #     # sess = Session.objects.filter(anal__user=accessor.id,startDate = date).distinct()
+                #     sess = Session.objects.filter(user=userid,startDate = date)
+                #     for s in sess:
+                #         a = Analysis.objects.filter(user=userid,sessionID=s)
+                #         analysisList = a | analysisList
+                #     analysisList.order_by('sessionID')
+                # form = calendarForm(request=request)
+                
+                form = calendarForm(request=request)
+                    # args = {'form':form,'date':date,'stats':analysisList}
+            args = {'form':form,'stat':stat}
+        else:
+            form = calendarForm(request=request)
+            args = {'form':form}
         return render(request, self.template_name, args)
 
     # def get_context_data(self, **kwargs):
