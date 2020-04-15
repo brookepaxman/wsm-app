@@ -62,3 +62,6 @@ class Analysis(models.Model):
     def __str__(self):
         return self.sessionID.startDate.strftime("%b %d, %Y, ") + self.sessionID.startTime.strftime("%I:%M %p")
 
+    def __str__(self):
+        return self.sessionID.startDate.strftime("%b %d, %Y, ") + self.sessionID.startTime.strftime("%I:%M %p")
+
