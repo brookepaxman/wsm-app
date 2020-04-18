@@ -309,6 +309,10 @@ class ChartView(generic.ListView):
                             session.save()
                             stat.save()
                             args = {'stat':stat, 'stats':stats}
+                        else: 
+                            args = {'error':"no stat objects exist for that session"} 
+                    else:
+                        args = {'error':"session doesn't exist that needs to be calculated"} 
             except Session.DoesNotExist:
                 args = {'error':"session doesn't exist"} 
         else:

@@ -112,8 +112,24 @@ h1 {
           <th class="b">Breathing Rate</th>
         </tr>
         <tr>
-          <th class="c">{{ latest_stat.hr }}</th>
-          <th class="c">{{ latest_stat.rr }}</th>
+          <th class="c">
+            <script>
+              try {
+                {{ latest_stat.hr }} throw "hehe"
+              } catch (error) {
+                message.innerHTML = "stat hr doesn't exist yet, please wait a bit " + err;
+              }
+            </script>
+          </th>
+          <th class="c">
+            <script>
+              try {
+                {{ latest_stat.rr }}
+              } catch (error) {
+                message.innerHTML = "stat rr doesn't exist yet, please wait a bit " + err;
+              }
+            </script>
+          </th>
         </tr>
       </table>
       {% else %}
