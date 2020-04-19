@@ -104,7 +104,9 @@ h1 {
   <div class="container">
 
     <div class="center">
-      {% if latest_stat %}
+      {% if latest_stat == "delay"%}
+      <h3 class="text-center pt-20 mb-20">Loading...</h3>
+      {% elif latest_stat %}
       <h1 class="text-center pt-10 mb-10">Your Current Vital Signs Measurements</h1>
       <table style="width:100%">
         <tr>
@@ -112,24 +114,8 @@ h1 {
           <th class="b">Breathing Rate</th>
         </tr>
         <tr>
-          <th class="c">
-            <script>
-              try {
-                {{ latest_stat.hr }} throw "hehe"
-              } catch (error) {
-                message.innerHTML = "stat hr doesn't exist yet, please wait a bit " + err;
-              }
-            </script>
-          </th>
-          <th class="c">
-            <script>
-              try {
-                {{ latest_stat.rr }}
-              } catch (error) {
-                message.innerHTML = "stat rr doesn't exist yet, please wait a bit " + err;
-              }
-            </script>
-          </th>
+          <th class="c">{{ latest_stat.hr }}</th>
+          <th class="c">{{ latest_stat.rr }}</th>
         </tr>
       </table>
       {% else %}
