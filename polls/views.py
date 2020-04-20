@@ -224,10 +224,23 @@ class MultiView(generic.TemplateView):
     template_name = 'polls/analysis.html'
 
     def get(self,request):
-        form = calendarForm(request=request)
+        # form = calendarForm(user=self.request.user)
+        # form = calendarForm(initial = {'inputDate': Analysis.objects.filter(user=self.request.user.id).order_by('sessionID__startDate')})
         if self.request.user.is_authenticated:
-            userid = self.request.user.id
-            args = {'form': form,'stat':Analysis.objects.filter(user=userid).order_by('sessionID__startDate').last()}
+            if request.method == 'GET':
+                form = calendarForm(initial = {'inputDate': Analysis.objects.filter(user=self.request.user).order_by('sessionID__startDate')})
+                stat = Analysis.objects.filter(user=self.request.user).order_by('sessionID__startDate').last()
+                # form = calendarForm(request.GET,initial = {'inputDate': Analysis.objects.filter(user=self.request.user).order_by('sessionID__startDate')})
+                # if form.is_valid():
+                #     stat = form.cleaned_data['inputDate']
+                #     # stat = Analysis.objects.get(id=s)
+                # else:
+                #     userid = self.request.user.id
+                #     stat = Analysis.objects.filter(user=userid).order_by('sessionID__startDate').last()
+            else:
+                userid = self.request.user.id
+                stat = Analysis.objects.filter(user=userid).order_by('sessionID__startDate').last()
+            args = {'form': form,'stat':stat}
         else:
             args = {'form': form}
         return render(request, self.template_name,args)
@@ -235,10 +248,11 @@ class MultiView(generic.TemplateView):
 
     def post(self,request):
         if self.request.user.is_authenticated:
-            form = calendarForm(request=request.POST)
+            form = calendarForm(user=self.request.user,request=request.POST)
             userid = self.request.user.id
             if form.is_valid():
-                stat = form.cleaned_data['inputDate']
+                s = form.cleaned_data['inputDate']
+                stat = Analysis.objects.get(id=s)
                 # if not Session.objects.filter(startDate = date).exists():
                 #     args = {'form':form}
                 # else:
@@ -252,11 +266,11 @@ class MultiView(generic.TemplateView):
                 #     analysisList.order_by('sessionID')
                 # form = calendarForm(request=request)
                 
-                form = calendarForm(request=request)
+                form = calendarForm(user=self.request.user)
                     # args = {'form':form,'date':date,'stats':analysisList}
             args = {'form':form,'stat':stat}
         else:
-            form = calendarForm(request=request)
+            form = calendarForm(user=self.request.user)
             args = {'form':form}
         return render(request, self.template_name, args)
 

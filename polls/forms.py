@@ -13,17 +13,18 @@ class sleepQualityForm(forms.Form):
     sleepNotes = forms.CharField(label="Enter notes about your sleep:",widget=forms.Textarea(attrs={'rows':5, 'cols':40}))
 
 
-class calendarForm(forms.ModelForm):
+
+class calendarForm(forms.Form):
     # inputDate = forms.DateField(label="Date",widget=SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")))
     # inputDate = forms.DateField(label="Select a date", widget=forms.Select(choices = None))
-    inputDate = forms.ModelChoiceField(label="Select a date", queryset = None, empty_label="No date selected")
-    
+    user = User.objects.get(username="test")
+    inputDate = forms.ModelChoiceField(label="Select a date", queryset = Analysis.objects.filter(user=user).order_by('sessionID__startDate'), empty_label="No date selected")
 
 
     # def __init__(self, user, *args, **kwargs):
     #     super(calendarForm, self).__init__(*args, **kwargs)
     #     self.fields['inputDate'] = forms.ChoiceField(
-    #         choices=[(o, str(o)) for o in Analysis.objects.filter(user=user).order_by('sessionID__startDate')]
+    #         choices=[(o.id, str(o)) for o in Analysis.objects.filter(user=user)]
     #     )
 
     # def __init__(self, user, *args, **kwargs):
@@ -31,13 +32,13 @@ class calendarForm(forms.ModelForm):
     #         qs = Analysis.objects.filter(user=user).order_by('sessionID__startDate')
     #         self.fields['inputDate'].queryset = qs
 
-    def __init__(self, *args, **kwargs):
-        request = kwargs.pop('request', None)
-        super().__init__(*args, **kwargs)
-        self.fields['inputDate']
-        if request:
-            user = request.user
-            self.fields['inputDate'].queryset = Analysis.objects.filter(user=user).order_by('sessionID__startDate')
+    # def __init__(self, *args, **kwargs):
+    #     request = kwargs.pop('request', None)
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['inputDate']
+    #     if request:
+    #         user = request.user
+    #         self.fields['inputDate'].queryset = Analysis.objects.filter(user=user).order_by('sessionID__startDate')
         
 
 class SignUpForm(UserCreationForm):
