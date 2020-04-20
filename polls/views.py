@@ -5,17 +5,21 @@ from django.views import generic
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import login, authenticate
+from django.db.models import Avg
+from django.conf import settings
+
 
 from datetime import datetime
 from datetime import date
 from datetime import timedelta
 # from chartjs.views.lines import BaseLineChartView
 from rest_framework import viewsets
-from .models import User, Stat, Dummy, Analysis, Session
+from .models import Stat, Dummy, Analysis, Session
 from .forms import sleepQualityForm, calendarForm, statGeneratorForm, SignUpForm
 from numpy import abs
 from .serializers import StatSerializer, AnalysisSerializer, StrippedAnalysisSerializer, SessionSerializer
 import random
+import math
 
 def signup_view(request):
     form = SignUpForm(request.POST)
@@ -32,16 +36,30 @@ def signup_view(request):
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
-    context_object_name = 'latest_stats'
-    def get_queryset(self):
-        name = None
+    # context_object_name = 'latest_stats'
+    # def get_queryset(self):
+    #     name = None
+    #     if self.request.user.is_authenticated:
+    #         #name = self.request.user.username
+    #         userid = self.request.user.id
+    #         #accessor = User.objects.get(user_name=name)
+    #         return Stat.objects.filter(user=userid).order_by('time')
+    #     else:
+    #         return False
+
+    def get(self, request):
         if self.request.user.is_authenticated:
-            #name = self.request.user.username
-            userid = self.request.user.id
-            #accessor = User.objects.get(user_name=name)
-            return Stat.objects.filter(user=userid).order_by('time')
+            args = {'users':0, 'avgtst':0, 'avgquality':0}  # throwaway args
+            return render(request, self.template_name, args) # index.html should prevent this from displaying
         else:
-            return False
+            users = User.objects.count()
+            avgtst = Analysis.objects.all().aggregate(Avg('tst'))
+            hours = math.floor(avgtst['tst__avg']/3600)
+            minutes = round((avgtst['tst__avg']/60)%60)
+            avgquality = Analysis.objects.exclude(sleepQuality=0).aggregate(Avg('sleepQuality'))
+            avgquality['sleepQuality__avg'] = round(avgquality['sleepQuality__avg'], 2)
+            args = {'users':users, 'hours':hours, 'minutes':minutes, 'avgquality':avgquality}
+            return render(request, self.template_name, args)
 
 class GenerateView(generic.FormView):
     template_name = 'polls/generate.html'
@@ -308,7 +326,10 @@ class AnalysisView(generic.ListView):
                     if minRR > data[sleepindex].rr:
                         minRR = data[sleepindex].rr
                     sleepindex += 1
-            HRavg = HRsum/(datasize - 75 - skipcount)
+            try:
+                HRavg = HRsum/(datasize - 75 - skipcount)
+            except ZeroDivisionError:
+                HRavg = 48
             RRavg = RRsum/(datasize - 75)
         else:
             for d in data:
@@ -330,7 +351,10 @@ class AnalysisView(generic.ListView):
                         minHR = d.hr
                     if minRR > d.rr:
                         minRR = d.rr
-            HRavg = HRsum/(datasize - skipcount)
+            try:
+                HRavg = HRsum/(datasize - skipcount)
+            except ZeroDivisionError:
+                HRavg = 48
             RRavg = RRsum/datasize
         tst = str(timedelta(seconds=sec))
         return HRavg, RRavg, maxHR, minHR, maxRR, minRR, tst
@@ -362,7 +386,10 @@ class AnalysisView(generic.ListView):
                     dipsum += abs(awake_ref - d.hr)
                 else:
                     skipcount += 1
-            HRdip = dipsum/(datasize - skipcount)
+            try:
+                HRdip = dipsum/(datasize - skipcount)
+            except ZeroDivisionError:
+                HRdip = 0
         return HRdip
 
     def get(self, request, session_id):
