@@ -627,7 +627,10 @@ class RealtimeView(generic.ListView):
     def get_queryset(self):
         if self.request.user.is_authenticated:
             userid = self.request.user.id
-            latestSession = Session.objects.filter(user=userid).latest('id')
+            try:
+                latestSession = Session.objects.filter(user=userid).latest('id')
+            except:
+                return False
             print(latestSession.id)
             print(latestSession.status)
             try:
