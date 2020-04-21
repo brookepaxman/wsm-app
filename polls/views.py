@@ -510,7 +510,10 @@ class AnalysisView(generic.ListView):
                     if minRR > data[sleepindex].rr:
                         minRR = data[sleepindex].rr
                     sleepindex += 1
-            HRavg = HRsum/(datasize - 75 - skipcount)
+            try:
+                HRavg = HRsum/(datasize - 75 - skipcount)
+            except ZeroDivisionError:
+                HRavg = 48
             RRavg = RRsum/(datasize - 75)
         else:
             for d in data:
@@ -532,7 +535,10 @@ class AnalysisView(generic.ListView):
                         minHR = d.hr
                     if minRR > d.rr:
                         minRR = d.rr
-            HRavg = HRsum/(datasize - skipcount)
+            try:
+                HRavg = HRsum/(datasize - skipcount)
+            except ZeroDivisionError:
+                HRavg = 48
             RRavg = RRsum/datasize
         tst = str(timedelta(seconds=sec))
         return HRavg, RRavg, maxHR, minHR, maxRR, minRR, tst
@@ -564,7 +570,10 @@ class AnalysisView(generic.ListView):
                     dipsum += abs(awake_ref - d.hr)
                 else:
                     skipcount += 1
-            HRdip = dipsum/(datasize - skipcount)
+            try:
+                HRdip = dipsum/(datasize - skipcount)
+            except ZeroDivisionError:
+                HRdip = 0
         return HRdip
 
     def get(self, request, session_id):
