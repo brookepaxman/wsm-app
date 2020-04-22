@@ -106,7 +106,6 @@ a.outline-btn:hover {
   display: flex;
 }
 
-
 .footer-container {
   height: 50px;
   background-color: #ecedf1;
@@ -276,6 +275,10 @@ a.outline-btn:hover {
 
 .flex {
   display: flex;
+}
+
+.hide{
+  display: none;
 }
 
 .dropdown-content {
