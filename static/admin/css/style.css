@@ -100,10 +100,12 @@ a.outline-btn:hover {
 }
 
 .nav-container {
-  height: 70px;
+  height: 80px;
   background-color: #ecedf1;
   width: 100%;
+  display: flex;
 }
+
 
 .footer-container {
   height: 50px;
@@ -260,7 +262,15 @@ a.outline-btn:hover {
 
 .nav-container ul {
   list-style: none;
-  padding-top: 20px;
+  padding-top: 25px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: 25px;
+}
+
+.nav-container img {
+  margin-top: -10px;
+  margin-left: 50px;
 }
 
 .flex {
