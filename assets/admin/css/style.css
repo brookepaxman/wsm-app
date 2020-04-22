@@ -8,12 +8,13 @@ h1 {
   text-align:center;
   color:#ffffff;
   font-weight:600;
-  font-family: calibri;
+  font-family: Calibri;
 }
 
 h2 {
   font-family: calibri;
   color:#ffffff;
+  font-size: 28px;S
 }
 
 h3 {
@@ -99,9 +100,10 @@ a.outline-btn:hover {
 }
 
 .nav-container {
-  height: 70px;
+  height: 80px;
   background-color: #ecedf1;
   width: 100%;
+  display: flex;
 }
 
 .footer-container {
@@ -166,6 +168,14 @@ a.outline-btn:hover {
 
 .mt-30 {
   margin-top: 30px;
+}
+
+.mt-80 {
+  margin-top: 80px;
+}
+
+.mt-10 {
+  margin-top: 10px;
 }
 
 .tooltip-2 {
@@ -251,11 +261,24 @@ a.outline-btn:hover {
 
 .nav-container ul {
   list-style: none;
-  padding-top: 20px;
+  padding-top: 25px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: 25px;
 }
+
+.nav-container img {
+  margin-top: -10px;
+  margin-left: 50px;
+}
+
 
 .flex {
   display: flex;
+}
+
+.hide{
+  display: none;
 }
 
 .dropdown-content {
@@ -357,10 +380,58 @@ option {
   border-radius: 5px;
 }
 
+.big-h1 {
+  font-size: 72px;
+}
+
+.big-h3 {
+  font-size: 18px;
+  color: #a3a1b4;
+  font-weight: normal;
+}
+
+#mid-header {
+  font-size: 32px;
+  color: #ffffff;
+}
+
+.home-number {
+  font-size: 64px;
+  color: #007bff;
+  display: inline;
+}
+
+.home-text {
+  font-size: 28px;
+  color: #ffffff;
+  display: inline;
+  padding-right: 5px;
+}
+
+.mt-40 {
+  margin-top: 40px;
+}
+
+.grey-block {
+  background-color: #242630;
+  height: 515px;
+  position: relative;
+}
+
+.vertical-center {
+  position: absolute;
+  top: 50%;
+  height: 350px;
+  margin-top: -185px;
+  width: 100%;
+}
 .sleep-time-box {
   padding: 15px;
   border-radius: 3px;
   background-color: #ecedf1;
+  width: 88%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .subnav-container {
@@ -421,4 +492,28 @@ option {
 
 .mr-0 {
   margin-right: 0;
+}
+
+.nav-link-txt {
+  font-size: 16px;
+}
+
+.sub-row {
+  display: flex;
+  margin-top: 50px;
+}
+.sub-row h2 {
+  top: -7px;
+  position: relative;
+  left: 50px;
+}
+.sub-row p {
+  position: relative;
+  top: -3px;
+  font-size: 18px;
+  right: 50px;
+  font-weight: 600;
+}
+.sub-row a {
+  font-size: 14px;
 }

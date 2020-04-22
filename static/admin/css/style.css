@@ -517,3 +517,12 @@ option {
 .sub-row a {
   font-size: 14px;
 }
+
+.text-box{
+  padding: 20px;
+  border: 1px solid white;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 5px;
+}
