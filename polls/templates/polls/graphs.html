@@ -19,7 +19,7 @@
   {% if user.is_authenticated %}
 
   <div class="sub-row">
-    <h2 style="margin-bottom: 0;">{{ user.username }}'s Statistics</h2>
+    <h2 style="margin-bottom: 0; white-space: nowrap; width: 184px;">{{ user.username }}'s Statistics</h2>
     <div class="subnav-container">
       <a href="/graphs" class="outline-btn active" style="margin-left: 0;">View my data</a>
       <a href="/analysis" class="outline-btn">View Analytics</a>
@@ -36,8 +36,13 @@
     <div id="home" class="container mt-20 mb-100">
       <div class="row">
         <div class="col-md-3 text-center" style="color: white; margin-top: 80px;">
-          <a id="today" href="#home" class="fill-btn chosen">Last Session</a>
-          <a id="week" href="#home" class="fill-btn">Week</a>
+            <label for="sessions">Select a recent session:</label>
+            <select class="session chosen" id="sessions">
+              {% for session in queryset %}
+                <option number="{{ forloop.counter }}" value="{{ session.id }}">{{session.startDate}} at {{session.startTime}}</option>
+              {% endfor %}
+            </select>
+          <a id="week" href="#home" class="fill-btn">Past Week</a>
           <label for="months">Choose a month:</label>
           <select class="month" id="months">
             <option value="1">January</option>
@@ -55,7 +60,18 @@
           </select>
         </div>
         <div class="col-md-9" style = "margin-top: 60px">
-          <canvas class="chart-style" id="myChart" width="400" height="400"></canvas>
+          <div id='loader1' class="hide loading">
+            <img src="{% static '/admin/img/loading.gif' %}">
+          </div>
+          <div id='loader2' class="hide loading">
+            <img src="{% static '/admin/img/loading.gif' %}">
+          </div>
+          <div id='loader3' class="hide loading">
+            <img src="{% static '/admin/img/loading.gif' %}">
+          </div>
+          <canvas class="chart-style" id="myChart_s1" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart_s2" width="400" height="400"></canvas>
+          <canvas class="chart-style hidden" id="myChart_s3" width="400" height="400"></canvas>
           <canvas class="chart-style hidden" id="myChart2" width="400" height="400"></canvas>
           <canvas class="chart-style hidden" id="myChart_1" width="400" height="400"></canvas>
           <canvas class="chart-style hidden" id="myChart_2" width="400" height="400"></canvas>
@@ -76,84 +92,200 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
 <script src="{% static '/chartjs/dist/Chart.js' %}"></script>
 <script type="text/javascript">
-
   $(document).ready(function(){
 
-  var endpoint = '/api/stats/?format=json'
-  $.ajax({
-    method: "GET",
-    url: endpoint,
-    success: function(data){
-      var sessionDate = "";
-      var labels = [];
-      var hrData = [];
-      var rrData = [];
-      var time;
-      // var startTime = stat.sessionID.startTime;
-      var first_iteration = true;
-      data.forEach(function(stat) {
-        if(first_iteration) {
-          sessionDate = stat.sessionID.startDate;
-          first_iteration = false;
+    var sessionID = $("select.session").find("option:first-child").val();
+    var endpoint1 = '/api/stats?format=json&session=' + sessionID + ''
+    $.ajax({
+      method: "GET",
+      url: endpoint1,
+      beforeSend: function(){
+      // Show image container
+      $("#loader1").addClass("show");
+     },
+     success: function(data){
+       var sessionDate = "";
+       var labels = [];
+       var hrData = [];
+       var rrData = [];
+       var time;
+       var first_iteration = true;
+       data.forEach(function(stat) {
+         if(first_iteration) {
+           sessionDate = stat.sessionID.startDate;
+           first_iteration = false;
+         }
+         time = moment(stat.sessionID.startDate + "T" + stat.sessionID.startTime).clone().add(stat.time, 'seconds');
+         labels.push(time.format('hh:mm:ss a'));
+         hrData.push(stat.hr);
+         rrData.push(stat.rr);
+       });
+       var ctx = document.getElementById('myChart_s1').getContext('2d');
+       var myChart = new Chart (ctx, {
+         type: 'line',
+         data: {
+           labels: labels,
+           datasets: [{
+             label: 'Heart Rate',
+             data: hrData,
+             borderColor: '#B775FD',
+             fill: false
+           }, {
+             label: 'Respiration Rate',
+             data: rrData,
+             borderColor: '#007bff',
+             fill: false
+           }]
+         },
+         options: {
+           scales:{
+             yAxes: [{
+               scaleLabel: {
+                 display: true,
+                 labelString: 'Beats/Breaths Per Minute',
+                 fontFamily: 'calibri',
+                 fontSize: 16
+               }
+             }],
+             xAxes: [{
+               scaleLabel: {
+                 display: true,
+                 labelString: 'Time',
+                 fontFamily: 'calibri',
+                 fontSize: 16
+               }
+             }]
+           },
+           title: {
+             display: true,
+             text: "HR and RR over time on "+sessionDate
+           }
+         }
+       });
+     },
+      complete:function(data){
+      // Hide image container
+      $("#loader1").removeClass("show");
+    },
+      error: function(error_data) {
+        console.log("error")
+        console.log(error_data)
+      }
+    });
+
+    $("select.session").change(function(){
+        var sessionID = $(this).children("option:selected").val();
+        var dropdown = $(this).children("option:selected").attr("number");
+        if($("#myChart_s"+dropdown).hasClass("hidden")) {
+          $("#myChart_s"+dropdown).removeClass("hidden");
         }
-        time = moment(stat.sessionID.startDate + "T" + stat.sessionID.startTime).clone().add(stat.time, 'seconds');
-        labels.push(time.format('hh:mm:ss a'));
-        hrData.push(stat.hr);
-        rrData.push(stat.rr);
-      });
-      var ctx = document.getElementById('myChart').getContext('2d');
-      var myChart = new Chart (ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Heart Rate',
-            data: hrData,
-            borderColor: '#B775FD',
-            fill: false
-          }, {
-            label: 'Respiration Rate',
-            data: rrData,
-            borderColor: '#007bff',
-            fill: false
-          }]
-        },
-        options: {
-          scales:{
-            yAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: 'Beats/Breaths Per Minute',
-                fontFamily: 'calibri',
-                fontSize: 16
-              }
-            }],
-            xAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: 'Time',
-                fontFamily: 'calibri',
-                fontSize: 16
-              }
-            }]
-          },
-          title: {
-            display: true,
-            text: "HR and RR over time on "+sessionDate
+        var x;
+        for(x = 1; x <= 3; x++) {
+          if(x != dropdown){
+              $("#myChart_s"+x).addClass("hidden");
           }
         }
-      });
-    },
-    error: function(error_data) {
-      console.log("error")
-      console.log(error_data)
-    }
-  });
+        $("#myChart2").addClass("hidden");
+        var i;
+        for(i = 1; i <= 12; i++) {
+          $("#myChart_"+i).addClass("hidden");
+        }
+        if(! $(this).hasClass("chosen") ) {
+          $(this).addClass("chosen");
+        }
+        if( $("#week").hasClass("chosen")) {
+          $("#week").removeClass("chosen");
+        }
+        if( $("select.month").hasClass("chosen")) {
+          $("select.month").removeClass("chosen");
+        }
+        var endpoint = '/api/stats?format=json&session=' + sessionID + ''
+        $.ajax({
+          method: "GET",
+          url: endpoint,
+          beforeSend: function(){
+          // Show image container
+          $("#loader1").addClass("show");
+         },
+         success: function(data){
+           var sessionDate = "";
+           var labels = [];
+           var hrData = [];
+           var rrData = [];
+           var time;
+           var first_iteration = true;
+           data.forEach(function(stat) {
+             if(first_iteration) {
+               sessionDate = stat.sessionID.startDate;
+               first_iteration = false;
+             }
+             time = moment(stat.sessionID.startDate + "T" + stat.sessionID.startTime).clone().add(stat.time, 'seconds');
+             labels.push(time.format('hh:mm:ss a'));
+             hrData.push(stat.hr);
+             rrData.push(stat.rr);
+           });
+           var ctx = document.getElementById('myChart_s'+dropdown).getContext('2d');
+           var myChart = new Chart (ctx, {
+             type: 'line',
+             data: {
+               labels: labels,
+               datasets: [{
+                 label: 'Heart Rate',
+                 data: hrData,
+                 borderColor: '#B775FD',
+                 fill: false
+               }, {
+                 label: 'Respiration Rate',
+                 data: rrData,
+                 borderColor: '#007bff',
+                 fill: false
+               }]
+             },
+             options: {
+               scales:{
+                 yAxes: [{
+                   scaleLabel: {
+                     display: true,
+                     labelString: 'Beats/Breaths Per Minute',
+                     fontFamily: 'calibri',
+                     fontSize: 16
+                   }
+                 }],
+                 xAxes: [{
+                   scaleLabel: {
+                     display: true,
+                     labelString: 'Time',
+                     fontFamily: 'calibri',
+                     fontSize: 16
+                   }
+                 }]
+               },
+               title: {
+                 display: true,
+                 text: "HR and RR over time on "+sessionDate
+               }
+             }
+           });
+         },
+          complete:function(data){
+          // Hide image container
+          $("#loader1").removeClass("show");
+        },
+          error: function(error_data) {
+            console.log("error")
+            console.log(error_data)
+          }
+        });
+    });
 
   var endpoint2 = '/api/analysis/?format=json'
   $.ajax({
     method: "GET",
     url: endpoint2,
+    beforeSend: function(){
+    // Show image container
+    $("#loader2").addClass("show");
+   },
     success: function(data){
       var sessionDate = [];
       var avgHRdata = [];
@@ -183,6 +315,9 @@
         options: {
           scales:{
             yAxes: [{
+              ticks: {
+                beginAtZero: true
+              },
               scaleLabel: {
                 display: true,
                 labelString: 'Average Beats/Breaths Per Minute',
@@ -206,6 +341,10 @@
         }
       });
     },
+    complete:function(data){
+    // Hide image container
+    $("#loader2").removeClass("show");
+  },
     error: function(error_data) {
       console.log("error")
       console.log(error_data)
@@ -213,8 +352,13 @@
   });
 
   $("select.month").change(function(){
+      console.log("select.month change");
       var selectedMonth = $(this).children("option:selected").val();
       var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      var x;
+      for(x = 1; x <= 3; x++){
+        $("#myChart_s"+x).addClass("hidden");
+      }
       var i;
       for(i = 1; i <= 12; i++) {
         if(i != selectedMonth){
@@ -225,20 +369,23 @@
         $("#myChart_"+selectedMonth).removeClass("hidden");
       }
       $("#myChart2").addClass("hidden");
-      $("#myChart").addClass("hidden");
       if(! $(this).hasClass("chosen") ) {
         $(this).addClass("chosen");
       }
       if( $("#week").hasClass("chosen")) {
         $("#week").removeClass("chosen");
       }
-      if($("#today").hasClass("chosen")) {
-        $("#today").removeClass("chosen");
+      if( $("select.session").hasClass("chosen")) {
+        $("select.session").removeClass("chosen");
       }
       var endpoint3 = '/api/month?format=json&month=' + selectedMonth + ''
       $.ajax({
         method: "GET",
         url: endpoint3,
+        beforeSend: function(){
+        // Show image container
+        $("#loader3").addClass("show");
+       },
         success: function(data){
           var labels = [];
           var hrData = [];
@@ -269,6 +416,9 @@
             options: {
               scales:{
                 yAxes: [{
+                  ticks: {
+                    beginAtZero: true
+                  },
                   scaleLabel: {
                     display: true,
                     labelString: 'Average Beats/Breaths Per Minute',
@@ -292,6 +442,10 @@
             }
           });
         },
+        complete:function(data){
+        // Hide image container
+        $("#loader3").removeClass("show");
+      },
         error: function(error_data) {
           console.log("error")
           console.log(error_data)
@@ -300,11 +454,14 @@
   });
 
   $("select.month").click(function(){
-    $("#myChart").addClass("hidden");
-    $("#myChart2").addClass("hidden");
+    console.log("select.month click");
     var mnth = $(this).children("option:selected").val();
     if($("#myChart_"+mnth).hasClass("hidden")) {
       $("#myChart_"+mnth).removeClass("hidden");
+    }
+    var x;
+    for(x = 1; x <= 3; x++){
+      $("#myChart_s"+x).addClass("hidden");
     }
     var i;
     for(i = 1; i <= 12; i++) {
@@ -312,26 +469,33 @@
         $("#myChart_"+i).addClass("hidden");
       }
     }
+    $("#myChart2").addClass("hidden");
     if(! $(this).hasClass("chosen") ) {
       $(this).addClass("chosen");
     }
-    if( $("#today").hasClass("chosen")) {
-      $("#today").removeClass("chosen");
+    if( $("select.session").hasClass("chosen")) {
+      $("select.session").removeClass("chosen");
     }
     if($("#week").hasClass("chosen")) {
       $("#week").removeClass("chosen");
     }
   });
 
-  $("#today").click(function() {
-    if($("#myChart").hasClass("hidden")) {
-      $("#myChart").removeClass("hidden");
+  $("select.session").click(function() {
+    var session = $(this).children("option:selected").attr("number");
+    if($("#myChart_s"+session).hasClass("hidden")) {
+      $("#myChart_s"+session).removeClass("hidden");
     }
     $("#myChart2").addClass("hidden");
-    $("#myChart3").addClass("hidden");
     var i;
     for(i = 1; i <= 12; i++) {
       $("#myChart_"+i).addClass("hidden");
+    }
+    var x;
+    for(x = 1; x <= 3; x++) {
+      if(x != session){
+          $("#myChart_s"+x).addClass("hidden");
+      }
     }
     if(! $(this).hasClass("chosen") ) {
       $(this).addClass("chosen");
@@ -347,10 +511,11 @@
     if($("#myChart2").hasClass("hidden")) {
       $("#myChart2").removeClass("hidden");
     }
-    $("#myChart").addClass("hidden");
-    $("#myChart3").addClass("hidden");
     var i;
     for(i = 1; i <= 12; i++) {
+      if(i <= 3){
+        $("#myChart_s"+i).addClass("hidden");
+      }
       $("#myChart_"+i).addClass("hidden");
     }
     if(! $(this).hasClass("chosen") ) {
@@ -359,8 +524,8 @@
     if( $("select.month").hasClass("chosen")) {
       $("select.month").removeClass("chosen");
     }
-    if($("#today").hasClass("chosen")) {
-      $("#today").removeClass("chosen");
+    if( $("select.session").hasClass("chosen")) {
+      $("select.session").removeClass("chosen");
     }
   });
 
