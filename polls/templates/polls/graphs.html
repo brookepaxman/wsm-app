@@ -13,7 +13,7 @@
     }
     .subnav-container{
       position: relative;
-      left: -3%;
+      left: -2.8%;
     }
   </style>
   {% if user.is_authenticated %}
@@ -35,15 +35,16 @@
   {% endif %}
     <div id="home" class="container mt-20 mb-100">
       <div class="row">
-        <div class="col-md-3 text-center" style="color: white; margin-top: 80px;">
-            <label for="sessions">Select a recent session:</label>
-            <select class="session chosen" id="sessions">
+        <div class="col-md-3 text-center" style="color: white; margin-top: 60px;">
+            <label for="sessions" style="margin-bottom: 5px">Select a recent session:</label>
+            <select class="session chosen" id="sessions" style="margin-bottom: 10px;">
               {% for session in queryset %}
                 <option number="{{ forloop.counter }}" value="{{ session.id }}">{{session.startDate}} at {{session.startTime}}</option>
               {% endfor %}
             </select>
-          <a id="week" href="#home" class="fill-btn">Past Week</a>
-          <label for="months">Choose a month:</label>
+          <label for="week" style="margin-bottom: 5px;">or view the past week:</label>
+          <a id="week" href="#home" class="fill-btn" style="margin-top:0">Past Week</a>
+          <label for="months" style="margin-bottom: 5px;">or choose a month:</label>
           <select class="month" id="months">
             <option value="1">January</option>
             <option value="2">February</option>
@@ -59,7 +60,7 @@
             <option value="12">December</option>
           </select>
         </div>
-        <div class="col-md-9" style = "margin-top: 60px">
+        <div class="col-md-9">
           <div id='loader1' class="hide loading">
             <img src="{% static '/admin/img/loading.gif' %}">
           </div>
@@ -69,22 +70,22 @@
           <div id='loader3' class="hide loading">
             <img src="{% static '/admin/img/loading.gif' %}">
           </div>
-          <canvas class="chart-style" id="myChart_s1" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart_s2" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart_s3" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart2" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart_1" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart_2" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart_3" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart_4" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart_5" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart_6" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart_7" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart_8" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart_9" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart_10" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart_11" width="400" height="400"></canvas>
-          <canvas class="chart-style hidden" id="myChart_12" width="400" height="400"></canvas>
+          <canvas class="chart-style" id="myChart_s1" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart_s2" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart_s3" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart2" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart_1" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart_2" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart_3" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart_4" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart_5" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart_6" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart_7" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart_8" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart_9" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart_10" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart_11" width="600" height="600"></canvas>
+          <canvas class="chart-style hidden" id="myChart_12" width="600" height="600"></canvas>
 
         </div>
       </div>
