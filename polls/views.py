@@ -208,7 +208,7 @@ class GenerateView(generic.FormView):
                     new_stat = Stat()
                     new_stat.sessionID = new_sess
                     new_stat.user = self.request.user
-                    new_stat.time = 4*e + time
+                    new_stat.time = 72*e + time
                     if (oldhr < 49) | (oldhr > 83):
                         new_stat.hr = random.randint(48, 84)
                     else:
