@@ -17,9 +17,14 @@ class sleepQualityForm(forms.Form):
 class calendarForm(forms.Form):
     # inputDate = forms.DateField(label="Date",widget=SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")))
     # inputDate = forms.DateField(label="Select a date", widget=forms.Select(choices = None))
-    user = User.objects.get(username="test")
-    inputDate = forms.ModelChoiceField(label="Select a date", queryset = Analysis.objects.filter(user=user).order_by('sessionID__startDate'), empty_label="No date selected")
+    
+    inputDate = forms.ModelChoiceField(label="Select a date", queryset = Analysis.objects.none(), empty_label="No date selected")
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(calendarForm, self).__init__(*args, **kwargs)
+        qs = Analysis.objects.filter(user=user).order_by('sessionID__startDate')
+        self.fields['inputDate'].queryset = qs
 
     # def __init__(self, user, *args, **kwargs):
     #     super(calendarForm, self).__init__(*args, **kwargs)
