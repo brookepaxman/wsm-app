@@ -349,8 +349,6 @@ class UserInputView(generic.ListView):
     def get(self,request,session_id):
         form = SleepQualityForm()
         if self.request.user.is_authenticated:
-            #name = self.request.user.username
-            #accessor = User.objects.get(user_name=name)
             userid = self.request.user.id
             s = Session.objects.get(id=session_id)
             args = {'form': form,'s':s,'stat':Analysis.objects.get(user=userid,sessionID=s)}
@@ -362,8 +360,6 @@ class UserInputView(generic.ListView):
     def post(self,request,session_id):
         form = SleepQualityForm(request.POST)
         if form.is_valid():
-            #name = self.request.user.username
-            #accessor = User.objects.get(user_name=name)
             userid = self.request.user.id
 
             s = Session.objects.get(id = session_id)
@@ -381,46 +377,7 @@ class UserInputView(generic.ListView):
             except Analysis.DoesNotExist:
                 args = {'form':form}
         return render(request, self.template_name, args)
-'''
-    def get(self,request):
-        if self.request.user.is_authenticated:
-            form = calendarForm()
-            user_id = self.request.user.id
-            args = {'form': form,'stat':Analysis.objects.filter(user=user_id).order_by('sessionID__startDate').last()}
-            userid = self.request.user
-            try:
-                sessions = Session.objects.filter(user_id = self.request.user.id)
-                for session in sessions:
-                    if(session.status == 'calculate'):
-                        daily_date = session.startDate
-                        args = {'form': form,'stat':Analysis.objects.filter(user=user_id).order_by('sessionID__startDate').last()}
-                        try:
-                            stat = Analysis.objects.get(sessionID = session)
-                        except Analysis.DoesNotExist:
-                            stat = Analysis()
-                            stat.sessionID = session
-                            stat.user = userid
 
-                        if Stat.objects.filter(sessionID = session).exists():
-                            stats = Stat.objects.filter(sessionID = session).order_by('time')
-                            stats_day = Stat.objects.filter(sessionID__startDate=daily_date, user=userid)
-                            stat.avgHR, stat.avgRR, stat.maxHR, stat.minHR, stat.maxRR, stat.minRR, stat.tst = AnalysisView.avgmaxtime(self, stats)
-                            stat.dailyHR, stat.dailyRR, e1, e2, e3, e4, e5 = AnalysisView.avgmaxtime(self, stats_day)
-                            stat.avgHRdip = AnalysisView.dipHR(self, stats)
-                            session.status='done'
-                            session.save()
-                            stat.save()
-                            args = {'form': form,'stat':Analysis.objects.filter(user=user_id).order_by('sessionID__startDate').last()}
-                    else:
-                        args = {'form': form,'stat':Analysis.objects.filter(user=user_id).order_by('sessionID__startDate').last()}
-                else:
-                    args = {'form': form,'stat':Analysis.objects.filter(user=user_id).order_by('sessionID__startDate').last()}
-            except Session.DoesNotExist:
-                args = {'form': form,'stat':Analysis.objects.filter(user=user_id).order_by('sessionID__startDate').last()}
-        else:
-            args = {'form': form}
-        return render(request, self.template_name,args)
-'''
 class MultiView(generic.TemplateView):
     template_name = 'polls/analysis.html'
 

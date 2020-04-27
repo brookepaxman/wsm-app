@@ -17,7 +17,7 @@ class CalendarForm(forms.Form):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super(CalendarForm, self).__init__(*args, **kwargs)
-        qs = Analysis.objects.filter(user=user).order_by('sessionID__startDate')
+        qs = Analysis.objects.filter(user=user).order_by('-sessionID__startDate')
         self.fields['inputDate'].queryset = qs
 
 
