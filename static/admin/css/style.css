@@ -577,3 +577,7 @@ option {
 .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
   border-color: transparent transparent #0E0B2B transparent;
 }
+
+.select2-container .select2-selection--single {
+  height: 30px;
+}

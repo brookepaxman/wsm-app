@@ -7,3 +7,4 @@ polls/migrations/__pycache__/
 .DS_Store
 polls/.DS_Store
 polls/migrations/.DS_Store
+node_modules
