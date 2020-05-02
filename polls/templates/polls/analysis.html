@@ -82,7 +82,7 @@
   <div class="container mt-20">
 
       <div class="form-container">
-        <form method="post" class="mt-30">
+        <form method="post" class="mt-30" id="form-search">
           {% csrf_token %}
           {{ form.as_p }}
           <input class="submit-row" type="submit" value="Submit">
@@ -358,5 +358,16 @@
       {%endif%}
     {% endif %}
   </div>
+
+<!-- jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script type="text/javascript">
+  // In your Javascript (external .js resource or <script> tag)
+  $(document).ready(function() {
+    $('#id_inputDate').addClass("js-example-basic-single");
+    $('.js-example-basic-single').select2();
+  });
+</script>
 
   {% endblock %}

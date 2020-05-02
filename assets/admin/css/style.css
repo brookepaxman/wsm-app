@@ -8,13 +8,11 @@ h1 {
   text-align:center;
   color:#ffffff;
   font-weight:600;
-  font-family: Calibri;
 }
 
 h2 {
-  font-family: calibri;
   color:#ffffff;
-  font-size: 28px;S
+  font-size: 28px;
 }
 
 h3 {
@@ -337,6 +335,23 @@ select.month.chosen:hover {
   background-color: #e5e5e5;
 }
 
+select.session:hover {
+  background-color: #ffffff;
+}
+
+select.session.chosen {
+  color: #0E0B2B;
+  background-color: #ffffff;
+  border: 2px solid #0E0B2B;
+}
+
+select.session.chosen:hover {
+  text-decoration: none;
+  color: #0E0B2B;
+  border: 2px solid #0E0B2B;
+  background-color: #e5e5e5;
+}
+
 label {
   display: block;
 }
@@ -516,4 +531,23 @@ option {
 }
 .sub-row a {
   font-size: 14px;
+}
+
+.text-box{
+  padding: 20px;
+  border: 1px solid white;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 5px;
+}
+
+.loading{
+  position: absolute;
+  left: 165px;
+  top: 180px;
+}
+
+.loading img {
+  width: 300px;
 }
