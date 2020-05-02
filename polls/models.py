@@ -43,3 +43,5 @@ class Analysis(models.Model):
     dailyHR = models.IntegerField(default=0)
     dailyRR = models.IntegerField(default=0)
 
+    def __str__(self):
+        return self.sessionID.startDate.strftime("%b %d, %Y, ") + self.sessionID.startTime.strftime("%I:%M %p")

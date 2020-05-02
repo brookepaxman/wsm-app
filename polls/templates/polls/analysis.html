@@ -82,7 +82,7 @@
   <div class="container mt-20">
 
       <div class="form-container">
-        <form method="post" class="mt-30" id="form-search">
+        <form method="GET" class="mt-30">
           {% csrf_token %}
           {{ form.as_p }}
           <input class="submit-row" type="submit" value="Submit">
