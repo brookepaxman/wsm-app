@@ -70,6 +70,8 @@
           <div id='loader3' class="hide loading">
             <img src="{% static '/admin/img/loading.gif' %}">
           </div>
+          <span id="check-empty"></span>
+          <div id="no-data-msg" class="message-container hide"><p>No data available.</p></div>
           <canvas class="chart-style" id="myChart_s1" width="600" height="600"></canvas>
           <canvas class="chart-style hidden" id="myChart_s2" width="600" height="600"></canvas>
           <canvas class="chart-style hidden" id="myChart_s3" width="600" height="600"></canvas>
@@ -86,7 +88,6 @@
           <canvas class="chart-style hidden" id="myChart_10" width="600" height="600"></canvas>
           <canvas class="chart-style hidden" id="myChart_11" width="600" height="600"></canvas>
           <canvas class="chart-style hidden" id="myChart_12" width="600" height="600"></canvas>
-
         </div>
       </div>
     </div>
@@ -177,6 +178,9 @@
         var dropdown = $(this).children("option:selected").attr("number");
         if($("#myChart_s"+dropdown).hasClass("hidden")) {
           $("#myChart_s"+dropdown).removeClass("hidden");
+        }
+        if( $("#no-data-msg").hasClass("show-message") ){
+          $("#no-data-msg").removeClass("show-message");
         }
         var x;
         for(x = 1; x <= 3; x++) {
@@ -287,54 +291,58 @@
       var sessionDate = [];
       var avgHRdata = [];
       var avgRRdata = [];
-      data.forEach(function(stat) {
-        sessionDate.push(stat.sessionID.startDate);
-        avgHRdata.push(stat.dailyHR);
-        avgRRdata.push(stat.dailyRR);
-      });
-      var ctx2 = document.getElementById('myChart2').getContext('2d');
-      var myChart2 = new Chart (ctx2, {
-        type: 'bar',
-        data: {
-          labels: sessionDate,
-          datasets: [{
-            label: 'Average Heart Rate',
-            data: avgHRdata,
-            backgroundColor: 'rgb(183,117,253)',
-            fill: false
-          }, {
-            label: 'Average Respiration Rate',
-            data: avgRRdata,
-            backgroundColor: 'rgb(0,123,255)',
-            fill: false,
-          }]
-        },
-        options: {
-          scales:{
-            yAxes: [{
-              ticks: {
-                beginAtZero: true
-              },
-              scaleLabel: {
-                display: true,
-                labelString: 'Average Beats/Breaths Per Minute',
-                fontSize: 16
-              }
-            }],
-            xAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: 'Day',
-                fontSize: 16
-              }
+      if( jQuery.isEmptyObject(data) ){
+        $("#check-empty").addClass("empty");
+      } else {
+        data.forEach(function(stat) {
+          sessionDate.push(stat.sessionID.startDate);
+          avgHRdata.push(stat.dailyHR);
+          avgRRdata.push(stat.dailyRR);
+        });
+        var ctx2 = document.getElementById('myChart2').getContext('2d');
+        var myChart2 = new Chart (ctx2, {
+          type: 'bar',
+          data: {
+            labels: sessionDate,
+            datasets: [{
+              label: 'Average Heart Rate',
+              data: avgHRdata,
+              backgroundColor: 'rgb(183,117,253)',
+              fill: false
+            }, {
+              label: 'Average Respiration Rate',
+              data: avgRRdata,
+              backgroundColor: 'rgb(0,123,255)',
+              fill: false,
             }]
           },
-          title: {
-            display: true,
-            text: "This week's HR and RR over time"
+          options: {
+            scales:{
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Average Beats/Breaths Per Minute',
+                  fontSize: 16
+                }
+              }],
+              xAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Day',
+                  fontSize: 16
+                }
+              }]
+            },
+            title: {
+              display: true,
+              text: "This week's HR and RR over time"
+            }
           }
-        }
-      });
+        });
+      }
     },
     complete:function(data){
     // Hide image container
@@ -347,7 +355,9 @@
   });
 
   $("select.month").change(function(){
-      console.log("select.month change");
+      if( $("#no-data-msg").hasClass("show-message") ){
+        $("#no-data-msg").removeClass("show-message");
+      }
       var selectedMonth = $(this).children("option:selected").val();
       var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
       var x;
@@ -447,10 +457,12 @@
   });
 
   $("select.month").click(function(){
-    console.log("select.month click");
     var mnth = $(this).children("option:selected").val();
     if($("#myChart_"+mnth).hasClass("hidden")) {
       $("#myChart_"+mnth).removeClass("hidden");
+    }
+    if( $("#no-data-msg").hasClass("show-message") ){
+      $("#no-data-msg").removeClass("show-message");
     }
     var x;
     for(x = 1; x <= 3; x++){
@@ -479,6 +491,9 @@
     if($("#myChart_s"+session).hasClass("hidden")) {
       $("#myChart_s"+session).removeClass("hidden");
     }
+    if( $("#no-data-msg").hasClass("show-message") ){
+      $("#no-data-msg").removeClass("show-message");
+    }
     $("#myChart2").addClass("hidden");
     var i;
     for(i = 1; i <= 12; i++) {
@@ -501,8 +516,12 @@
     }
   });
   $("#week").click(function() {
-    if($("#myChart2").hasClass("hidden")) {
-      $("#myChart2").removeClass("hidden");
+    if( $("#check-empty").hasClass("empty") ){
+      $("#no-data-msg").addClass("show-message");
+    } else {
+      if($("#myChart2").hasClass("hidden")) {
+        $("#myChart2").removeClass("hidden");
+      }
     }
     var i;
     for(i = 1; i <= 12; i++) {

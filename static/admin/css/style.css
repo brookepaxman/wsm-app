@@ -581,3 +581,18 @@ option {
 .select2-container .select2-selection--single {
   height: 30px;
 }
+
+.message-container{
+  width: 600px;
+  height: 300px;
+  vertical-align: middle;
+}
+
+.message-container p{
+  width: 100%;
+  text-align: center;
+}
+
+.show-message{
+  display: table-cell;
+}
