@@ -5,7 +5,7 @@ from django.views import generic
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import login, authenticate
-from django.db.models import Avg
+from django.db.models import Avg, ExpressionWrapper, F
 from django.conf import settings
 
 
@@ -20,6 +20,87 @@ from numpy import abs
 from .serializers import StatSerializer, AnalysisSerializer, StrippedAnalysisSerializer, SessionSerializer
 import random
 import math
+
+def statslicer(self, queryset, mod):
+    # before this, note the ID number of the last data point for filtering
+    count = 0
+    hrsum = 0
+    rrsum = 0
+    hrlow = queryset.first().hr
+    hrhigh = queryset.first().hr
+    rrlow = queryset.first().rr
+    rrhigh = queryset.first().rr
+    for stat in queryset:
+        if((count % mod == 0) & (count != 0)):
+            # create avg stat object
+            new_stat = Stat()
+            new_stat.sessionID = stat.sessionID
+            new_stat.user = stat.user
+            new_stat.time = stat.time
+            # take average stat
+            new_stat.hr = hrsum / mod
+            # filters out hr values between 1 and 47
+            if(new_stat.hr < 48 & new_stat.hr > 36):
+                new_stat.hr == 48
+            elif(new_stat.hr <= 36):
+                new_stat.hr == 0
+            new_stat.rr = rrsum / mod
+            new_stat.save()
+            # clear sum counters
+            hrsum = 0
+            rrsum = 0
+            # clear min/max outliers
+            hrlow = stat.hr
+            hrhigh = stat.hr
+            rrlow = stat.rr
+            rrhigh = stat.rr
+        elif(count % mod == 1):
+            if(stat.hr < hrlow):
+                hrlow = stat.hr
+            else:
+                hrhigh = stat.hr
+            if(stat.rr < rrlow):
+                rrlow = stat.rr
+            else:
+                rrhigh = stat.rr
+        else: # take out the outliers
+            if(stat.hr < hrlow):
+                hrsum = hrsum + hrlow
+                hrlow = stat.hr
+            elif(stat.hr > hrhigh):
+                hrsum = hrsum + hrhigh
+                hrhigh = stat.hr
+            else:
+                hrsum = hrsum + stat.hr
+
+            if(stat.rr < rrlow):
+                rrsum = rrsum + rrlow
+                rrlow = stat.rr
+            elif(stat.rr > rrhigh):
+                rrsum = rrsum + rrhigh
+                rrhigh = stat.rr
+            else:
+                rrsum = rrsum + stat.rr
+            # add to sum
+            # hrsum = hrsum + stat.hr
+            # rrsum = rrsum + stat.rr
+            # maybe take out the min and max?
+
+        count = count + 1
+    # take care of any leftover stats
+    if(count % mod == 1):
+        new_stat = queryset.last()
+        new_stat.pk = None
+        new_stat.save()
+    elif(count % mod > 1):
+        new_stat = Stat()
+        new_stat.sessionID = stat.sessionID
+        new_stat.user = stat.user
+        new_stat.time = stat.time
+        new_stat.hr = hrsum / mod
+        new_stat.rr = rrsum / mod
+        new_stat.save()
+    return None
 
 
 def avgmaxtime(self,data):
@@ -243,8 +324,31 @@ class StatView(viewsets.ModelViewSet):
         sessionid = self.request.query_params.get('session')
         if self.request.user.is_authenticated:  # if user is logged in
             userid = self.request.user.id
-            queryset = Stat.objects.filter(user=userid).filter(sessionID=sessionid).order_by('time') # and filter by sessionID
-            return queryset
+            queryset = Stat.objects.filter(user=userid).filter(sessionID=sessionid).order_by('time', 'pk') # and filter by sessionID
+            # queryset = queryset.annotate(idmod15=F('id') % 15).filter(idmod15=0)
+            length = queryset.count()
+            mod = round(length / 480.0)
+            if mod < 3:
+                mod = 3
+            counter = 0
+            for stat in queryset:
+                if(counter > mod):
+                    break       # reaching here means that new avg stat objects have not been generated yet
+                dupl = queryset.filter(time=stat.time)
+                if(dupl.count() > 1):
+                    mark = dupl.last()  # reaching here means that avg stat objects have already been generated
+                    queryset = queryset.filter(id__gte=mark.id)
+                    queryset = queryset.annotate(idmod=F('id') % 2).filter(idmod=0) # this thins out the queryset by whatever fraction wanted
+                    return queryset
+                counter = counter + 1
+            if length <= 600:
+                return queryset # reaching here means that the dataset is less than 600 obj. no avg stat objects required
+            else:
+                mark = queryset.last()
+                statslicer(self, queryset, int(mod))    # creating avg stat objects
+                queryset = Stat.objects.filter(user=userid).filter(sessionID=sessionid).filter(id__gt=mark.id).order_by('time')
+                queryset = queryset.annotate(idmod=F('id') % 2).filter(idmod=0) # this thins out the queryset by whatever fraction wanted
+                return queryset
         else:
             return False
     serializer_class = StatSerializer
