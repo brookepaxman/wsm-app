@@ -27,9 +27,9 @@ h4{
 .chart-style {
   background-color: #ffffff;
   display:block;
-  max-width: 600px;
+  max-width: 500px;
   box-shadow: 0 0 7px #e5e5e5;
-  max-height:600px;
+  max-height: 500px;
   margin-bottom: 20px;
 }
 
@@ -77,8 +77,8 @@ a.fill-btn.chosen:hover {
   text-decoration: none;
   border-radius: 5px;
   padding: 5px 16px;
-  padding-bottom: 6px;
-  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-top: 2px;
   color: #007bff;
   background-color: transparent;
   border: solid 2px #007bff;
@@ -568,8 +568,8 @@ option {
 
 .loading{
   position: absolute;
-  left: 165px;
-  top: 180px;
+  left: 122px;
+  top: 170px;
 }
 
 .loading img {
@@ -741,5 +741,10 @@ option {
   }
   .circles h4 {
     margin-bottom: 40px;
+  }
+  .chart-style {
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
