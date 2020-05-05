@@ -127,6 +127,16 @@
           <p>No stats are available.</p>
         {% endif %} -->
 <!-- </div> -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
+<script type="text/javascript">
+  $(".menu-lines").click(function(){
+    $(".line-1").toggleClass("transform");
+    $(".line-2").toggleClass("transform");
+    $(".line-3").toggleClass("transform");
+    $(".mobile-nav-content").toggleClass("show");
+    $(".logout").toggleClass("transform");
+  });
+</script>
 
 {% endblock %}
 

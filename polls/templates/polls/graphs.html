@@ -108,6 +108,13 @@
 <script src="{% static '/chartjs/dist/Chart.js' %}"></script>
 <script type="text/javascript">
   $(document).ready(function(){
+    $(".menu-lines").click(function(){
+      $(".line-1").toggleClass("transform");
+      $(".line-2").toggleClass("transform");
+      $(".line-3").toggleClass("transform");
+      $(".mobile-nav-content").toggleClass("show");
+      $(".logout").toggleClass("transform");
+    });
 
     var sessionID = $("select.session").find("option:first-child").val();
     var endpoint1 = '/api/stats?format=json&session=' + sessionID + ''
