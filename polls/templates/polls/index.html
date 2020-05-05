@@ -23,7 +23,7 @@
   {% if user.is_authenticated %}
   <div class="sub-row">
     <h2 style="margin-bottom: 0; width: 200px; white-space: nowrap;">Hi, {{ user.username }}!</h2>
-    <div class="subnav-container">
+    <div class="subnav-container hide-mobile">
       <a href="/graphs" class="outline-btn" style="margin-left: 0;">View my data</a>
       <a href="/analysis" class="outline-btn">View Analytics</a>
       <a href="/realtime" class="outline-btn" style="margin-right: 0;">Real-time Display</a>

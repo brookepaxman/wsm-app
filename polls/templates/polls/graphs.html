@@ -20,13 +20,26 @@
 
   <div class="sub-row">
     <h2 style="margin-bottom: 0; white-space: nowrap; width: 184px;">{{ user.username }}'s Statistics</h2>
-    <div class="subnav-container">
+    <div class="subnav-container hide-mobile">
       <a href="/graphs" class="outline-btn active" style="margin-left: 0;">View my data</a>
       <a href="/analysis" class="outline-btn">View Analytics</a>
       <a href="/realtime" class="outline-btn" style="margin-right: 0;">Real-time Display</a>
     </div>
-    <p style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
+    <p class="logout" style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
   </div>
+  <div class="show-mobile subnav-mobile">
+  <ul>
+    <li>
+      <a href="/graphs" class="outline-btn">View my data</a>
+    </li>
+    <li>
+      <a href="/analysis" class="outline-btn">View Analytics</a>
+    </li>
+    <li>
+      <a href="/realtime" class="outline-btn">Real-time Display</a>
+    </li>
+  </ul>
+</div>
   {% else %}
   <div class="container mt-20">
     <h2 style="margin-bottom: 0">You are not logged in</h2>
