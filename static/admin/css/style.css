@@ -568,8 +568,8 @@ option {
 
 .loading{
   position: absolute;
-  left: 122px;
-  top: 170px;
+  left: 40px;
+  top: 70px;
 }
 
 .loading img {
@@ -748,5 +748,8 @@ option {
     margin-right: auto;
     max-width: 500px;
     max-width: 500px;
+  }
+  .loading{
+    top: 105px;
   }
 }
