@@ -8,3 +8,4 @@ polls/migrations/__pycache__/
 polls/.DS_Store
 polls/migrations/.DS_Store
 node_modules
+cloud_sql_proxy

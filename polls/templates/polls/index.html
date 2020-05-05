@@ -28,8 +28,21 @@
       <a href="/analysis" class="outline-btn">View Analytics</a>
       <a href="/realtime" class="outline-btn" style="margin-right: 0;">Real-time Display</a>
     </div>
-    <p style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
+    <p class="logout" style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
   </div>
+  <div class="show-mobile subnav-mobile">
+  <ul>
+    <li>
+      <a href="/graphs" class="outline-btn">View my data</a>
+    </li>
+    <li>
+      <a href="/analysis" class="outline-btn">View Analytics</a>
+    </li>
+    <li>
+      <a href="/realtime" class="outline-btn">Real-time Display</a>
+    </li>
+  </ul>
+</div>
   <div class="container mt-20">
     <div class="row">
       <div class="col-md-10 offset-md-1 mt-50">

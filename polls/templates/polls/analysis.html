@@ -72,12 +72,25 @@
 {% else %}
 <div class="sub-row">
   <h2 style="margin-bottom: 0; width: 98px; white-space: nowrap;">Hi, {{ user.username }}!</h2>
-  <div class="subnav-container">
+  <div class="subnav-container hide-mobile">
     <a href="/graphs" class="outline-btn" style="margin-left: 0;">View my data</a>
     <a href="/analysis" class="outline-btn active">View Analytics</a>
     <a href="/realtime" class="outline-btn" style="margin-right: 0;">Real-time Display</a>
   </div>
-  <p style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
+  <p class="logout" style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
+</div>
+<div class="show-mobile subnav-mobile">
+  <ul>
+    <li>
+      <a href="/graphs" class="outline-btn">View my data</a>
+    </li>
+    <li>
+      <a href="/analysis" class="outline-btn">View Analytics</a>
+    </li>
+    <li>
+      <a href="/realtime" class="outline-btn">Real-time Display</a>
+    </li>
+  </ul>
 </div>
   <div class="container mt-20">
 
@@ -129,14 +142,14 @@
                 <div class="circles row">
 
                   <div class="col-md-4">
-                    <div class="circle-with-text" style="margin-left: auto;">
+                    <div class="circle-with-text left-align">
                       {{ stat.avgHR }}
                     </div>
-                    <h4 style="width: 130px; margin-left: auto" class="mr-20 text-center">Average Heart Rate (BPM)</h4>
+                    <h4 style="width: 130px" class="mr-20 text-center left-align">Average Heart Rate (BPM)</h4>
                   </div>
 
                   <div class="col-md-4">
-                    <div class="circle-with-text" style="margin-left: auto; margin-right: auto;">
+                    <div class="circle-with-text center-align">
                       {{ stat.avgRR }}
                     </div>
                     <h4 class="text-center alignment-txt">Average Respiration Rate (BPM)</h4>
@@ -149,7 +162,7 @@
                       <div class="circle-with-text">
                         {{ stat.avgHRdip }}
                       </div>
-                      <h4 style="width: 130px; margin-left: 20px; text-align: center;">Average Heart Rate Dip (BPM)</h4>
+                      <h4 class="text-center center-mobile ml-20" style="width: 130px; margin-bottom: 0;">Average Heart Rate Dip (BPM)</h4>
                     {% endif %}
                   </div>
 
@@ -261,14 +274,14 @@
               <div class="circles row">
 
                 <div class="col-md-4">
-                  <div class="circle-with-text" style="margin-left: auto;">
+                  <div class="circle-with-text left-align">
                     {{ stat.avgHR }}
                   </div>
-                  <h4 style="width: 130px; margin-left: auto" class="mr-20 text-center">Average Heart Rate (BPM)</h4>
+                  <h4 style="width: 130px" class="mr-20 text-center left-align">Average Heart Rate (BPM)</h4>
                 </div>
 
                 <div class="col-md-4">
-                  <div class="circle-with-text" style="margin-left: auto; margin-right: auto;">
+                  <div class="circle-with-text center-align">
                     {{ stat.avgRR }}
                   </div>
                   <h4 class="text-center alignment-txt">Average Respiration Rate (BPM)</h4>
@@ -278,10 +291,10 @@
                   {% if stat.avgHRdip == -1 %}
                     <p class="text-center" style="width: 180px;margin-top: 30px;">Average HR Dip: Not enough data to calculate HR Dip. Please record a sleep session for longer than 1 minute</p>
                   {% else %}
-                    <div class="circle-with-text">
+                    <div class="circle-with-text center-align">
                       {{ stat.avgHRdip }}
                     </div>
-                    <h4 style="width: 130px; margin-left: 20px; text-align: center;">Average Heart Rate Dip (BPM)</h4>
+                    <h4 class="text-center" style="width: 130px; margin-left: 20px">Average Heart Rate Dip (BPM)</h4>
                   {% endif %}
                 </div>
 
@@ -365,6 +378,13 @@
 <script type="text/javascript">
   // In your Javascript (external .js resource or <script> tag)
   $(document).ready(function() {
+    $(".menu-lines").click(function(){
+      $(".line-1").toggleClass("transform");
+      $(".line-2").toggleClass("transform");
+      $(".line-3").toggleClass("transform");
+      $(".mobile-nav-content").toggleClass("show");
+      $(".logout").toggleClass("transform");
+    });
     $('#id_inputDate').addClass("js-example-basic-single");
     $('.js-example-basic-single').select2();
     $('.errorlist').css("display", "none");
