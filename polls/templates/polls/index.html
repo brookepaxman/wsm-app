@@ -66,19 +66,9 @@
       </h3>
     </div>
   </div>
-  <div class="row mt-80" id="mid-header">
-    <div class="col-md text-center">
-      Average Sleep Time
-    </div>
-    <div class="col-md text-center">
-      Users
-    </div>
-    <div class="col-md text-center">
-      Average Sleep Quality
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md text-center">
+  <div class="row mt-80 mt-sm-35" id="mid-header">
+    <div class="col-md col-sm-12 text-center average-sleep-time">
+      <p class="large">Average Sleep Time</p>
       <p class="home-number">{{hours}}</p>
       {% if hours == 1%}
         <p class="home-text">hr</p>
@@ -88,23 +78,25 @@
       <p class="home-number">{{minutes}}</p>
       <p class="home-text">min</p>
     </div>
-    <div class="col-md text-center">
+    <div class="col-md col-sm-12 text-center users">
+      <p class="large">Users</p>
       <p class="home-number">{{users}}</p>
     </div>
-    <div class="col-md text-center">
+    <div class="col-md col-sm-12 text-center average-sleep-quality">
+      <p class="large">Average Sleep Quality</p>
       <p class="home-number">{{avgquality.sleepQuality__avg}} </p>
       <p class="home-text">/</p>
       <p class="home-text">5</p>
     </div>
   </div>
 </div>
-<div class="mt-40 grey-block">
-  <div class="container mb-100">
+<div class="mt-40 pb-40 grey-block mb-100">
+  <div class="container">
     <div class="row">
-      <div class="col-md-5">
-        <h1 class="text-center big-h1 " style="margin-top: 20%">How does good sleep affect our life?</h1>
+      <div class="col-lg-5 col-md-12">
+        <h1 class="text-center big-h1 mt-20-p mt-sm-0">How does good sleep affect our life?</h1>
       </div>
-      <div class="col-md-6 offset-md-1 big-h3">
+      <div class="col-lg-6 col-md-12 offset-md-1 big-h3 mt-sm-20 text-center-sm">
         <p>Sleep helps us retain recently gained knowledge and developed skills.</p>
         <p>Sleep helps us to pay attention, make decisions, and be creative.</p>
         <p>Sleep helps maintain a healthy balance of the hormones that make you feel hungry (ghrelin) or full (leptin).</p>
