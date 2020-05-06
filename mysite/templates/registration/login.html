@@ -9,7 +9,7 @@
   h3 {
     color: #0E0B2B;
   }
-  
+
   .login-box {
     background-color: #ffffff;
     max-width: 450px;
@@ -64,6 +64,13 @@
 .mb-20 {
   margin-bottom: 20px;
 }
+.user-error{
+  text-align: center;
+  width: 65%;
+  margin-left: auto;
+  margin-right: auto;
+  color: red;
+}
 
 </style>
 <body>
@@ -74,7 +81,7 @@
           <h3 class="text-center pt-20 mb-20">Good to see you again!</h3>
           <div class="">
             {% if form.errors %}
-              <p>Your username and password didn't match. Please try again.</p>
+              <p class="user-error">Your username and password didn't match. Please try again.</p>
             {% endif %}
 
             {% if next %}
