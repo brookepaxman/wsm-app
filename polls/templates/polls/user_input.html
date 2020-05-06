@@ -16,15 +16,15 @@
   <a href="/graphs" class="outline-btn" style="margin-left: 0">View my data</a>
   <a href="/analysis" class="outline-btn active">Back to Analytics</a>
   <a href="/generate" class="outline-btn" style="margin-right: 0">Generate Objects</a>
- 
+
 </div><br><br>
 <div class="container"></div>
 <h3 style="text-align: center;">{{s.startDate}}, {{s.startTime}}</h3><br>
   {%if stat.sleepQuality == 0%}
   <h4 style="text-align: center;">No notes yet. Add some below.</h4>
   {%else%}
-    
-      
+
+
   <div class="row mt-30">
     <h4 class="pl-15">Your Notes:</h4>
   </div>
@@ -57,7 +57,7 @@
         <input type="submit" value="Submit">
       </form>
     </div><br><br><br>
-  
+
 {% endif %}
 </div>
 {% endblock %}
