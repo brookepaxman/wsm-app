@@ -358,9 +358,20 @@ select.month.chosen:hover {
   border: 2px solid #0E0B2B;
   background-color: #e5e5e5;
 }
+.pl-15{padding-left: 15px;}
+select.session{
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-right: 15px;
+  padding-left: 10px;
+}
 
 select.session:hover {
   background-color: #ffffff;
+}
+
+.submit-row:hover{
+  background-color: #ddd;
 }
 
 select.session.chosen {
@@ -583,6 +594,10 @@ input, select {
   width: 300px;
 }
 
+.no-wrap{
+  white-space: nowrap;
+}
+
 .select2-container--default .select2-selection--single .select2-selection__rendered {
   color: #0E0B2B;
   font-weight: bold;
@@ -661,8 +676,24 @@ input, select {
   transform: rotate(45deg) translate(12px, -11px);
 }
 
+.session{
+  width: 100%
+}
+
 .logout.transform{
   top: 235px;
+}
+
+@media(min-width: 768px){
+  .user-name{
+    white-space: normal;
+  }
+}
+
+@media(min-width: 1000px){
+  .user-name{
+    white-space: nowrap;
+  }
 }
 
 .menu-lines{
@@ -722,7 +753,7 @@ p.large{
   position: absolute;
   width: 10px;
   height: 11px;
-  right: 8px;
+  right: 5px;
   top: 12px;
 }
 
@@ -772,6 +803,12 @@ p.large{
 }
 
 @media(max-width: 768px){
+  .tooltip-2 .tooltiptext-2{
+    top: -51px;
+    left: 35%;
+    right: unset;
+    padding-left: 5px;
+  }
   .mb-sm-40{
     margin-bottom: 40px;
   }
@@ -851,6 +888,10 @@ p.large{
   .circles h4 {
     margin-bottom: 40px;
   }
+  .center-wide{
+    width: 100%;
+    text-align: center;
+  }
   .chart-style {
     margin-top: 30px;
     margin-left: auto;
@@ -877,12 +918,25 @@ p.large{
     padding-left: 0;
   }
   .note{
-    margin-left: auto;
+    margin-left: auto !important;
     margin-right: auto;
   }
 }
 
 @media(max-width: 576px){
+  .footer-container {
+    height: 40px;
+  }
+  .footer-container ul{
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    width: fit-content;
+    height: 40px;
+  }
+  .footer-container ul li{
+    font-size: 11px;
+  }
   .text-center-xs{
     text-align: center;
   }
@@ -895,7 +949,7 @@ p.large{
   .circles{
     margin-top: 20px;
   }
-  h3, .how-you-slept h3, .tooltip-2 h3{
+  .how-you-slept h3, .tooltip-2 h3, h3.get-small{
     font-size: 24px !important;
   }
   h4 {
@@ -910,7 +964,7 @@ p.large{
   }
   .sub-row h2{
     font-size: 22px;
-    left: 10px;
+    left: 20px;
   }
   .mobile-nav img{
     margin-left: 20px;
@@ -929,5 +983,11 @@ p.large{
   }
   h3.small-txt{
     font-size: 18px !important;
+  }
+  .small-mobile-h3{
+    font-size: 20px;
+  }
+  h4.larger{
+    font-size: 25px !important;
   }
 }

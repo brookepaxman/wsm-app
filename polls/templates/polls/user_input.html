@@ -3,32 +3,49 @@
 
 {% block title %}WSM | User Input{% endblock %}
 {% block content %}
-
-  <div class="container mt-20">
+<style>
+  p.large {
+    font-size: 20px;
+  }
+</style>
 
 {% if not user.is_authenticated %}
   <p>You are not logged in. Please log in to see this page.</p>
   <a href="{% url 'login' %}">login</a>
 {% else %}
-<h2 class="text-center" style="margin-bottom: 0;">Hi, {{ user.username }}!</h2>
-<p class="text-center" style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
-<div class="subnav-container">
-  <a href="/graphs" class="outline-btn" style="margin-left: 0">View my data</a>
-  <a href="/analysis" class="outline-btn active">Back to Analytics</a>
-  <a href="/generate" class="outline-btn" style="margin-right: 0">Generate Objects</a>
-
-</div><br><br>
-<div class="container"></div>
-<h3 style="text-align: center;">{{s.startDate}}, {{s.startTime}}</h3><br>
+<div class="sub-row">
+  <h2 class="user-name no-wrap" style="margin-bottom: 0; width: 98px;">Hi, {{ user.username }}!</h2>
+  <div class="subnav-container hide-mobile">
+    <a href="/graphs" class="outline-btn" style="margin-left: 0">View my data</a>
+    <a href="/analysis" class="outline-btn active">Back to Analytics</a>
+    <a href="/generate" class="outline-btn" style="margin-right: 0">Generate Objects</a>
+  </div>
+  <p class="logout" style="margin-bottom: 30px;"><a href="{% url 'logout' %}">logout</a></p>
+</div>
+<div class="show-mobile subnav-mobile">
+  <ul>
+    <li>
+      <a href="/graphs" class="outline-btn">View my data</a>
+    </li>
+    <li>
+      <a href="/analysis" class="outline-btn active">Back to Analytics</a>
+    </li>
+    <li>
+      <a href="/realtime" class="outline-btn">Real-time Display</a>
+    </li>
+  </ul>
+</div>
+<div class="container">
+<h3 class="mb-10 mb-sm-8" style="text-align: center;">{{s.startDate}}, {{s.startTime}}</h3>
   {%if stat.sleepQuality == 0%}
   <h4 style="text-align: center;">No notes yet. Add some below.</h4>
   {%else%}
 
 
   <div class="row mt-30">
-    <h4 class="pl-15">Your Notes:</h4>
+    <h4 class="pl-15 center-wide larger">Your Notes:</h4>
   </div>
-  <div class="row mt-20 mb-100">
+  <div class="row mt-20 mb-100 mb-sm-40">
     <div class="col-md-4">
       <div class="note ml-0">
         <p class="large">Sleep Quality:</p>
@@ -50,11 +67,11 @@
   </div>
     {%endif%}
     <div>
-      <h3>Add or edit some notes about your sleep: </h3>
+      <h3 class="get-small">Add or edit some notes about your sleep: </h3>
       <form class="form-container" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Submit">
+        <input class="submit-row" type="submit" value="Submit">
       </form>
     </div><br><br><br>
 

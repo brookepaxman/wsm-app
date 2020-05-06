@@ -17,6 +17,7 @@
      *, *:before, *:after {
        box-sizing: inherit;
      }
+     h1 {font-size: 88px;}
 
      .column {
        float: left;
@@ -94,27 +95,78 @@
          width: 100%;
          display: block;
        }
+       .column2, .column3{
+         width: 100%;
+         padding-left: 15px;
+         padding-right: 15px;
+       }
      }
      .large-container {
        margin-left: 5%;
        margin-right: 5%;
      }
+     h2{
+       font-size: 48px;
+     }
+     .pt-50{
+       padding-top: 50px;
+     }
+     .pt-100{
+       padding-top: 100px;
+     }
+     .mb-30{
+       margin-bottom: 30px;
+     }
+     .mt-100{
+       margin-top: 100px;
+     }
+     @media screen and (max-width: 768px){
+       h1{
+         font-size: 50px;
+       }
+       h2{
+         font-size: 30px;
+       }
+       .small-padding{
+         padding-top: 20px;
+         padding-bottom: 30px;
+       }
+       .card.icon{
+         max-width: 200px;
+         margin-left: auto;
+         margin-right: auto;
+       }
+       .small-margin{
+         margin-bottom: 20px;
+         margin-top: 35px;
+       }
+       .repo{
+         width: 15%;
+       }
+     }
 </style>
   <body>
     <div class="about-section">
-      <h1 style="text-align:center;font-size:88px">About</h1>
-      <p style="text-align:justify; padding-left:200px; padding-right:200px">The Wireless Sleep Monitor (WSM) is a non-contact device used
-        for measuring a user's heart rate and respiration rate over a period of sleep. Using a millimeter-wave radar on the XWR1843 EVM Board from Texas Instruments,
-        the WSM collects signals from body displacement during sleep and records the processed data. Heart rate and respiration rate data is tracked and stored for user
-        display through the WSM web application. Through the web application, a user can view a graphical visualization of a particular night's sleep, calculated analytics
-        of their sleep, and record any disruptions themselves. Overall, the device acts as a novel, nonintrusive system to record and display sleeping vitals to a user. A link
-        to the code repository is found at the bottom of the page.
-      </p>
-      <p style="text-aligned:center; padding-bottom:100px; padding-top:50px">&#8226 &#8226 &#8226</p>
+      <h1 style="text-align:center;">About</h1>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 offset-md-2 offset-sm-0 col-sm-12">
+            <p style="text-align:justify;">The Wireless Sleep Monitor (WSM) is a non-contact device used
+              for measuring a user's heart rate and respiration rate over a period of sleep. Using a millimeter-wave radar on the XWR1843 EVM Board from Texas Instruments,
+              the WSM collects signals from body displacement during sleep and records the processed data. Heart rate and respiration rate data is tracked and stored for user
+              display through the WSM web application. Through the web application, a user can view a graphical visualization of a particular night's sleep, calculated analytics
+              of their sleep, and record any disruptions themselves. Overall, the device acts as a novel, nonintrusive system to record and display sleeping vitals to a user. A link
+              to the code repository is found at the bottom of the page.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <p class="pt-50 pb-100 small-padding" style="text-aligned:center;">&#8226 &#8226 &#8226</p>
     </div>
 
   <div class="large-container">
-    <h2 style="text-align:center;font-size:48px;color:#FFFFFF;margin-bottom:30px">Development Team</h2>
+    <h2 style="text-align:center;color:#FFFFFF;margin-bottom:30px">Development Team</h2>
     <div class="row">
       <div class="column">
         <div class="card">
@@ -189,40 +241,40 @@
         </div>
       </div>
 
-      <h2 style="text-align:center;font-size:48px;color:#FFFFFF;margin-top:100px;margin-bottom:30px">Tools</h2>
+      <h2 class="mb-30 mt-100 small-margin" style="text-align:center;color:#FFFFFF;">Tools</h2>
       <div class="row">
         <div class="column2">
-          <div class="card">
+          <div class="card icon">
             <img src="{% static 'admin/img/about/googlecloud.png' %}" alt="GCP Logo" style="width:100%">
           </div>
         </div>
 
         <div class="column2">
-          <div class="card">
+          <div class="card icon">
             <img src="{% static 'admin/img/about/Django.png' %}" alt="Django Logo" style="width:100%">
           </div>
         </div>
 
       <div class="column2">
-        <div class="card">
+        <div class="card icon">
           <img src="{% static 'admin/img/about/mysql.png' %}" alt="MySQL Logo" style="width:100%">
         </div>
       </div>
 
       <div class="column2">
-        <div class="card">
+        <div class="card icon">
           <img src="{% static 'admin/img/about/chartjs-logo.svg' %}" alt="Chartjs Logo" style="width:100%">
         </div>
       </div>
 
       <div class="column2">
-        <div class="card">
+        <div class="card icon">
           <img src="{% static 'admin/img/about/TI_hardware.png' %}" alt="Texas Instruments Radar" style="width:100%">
         </div>
       </div>
     </div>
 
-      <h2 style="text-align:center;font-size:48px;color:#FFFFFF;margin-top:100px;margin-bottom:30px">Sponsors</h2>
+      <h2 class="mb-30 mt-100 small-margin" style="text-align:center;color:#FFFFFF;">Sponsors</h2>
       <div class="row">
         <div class="column3">
           <div class="card">
@@ -236,7 +288,7 @@
           </div>
         </div>
       </div>
-      <h2 style="text-align:center;font-size:48px;color:#FFFFFF;margin-top:100px;margin-bottom:30px">Repository</h2>
+      <h2 class="mb-30 mt-100 small-margin" style="text-align:center;color:#FFFFFF;">Repository</h2>
         <div class="repo">
           <a href="https://github.com/brookepaxman/wsm-app">
             <img class = "marginauto" src = "{% static 'admin/img/about/github.png' %}"alt="Repository Link" width="100%" align="middle">

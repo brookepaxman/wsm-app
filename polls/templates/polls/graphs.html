@@ -19,7 +19,7 @@
   {% if user.is_authenticated %}
 
   <div class="sub-row">
-    <h2 style="margin-bottom: 0; white-space: nowrap; width: 184px;">{{ user.username }}'s Statistics</h2>
+    <h2 class="user-name no-wrap" style="margin-bottom: 0;width: 184px;">{{ user.username }}'s Statistics</h2>
     <div class="subnav-container hide-mobile">
       <a href="/graphs" class="outline-btn active" style="margin-left: 0;">View my data</a>
       <a href="/analysis" class="outline-btn">View Analytics</a>

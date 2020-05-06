@@ -22,7 +22,7 @@
 
   {% if user.is_authenticated %}
   <div class="sub-row">
-    <h2 style="margin-bottom: 0; width: 200px; white-space: nowrap;">Hi, {{ user.username }}!</h2>
+    <h2 class="user-name no-wrap" style="margin-bottom: 0; width: 200px;">Hi, {{ user.username }}!</h2>
     <div class="subnav-container hide-mobile">
       <a href="/graphs" class="outline-btn" style="margin-left: 0;">View my data</a>
       <a href="/analysis" class="outline-btn">View Analytics</a>
@@ -60,7 +60,7 @@
     <div class="col-md-8 offset-md-2 mt-30">
       <h1 class="text-center big-h1">Learn your sleep</h1>
       <br>
-      <h3 class="text-center big-h3">
+      <h3 class="text-center big-h3 small-mobile-h3">
         Sleep affects everyone, and understanding how you sleep can help you to learn more about yourself and your habits.
          Let us make keeping track of your sleep easy for you!
       </h3>
