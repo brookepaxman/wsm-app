@@ -53,9 +53,13 @@
             <div class="select-container">
               <img class="dropdown-arrow" src="{% static '/admin/img/down.png' %}" alt="" role="presentation">
               <select class="session chosen" id="sessions" style="margin-bottom: 10px;">
-                {% for session in queryset %}
-                  <option number="{{ forloop.counter }}" value="{{ session.id }}">{{session.startDate}} at {{session.startTime}}</option>
-                {% endfor %}
+                {% if queryset %}
+                  {% for session in queryset %}
+                    <option number="{{ forloop.counter }}" value="{{ session.id }}">{{session.startDate}} at {{session.startTime}}</option>
+                  {% endfor %}
+                {% else %}
+                  <option>No sessions recorded</option>
+                {% endif %}
               </select>
             </div>
           <label for="week" style="margin-bottom: 5px;">or view the past week:</label>
