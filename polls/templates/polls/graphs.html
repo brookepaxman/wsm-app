@@ -90,6 +90,8 @@
             <img src="{% static '/admin/img/loading.gif' %}">
           </div>
           <span id="check-empty"></span>
+          <span id="check-empty-s"></span>
+          <span id="check-empty-m"></span>
           <div id="no-data-msg" class="message-container hide"><p>No data available.</p></div>
           <canvas class="chart-style" id="myChart_s1" width="350" height="350"></canvas>
           <canvas class="chart-style hidden" id="myChart_s2" width="350" height="350"></canvas>
@@ -132,70 +134,80 @@
       $("#loader1").addClass("show");
      },
      success: function(data){
-       var sessionDate = "";
-       var labels = [];
-       var hrData = [];
-       var rrData = [];
-       var time;
-       var first_iteration = true;
-       data.forEach(function(stat) {
-         if(first_iteration) {
-           sessionDate = stat.sessionID.startDate;
-           first_iteration = false;
-         }
-         time = moment(stat.sessionID.startDate + "T" + stat.sessionID.startTime).clone().add(stat.time, 'seconds');
-         labels.push(time.format('hh:mm:ss a'));
-         hrData.push(stat.hr);
-         rrData.push(stat.rr);
-       });
-       var ctx = document.getElementById('myChart_s1').getContext('2d');
-       var myChart = new Chart (ctx, {
-         type: 'line',
-         data: {
-           labels: labels,
-           datasets: [{
-             label: 'Heart Rate',
-             data: hrData,
-             borderColor: '#B775FD',
-             fill: false
-           }, {
-             label: 'Respiration Rate',
-             data: rrData,
-             borderColor: '#007bff',
-             fill: false
-           }]
-         },
-         options: {
-           scales:{
-             yAxes: [{
-               scaleLabel: {
-                 display: true,
-                 labelString: 'Beats/Breaths Per Minute',
-                 fontSize: 16
-               }
-             }],
-             xAxes: [{
-               scaleLabel: {
-                 display: true,
-                 labelString: 'Time',
-                 fontSize: 16
-               }
+       if( jQuery.isEmptyObject(data) ){
+         $("#check-empty-s").addClass("empty");
+         $("#no-data-msg").addClass("show-message");
+         $("#myChart_s1").addClass("hidden");
+       } else {
+         var sessionDate = "";
+         var labels = [];
+         var hrData = [];
+         var rrData = [];
+         var time;
+         var first_iteration = true;
+         data.forEach(function(stat) {
+           if(first_iteration) {
+             sessionDate = stat.sessionID.startDate;
+             first_iteration = false;
+           }
+           time = moment(stat.sessionID.startDate + "T" + stat.sessionID.startTime).clone().add(stat.time, 'seconds');
+           labels.push(time.format('hh:mm:ss a'));
+           hrData.push(stat.hr);
+           rrData.push(stat.rr);
+         });
+         var ctx = document.getElementById('myChart_s1').getContext('2d');
+         var myChart = new Chart (ctx, {
+           type: 'line',
+           data: {
+             labels: labels,
+             datasets: [{
+               label: 'Heart Rate',
+               data: hrData,
+               borderColor: '#B775FD',
+               fill: false
+             }, {
+               label: 'Respiration Rate',
+               data: rrData,
+               borderColor: '#007bff',
+               fill: false
              }]
            },
-           title: {
-             display: true,
-             text: "HR and RR over time on "+sessionDate
+           options: {
+             scales:{
+               yAxes: [{
+                 scaleLabel: {
+                   display: true,
+                   labelString: 'Beats/Breaths Per Minute',
+                   fontSize: 16
+                 }
+               }],
+               xAxes: [{
+                 scaleLabel: {
+                   display: true,
+                   labelString: 'Time',
+                   fontSize: 16
+                 }
+               }]
+             },
+             title: {
+               display: true,
+               text: "HR and RR over time on "+sessionDate
+             }
            }
-         }
-       });
+         });
+       }
      },
       complete:function(data){
       // Hide image container
       $("#loader1").removeClass("show");
     },
       error: function(error_data) {
-        console.log("error")
-        console.log(error_data)
+        console.log("is empty session");
+        $("#check-empty-s").addClass("empty");
+        $("#no-data-msg").addClass("show-message");
+        $("#myChart_s1").addClass("hidden");
+        console.log("error");
+        console.log(error_data);
       }
     });
 
@@ -228,6 +240,9 @@
         if( $("select.month").hasClass("chosen")) {
           $("select.month").removeClass("chosen");
         }
+        if( $("#check-empty-s").hasClass("empty")) {
+          $("#check-empty-s").removeClass("empty");
+        }
         var endpoint = '/api/stats?format=json&session=' + sessionID + ''
         $.ajax({
           method: "GET",
@@ -237,70 +252,78 @@
           $("#loader1").addClass("show");
          },
          success: function(data){
-           var sessionDate = "";
-           var labels = [];
-           var hrData = [];
-           var rrData = [];
-           var time;
-           var first_iteration = true;
-           data.forEach(function(stat) {
-             if(first_iteration) {
-               sessionDate = stat.sessionID.startDate;
-               first_iteration = false;
-             }
-             time = moment(stat.sessionID.startDate + "T" + stat.sessionID.startTime).clone().add(stat.time, 'seconds');
-             labels.push(time.format('hh:mm:ss a'));
-             hrData.push(stat.hr);
-             rrData.push(stat.rr);
-           });
-           var ctx = document.getElementById('myChart_s'+dropdown).getContext('2d');
-           var myChart = new Chart (ctx, {
-             type: 'line',
-             data: {
-               labels: labels,
-               datasets: [{
-                 label: 'Heart Rate',
-                 data: hrData,
-                 borderColor: '#B775FD',
-                 fill: false
-               }, {
-                 label: 'Respiration Rate',
-                 data: rrData,
-                 borderColor: '#007bff',
-                 fill: false
-               }]
-             },
-             options: {
-               scales:{
-                 yAxes: [{
-                   scaleLabel: {
-                     display: true,
-                     labelString: 'Beats/Breaths Per Minute',
-                     fontSize: 16
-                   }
-                 }],
-                 xAxes: [{
-                   scaleLabel: {
-                     display: true,
-                     labelString: 'Time',
-                     fontSize: 16
-                   }
+           if( jQuery.isEmptyObject(data) ){
+             console.log("is empty session");
+             $("#check-empty-s").addClass("empty");
+           } else {
+             var sessionDate = "";
+             var labels = [];
+             var hrData = [];
+             var rrData = [];
+             var time;
+             var first_iteration = true;
+             data.forEach(function(stat) {
+               if(first_iteration) {
+                 sessionDate = stat.sessionID.startDate;
+                 first_iteration = false;
+               }
+               time = moment(stat.sessionID.startDate + "T" + stat.sessionID.startTime).clone().add(stat.time, 'seconds');
+               labels.push(time.format('hh:mm:ss a'));
+               hrData.push(stat.hr);
+               rrData.push(stat.rr);
+             });
+             var ctx = document.getElementById('myChart_s'+dropdown).getContext('2d');
+             var myChart = new Chart (ctx, {
+               type: 'line',
+               data: {
+                 labels: labels,
+                 datasets: [{
+                   label: 'Heart Rate',
+                   data: hrData,
+                   borderColor: '#B775FD',
+                   fill: false
+                 }, {
+                   label: 'Respiration Rate',
+                   data: rrData,
+                   borderColor: '#007bff',
+                   fill: false
                  }]
                },
-               title: {
-                 display: true,
-                 text: "HR and RR over time on "+sessionDate
+               options: {
+                 scales:{
+                   yAxes: [{
+                     scaleLabel: {
+                       display: true,
+                       labelString: 'Beats/Breaths Per Minute',
+                       fontSize: 16
+                     }
+                   }],
+                   xAxes: [{
+                     scaleLabel: {
+                       display: true,
+                       labelString: 'Time',
+                       fontSize: 16
+                     }
+                   }]
+                 },
+                 title: {
+                   display: true,
+                   text: "HR and RR over time on "+sessionDate
+                 }
                }
-             }
-           });
+             });
+           }
          },
           complete:function(data){
           // Hide image container
           $("#loader1").removeClass("show");
         },
           error: function(error_data) {
-            console.log("error")
-            console.log(error_data)
+            console.log("error");
+            console.log("is empty session");
+            $("#check-empty-s").addClass("empty");
+            $("#myChart_s"+dropdown).addClass("hidden");
+            console.log(error_data);
           }
         });
     });
@@ -409,6 +432,9 @@
       if( $("select.session").hasClass("chosen")) {
         $("select.session").removeClass("chosen");
       }
+      if( $("#check-empty-m").hasClass("empty")){
+        $("#check-empty-m").removeClass("empty");
+      }
       var endpoint3 = '/api/month?format=json&month=' + selectedMonth + ''
       $.ajax({
         method: "GET",
@@ -418,64 +444,74 @@
         $("#loader3").addClass("show");
        },
         success: function(data){
-          var labels = [];
-          var hrData = [];
-          var rrData = [];
-          data.forEach(function(stat) {
-            labels.push(stat.sessionID.startDate);
-            hrData.push(stat.avgHR);
-            rrData.push(stat.avgRR);
-          });
-          var monthName = monthList[selectedMonth-1]
-          var ctx3 = document.getElementById('myChart_'+selectedMonth).getContext('2d');
-          var myChart3 = new Chart (ctx3, {
-            type: 'bar',
-            data: {
-              labels: labels,
-              datasets: [{
-                label: 'Heart Rate',
-                data: hrData,
-                backgroundColor: 'rgb(183,117,253)',
-                fill: false
-              },{
-                label: 'Respiration Rate',
-                data: rrData,
-                backgroundColor: 'rgb(0,123,255)',
-                fill: false
-              }]
-            },
-            options: {
-              scales:{
-                yAxes: [{
-                  ticks: {
-                    beginAtZero: true
-                  },
-                  scaleLabel: {
-                    display: true,
-                    labelString: 'Average Beats/Breaths Per Minute',
-                    fontSize: 16
-                  }
-                }],
-                xAxes: [{
-                  scaleLabel: {
-                    display: true,
-                    labelString: 'Day',
-                    fontSize: 16
-                  }
+          if( jQuery.isEmptyObject(data) ){
+            $("#no-data-msg").addClass("show-message");
+            $("#check-empty-m").addClass("empty");
+            $("#myChart_"+selectedMonth).addClass("hidden");
+          } else {
+            var labels = [];
+            var hrData = [];
+            var rrData = [];
+            data.forEach(function(stat) {
+              labels.push(stat.sessionID.startDate);
+              hrData.push(stat.avgHR);
+              rrData.push(stat.avgRR);
+            });
+            var monthName = monthList[selectedMonth-1]
+            var ctx3 = document.getElementById('myChart_'+selectedMonth).getContext('2d');
+            var myChart3 = new Chart (ctx3, {
+              type: 'bar',
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Heart Rate',
+                  data: hrData,
+                  backgroundColor: 'rgb(183,117,253)',
+                  fill: false
+                },{
+                  label: 'Respiration Rate',
+                  data: rrData,
+                  backgroundColor: 'rgb(0,123,255)',
+                  fill: false
                 }]
               },
-              title: {
-                display: true,
-                text: monthName + "'s HR and RR over time"
+              options: {
+                scales:{
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero: true
+                    },
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Average Beats/Breaths Per Minute',
+                      fontSize: 16
+                    }
+                  }],
+                  xAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Day',
+                      fontSize: 16
+                    }
+                  }]
+                },
+                title: {
+                  display: true,
+                  text: monthName + "'s HR and RR over time"
+                }
               }
-            }
-          });
+            });
+          }
         },
         complete:function(data){
         // Hide image container
         $("#loader3").removeClass("show");
       },
         error: function(error_data) {
+          console.log("is empty session");
+          $("#check-empty-m").addClass("empty");
+          $("#myChart_"+selectedMonth).addClass("hidden");
+          $("#no-data-msg").addClass("show-message");
           console.log("error")
           console.log(error_data)
         }
@@ -484,11 +520,15 @@
 
   $("select.month").click(function(){
     var mnth = $(this).children("option:selected").val();
-    if($("#myChart_"+mnth).hasClass("hidden")) {
-      $("#myChart_"+mnth).removeClass("hidden");
-    }
-    if( $("#no-data-msg").hasClass("show-message") ){
-      $("#no-data-msg").removeClass("show-message");
+    if( $("#check-empty-m").hasClass("empty") ){
+      $("#no-data-msg").addClass("show-message");
+      } else {
+      if($("#no-data-msg").hasClass("show-message")){
+        $("#no-data-msg").removeClass("show-message");
+      }
+      if($("#myChart_"+mnth).hasClass("hidden")) {
+        $("#myChart_"+mnth).removeClass("hidden");
+      }
     }
     var x;
     for(x = 1; x <= 3; x++){
@@ -514,11 +554,15 @@
 
   $("select.session").click(function() {
     var session = $(this).children("option:selected").attr("number");
-    if($("#myChart_s"+session).hasClass("hidden")) {
-      $("#myChart_s"+session).removeClass("hidden");
-    }
-    if( $("#no-data-msg").hasClass("show-message") ){
-      $("#no-data-msg").removeClass("show-message");
+    if( $("#check-empty-s").hasClass("empty") ){
+      $("#no-data-msg").addClass("show-message");
+    } else {
+      if($("#no-data-msg").hasClass("show-message")){
+        $("#no-data-msg").removeClass("show-message");
+      }
+      if($("#myChart_s"+session).hasClass("hidden")) {
+        $("#myChart_s"+session).removeClass("hidden");
+      }
     }
     $("#myChart2").addClass("hidden");
     var i;
@@ -545,6 +589,9 @@
     if( $("#check-empty").hasClass("empty") ){
       $("#no-data-msg").addClass("show-message");
     } else {
+      if($("#no-data-msg").hasClass("show-message")){
+        $("#no-data-msg").removeClass("show-message");
+      }
       if($("#myChart2").hasClass("hidden")) {
         $("#myChart2").removeClass("hidden");
       }
